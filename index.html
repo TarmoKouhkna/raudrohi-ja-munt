@@ -27,7 +27,7 @@ img{max-width:100%}
 <title>Raudrohi &amp; Münt</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Serif+TC:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Serif+TC:wght@500;700&display=swap">
 <style>
 /* Layout: a casting desk (coins + hexagram being built) beside the reading; library and journal as sibling views under one tab bar. */
 :root{
@@ -88,14 +88,16 @@ textarea::placeholder{color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .coins{display:flex;gap:18px;justify-content:center;padding-block:18px 6px;perspective:600px;min-height:118px;align-items:center}
 .coin{width:80px;height:80px;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
-.coin .face{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:3px solid var(--coin-edge);box-shadow:inset 0 0 0 5px rgba(255,255,255,.16), inset 0 -6px 10px rgba(0,0,0,.18)}
+.coin .face{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid var(--coin-edge);box-shadow:inset 0 0 0 5px rgba(255,255,255,.16), inset 0 -6px 10px rgba(0,0,0,.18)}
 .coin .yang{background:radial-gradient(circle at 35% 30%, #E7C27A 0, var(--coin-yang) 55%, #8A6424 100%)}
 .coin .yin{background:radial-gradient(circle at 35% 30%, #F2F4F5 0, var(--coin-yin) 58%, #66707A 100%);border-color:#59626B;transform:rotateY(180deg)}
-.coin .bird{width:46%;height:46%;fill:rgba(62,40,8,.88);margin-top:6%}
-.coin .num{font-family:var(--f-display);font-weight:700;font-size:40px;line-height:.85;color:rgba(26,32,42,.85);margin-top:6%;transform:translateY(-.16em)}
-.coin .cap{font-family:var(--f-body);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;line-height:1}
-.coin .yang .cap{color:rgba(62,40,8,.88)}
-.coin .yin .cap{color:rgba(26,32,42,.82)}
+.coin .bird{width:47%;height:47%;fill:rgba(62,40,8,.88);margin-top:-14%}
+.coin .num{font-family:"Cinzel",var(--f-display);font-weight:700;font-size:34px;line-height:1;color:rgba(26,32,42,.85);margin-top:-16%}
+.coin .rim{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.coin .rim text{font-family:"Cinzel",var(--f-display);font-weight:700;font-size:13.5px;letter-spacing:.1em}
+.coin .rim .beads{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-dasharray:0 4.1}
+.coin .yang .rim{fill:rgba(62,40,8,.9);color:rgba(62,40,8,.55)}
+.coin .yin .rim{fill:rgba(26,32,42,.85);color:rgba(26,32,42,.45)}
 .yarrow-note{display:none;text-align:center;color:var(--muted);font-size:13px;max-width:36ch;margin:0 auto}
 .method-yarrow .coins .coin{display:none}
 .method-yarrow .yarrow-note{display:block}
@@ -288,8 +290,7 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
 }
 @media (max-width: 480px){
   .coin{width:66px;height:66px}
-  .coin .num{font-size:33px}
-  .coin .cap{font-size:8.5px}
+  .coin .num{font-size:28px}
   .coins{gap:12px}
   .brow{grid-template-columns:42px minmax(0,1fr) 84px;gap:8px}
   .chg-row{grid-template-columns:minmax(0,1fr);gap:4px}
@@ -338,9 +339,9 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
           </div>
           <div>
             <div class="coins" id="coins" aria-live="polite">
-              <div class="coin" data-i="0" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><span class="cap">kull · 3</span></div><div class="face yin"><span class="num">2</span><span class="cap">kiri</span></div></div>
-              <div class="coin" data-i="1" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><span class="cap">kull · 3</span></div><div class="face yin"><span class="num">2</span><span class="cap">kiri</span></div></div>
-              <div class="coin" data-i="2" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><span class="cap">kull · 3</span></div><div class="face yin"><span class="num">2</span><span class="cap">kiri</span></div></div>
+              <div class="coin" data-i="0" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-k0" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-k0" startOffset="50%" text-anchor="middle">KULL · 3</textPath></text></svg></div><div class="face yin"><span class="num">2</span><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-r0" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-r0" startOffset="50%" text-anchor="middle">KIRI</textPath></text></svg></div></div>
+              <div class="coin" data-i="1" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-k1" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-k1" startOffset="50%" text-anchor="middle">KULL · 3</textPath></text></svg></div><div class="face yin"><span class="num">2</span><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-r1" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-r1" startOffset="50%" text-anchor="middle">KIRI</textPath></text></svg></div></div>
+              <div class="coin" data-i="2" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-k2" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-k2" startOffset="50%" text-anchor="middle">KULL · 3</textPath></text></svg></div><div class="face yin"><span class="num">2</span><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-r2" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-r2" startOffset="50%" text-anchor="middle">KIRI</textPath></text></svg></div></div>
               <p class="yarrow-note">Jäljendab 49 raudrohuvarre meetodi tõenäosusi iga joone kohta:<br>6 → 1/16 · 7 → 5/16 · 8 → 7/16 · 9 → 3/16</p>
             </div>
             <div class="tally" id="tally">Kull (pildiga pool) annab 3, kiri (numbriga pool) 2.</div>

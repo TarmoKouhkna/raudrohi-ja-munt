@@ -6,7 +6,7 @@ Eestikeelne I Chingi (Muutuste raamatu) rakendus brauseris. Heida heksagramm, lo
 
 ## Võimalused
 
-- **Heitmine:** kolm virtuaalset münti (kirjaga pool 3, sile pool 2) või raudrohuvarte meetodi tõenäosused. Kui heidad päris münte, saad joone summa (6, 7, 8, 9) ka ise sisestada.
+- **Heitmine:** kolm virtuaalset münti (kull ehk pildiga pool 3, kiri ehk numbriga pool 2) või raudrohuvarte meetodi tõenäosused. Kui heidad päris münte, saad joone summa (6, 7, 8, 9) ka ise sisestada.
 - **Lugemine:** põhiheksagramm (praegune olukord) ja muutuvate joonte korral seotud heksagramm (kuhu olukord liigub). Lisaks juhis, millele lugemisel kõige rohkem kaalu anda.
 - **Selgitused:** igal heksagrammil on tänapäevane selgitus koos osadega „Mida teha“ ja „Millest hoiduda“. Igal joonel on lühike seletus argikeeles.
 - **Klassikaline tekst:** iga heksagrammi otsus ja iga joone tekst James Legge tõlke järgi, eestindatuna. Nupuga saab vaadata ka Legge ingliskeelset originaali.

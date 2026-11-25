@@ -252,8 +252,8 @@ dialog .card{max-height:85vh;overflow:auto}
 .qex>div{border-radius:10px;padding:10px 14px;background:var(--sunk)}
 .qex ul{padding-left:18px;margin-top:6px}
 .qex .bad .adv-h{color:var(--bronze)}
-.vtable{display:grid;grid-template-columns:auto 86px minmax(0,1fr);gap:12px 16px;align-items:center}
-.vtable .sum{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.vtable{display:grid;grid-template-columns:86px minmax(0,1fr);gap:12px 16px;align-items:center}
+.vtable .sum{font-size:13px;color:var(--muted)}
 .vtable .ln{--h:12px;margin-right:18px}
 .vtable b{font-weight:600}
 .trig{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
@@ -278,7 +278,7 @@ dialog .card{max-height:85vh;overflow:auto}
 @media (max-width: 480px){
   nav.tabs a{padding:7px 10px;font-size:13px}
   .qex{grid-template-columns:minmax(0,1fr)}
-  .vtable{grid-template-columns:auto 64px minmax(0,1fr);gap:10px}
+  .vtable{grid-template-columns:64px minmax(0,1fr);gap:10px}
 }
 footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid var(--rule);padding-top:14px;max-width:80ch}
 
@@ -340,7 +340,7 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
               <div class="coin" data-i="2"><div class="face yang"><span>通</span><span>寶</span><span>開</span><span>元</span></div><div class="face yin"><span>陰</span><span>陰</span><span>陰</span><span>陰</span></div></div>
               <p class="yarrow-note">Jäljendab 49 raudrohuvarre meetodi tõenäosusi iga joone kohta:<br>6 → 1/16 · 7 → 5/16 · 8 → 7/16 · 9 → 3/16</p>
             </div>
-            <div class="tally" id="tally">Kirjaga pool annab 3, sile pool 2.</div>
+            <div class="tally" id="tally">Kull (pildiga pool) annab 3, kiri (numbriga pool) 2.</div>
           </div>
           <div class="actions">
             <button class="btn primary" type="button" id="tossBtn">Heida joon 1 (kuuest)</button>
@@ -348,7 +348,7 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
             <button class="btn" type="button" id="resetBtn">Alusta uuesti</button>
           </div>
           <div class="manual" role="group" aria-label="Sisesta joon oma müntidest">
-            <span>Kasutad päris münte? Sisesta joone summa:</span>
+            <span>Viskad päris münte? Kull = 3, kiri = 2. Sisesta kolme mündi summa:</span>
             <button type="button" data-v="6" title="Vana jin, muutuv">6</button>
             <button type="button" data-v="7" title="Noor jang">7</button>
             <button type="button" data-v="8" title="Noor jin">8</button>
@@ -423,9 +423,10 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
 
         <section class="gsec">
           <h3>2. Heida mündid</h3>
-          <p>Iga joone jaoks visatakse kolm münti. Kirjaga pool annab 3 ja sile pool 2, nii et kolme mündi summa on 6, 7, 8 või 9. Heksagramm ehitatakse alt üles: esimene vise annab alumise joone, kuues vise ülemise.</p>
+          <p>Iga joone jaoks visatakse kolm münti. Kull (pildiga pool) annab 3 ja kiri (numbriga pool) 2, nii et kolme mündi summa on 6, 7, 8 või 9. Heksagramm ehitatakse alt üles: esimene vise annab alumise joone, kuues vise ülemise.</p>
           <div class="vtable" id="vtable"></div>
           <p>Võid kasutada rakenduse münte või visata päris münte ja sisestada summa ise. Raudrohuvarred on vanem meetod, mille tõenäosused on veidi teistsugused: muutuvat jini (6) tuleb harvem ja muutuvat jangi (9) sagedamini.</p>
+          <p>Mõnes vanemas raamatus on kulli ja kirja väärtused vastupidi. Vahet pole, kumba viisi kasutad – peaasi, et jääd ühe juurde.</p>
         </section>
 
         <section class="gsec">
@@ -701,7 +702,7 @@ function readingHTML(r){
 const state = { method:'coins', lines:[], busy:false, current:null };
 const coinsEl=$('#coins'), tally=$('#tally'), tossBtn=$('#tossBtn'), allBtn=$('#allBtn'), resetBtn=$('#resetBtn'), qEl=$('#question');
 const coinAngles=[0,0,0];
-const TALLY_COINS = 'Kirjaga pool annab 3, sile pool 2.';
+const TALLY_COINS = 'Kull (pildiga pool) annab 3, kiri (numbriga pool) 2.';
 const TALLY_YARROW = 'Iga joon loositakse raudrohumeetodi tõenäosustega.';
 
 function hexLine(v){
@@ -754,7 +755,7 @@ function flipCoins(faces, dur){
 function addLine(v, coins){
   if(state.current){ state.current=null; state.lines=[]; }
   state.lines.push(v);
-  tally.innerHTML = coins ? `${coins.join(' + ')} = <b>${v}</b> · ${VNAME[v]}` : `Joon ${state.lines.length}: <b>${v}</b> · ${VNAME[v]}`;
+  tally.innerHTML = coins ? `${coins.map(c=>c===3?'kull':'kiri').join(' + ')} = ${coins.join(' + ')} = <b>${v}</b> · ${VNAME[v]}` : `Joon ${state.lines.length}: <b>${v}</b> · ${VNAME[v]}`;
   renderBuilder(state.lines.length-1);
   if(state.lines.length===6) finishReading();
   else renderReadingArea();
@@ -943,8 +944,8 @@ $('#impGo').addEventListener('click', ()=>importBackup($('#impText').value));
 
 /* ---------- juhend ---------- */
 function renderGuide(){
-  $('#vtable').innerHTML = [[6,'2 + 2 + 2','muutuv jin','katkendlik joon, mis muutub katkematuks'],[7,'3 + 2 + 2','noor jang','katkematu joon'],[8,'3 + 3 + 2','noor jin','katkendlik joon'],[9,'3 + 3 + 3','muutuv jang','katkematu joon, mis muutub katkendlikuks']]
-    .map(([v,sum,name,desc])=>`<span class="sum">${v} = ${sum}</span>${hexLine(v)}<span><b>${name}</b> – ${desc}</span>`).join('');
+  $('#vtable').innerHTML = [[6,'kolm kirja','muutuv jin','katkendlik joon, mis muutub katkematuks'],[7,'üks kull, kaks kirja','noor jang','katkematu joon'],[8,'kaks kulli, üks kiri','noor jin','katkendlik joon'],[9,'kolm kulli','muutuv jang','katkematu joon, mis muutub katkendlikuks']]
+    .map(([v,sum,name,desc])=>`${hexLine(v)}<span><b>${v} · ${name}</b> <span class="sum">(${sum})</span><br>${desc}</span>`).join('');
   $('#trigList').innerHTML = Object.values(TRI).map(t=>`<div><span class="s" aria-hidden="true">${t.sym}</span><span><b>${t.name}</b><small>${t.attr}</small></span></div>`).join('');
 }
 

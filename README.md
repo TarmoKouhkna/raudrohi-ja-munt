@@ -67,6 +67,8 @@ Skript kontrollib, et heksagramme on 64 ja trigramme 8, nimed on unikaalsed, mä
 
 Kood ja selle rakenduse jaoks kirjutatud tekstid (selgitused, joonte seletused ja eestikeelne tõlge) on avaldatud [MIT-litsentsi](LICENSE) all. James Legge 1882. aasta ingliskeelne tekst (`legge.json`) on avalikus omandis.
 
+Virtuaalmündi kullipoolel olev kotkas on ikoon „Eagle emblem“ saidilt [game-icons.net](https://game-icons.net) litsentsiga [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); originaalfail on `icons/eagle-emblem.svg`.
+
 ## Tehniline
 
 - Väliseid teeke ei kasutata, ainult Google Fontsi kirjatüübid (Cormorant Garamond, IBM Plex Sans, IBM Plex Mono, Noto Serif TC).

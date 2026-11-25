@@ -23,7 +23,7 @@ Andmefailid laaditakse `fetch()`-iga, seega testi lehte serveri kaudu, mitte `fi
 - Kogu liides ja sisu on **eesti keeles**. Kasuta eesti jutumärke „…“ ja mõttekriipsu –.
 - Heksagrammide nimed on loomulikud eesti **nimisõnad** (nt „Loov jõud“, „Ühtehoidmine“, „Kitsikus“), mitte omadussõnad ega otsetõlked. Märksõnad ei tohi korrata heksagrammi nime.
 - Selgitused ja joonte seletused on kirjutatud tavainimesele arusaadavas tänapäeva keeles, igapäevaelu näidetega. Need on **algupärased tõlgendused**, mitte tõlge – ära esita neid klassikalise tekstina.
-- `legge-et.json` on tõlgitud Legge **ingliskeelsest** tekstist, mitte hiina keelest. Legge sulgudes olevad lisandused on säilitatud.
+- `legge-et.json` on tõlgitud Legge **ingliskeelsest** tekstist, mitte hiina keelest. Legge sulgudes olevad lisandused on säilitatud. Legge „its subject“ on eesti keeles **„inimene“** („näitab inimest ootamas…“), mitte „selle kandja“; viide teisele joonele on „esimese joone inimene“.
 - Iga joone tekst algab tema kohaga („Esimene joon, katkematu, …“). „Katkematu“ = jang (1), „katkendlik“ = jin (0) – see peab vastama heksagrammi tegelikule joonele.
 
 ## Kontrollid enne commiti

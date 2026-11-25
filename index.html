@@ -286,7 +286,8 @@ dialog .card{max-height:85vh;overflow:auto}
   .qex{grid-template-columns:minmax(0,1fr)}
   .vtable{grid-template-columns:64px minmax(0,1fr);gap:10px}
 }
-footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid var(--rule);padding-top:14px;max-width:80ch}
+footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid var(--rule);padding-top:14px;display:flex;flex-wrap:wrap;gap:6px 24px}
+footer a{color:inherit}
 
 @media (max-width: 820px){
   .desk{grid-template-columns:minmax(0,1fr)}
@@ -469,14 +470,18 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
         <section class="gsec">
           <h3>Hea teada</h3>
           <p>I Ching on mõtisklemise vahend, mitte nõuanne. Tervise, raha, õiguse ja muude tõsiste otsuste puhul pea nõu asjatundjaga.</p>
-          <p>Heksagrammide selgitused ja joonte seletused on tänapäevased tõlgendused. Klassikaline tekst on eestindatud James Legge 1882. aasta ingliskeelse tõlke järgi.</p>
+          <p>Heksagrammide selgitused ja joonte seletused on tänapäevased tõlgendused. Klassikaline tekst on eestindatud James Legge 1882. aasta ingliskeelse tõlke järgi (mitte otse hiina keelest); sulgudes olevad sõnad on Legge enda lisatud selgitused.</p>
           <p><a href="#cast" style="color:var(--jade)">Heida oma heksagramm</a></p>
         </section>
       </div>
     </section>
   </main>
 
-  <footer>Kursiivis klassikaline tekst on eestindatud James Legge ingliskeelse tõlke järgi (<cite>The Sacred Books of the East, vol. 16: The Yi King</cite>, Oxford 1882, avalik omand); see ei ole otsetõlge hiina keelest. Sulgudes olevad sõnad on Legge enda lisatud selgitused. Legge originaali saab vaadata nupuga „Näita ingliskeelset originaali“. Heksagrammide selgitused ja joonte tänapäevased seletused on selle rakenduse jaoks kirjutatud algupärased tõlgendused, mitte tõlge. Jooned loetakse traditsiooniliselt: joon 1 on all, joon 6 üleval. ○ tähistab vana jangi (9) ja × vana jini (6); mõlemad muutuvad oma vastandiks. Mündi kulli kujutis: <a href="https://game-icons.net" style="color:inherit">game-icons.net</a> (CC BY 3.0).</footer>
+  <footer>
+    <span>Klassikaline tekst on eestindatud James Legge 1882. aasta tõlke järgi.</span>
+    <span>Mündi kotkas: <a href="https://game-icons.net">game-icons.net</a> (CC BY 3.0)</span>
+    <span><a href="#juhend">Juhend</a> · <a href="https://github.com/TarmoKouhkna/raudrohi-ja-munt">Lähtekood GitHubis</a></span>
+  </footer>
 </div>
 
 <dialog id="dlg" aria-label="Heksagrammi kirjeldus"><div class="card" id="dlgBody"></div></dialog>

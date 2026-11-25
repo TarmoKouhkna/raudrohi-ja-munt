@@ -87,7 +87,12 @@ textarea::placeholder{color:var(--muted)}
 .seg button{border:0;background:transparent;padding:6px 14px;border-radius:999px;font-size:13px;color:var(--muted);font-weight:500}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .coins{display:flex;gap:18px;justify-content:center;padding-block:18px 6px;perspective:600px;min-height:118px;align-items:center}
-.coin{width:80px;height:80px;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.coin-slot{position:relative;z-index:1}
+.coin{width:80px;height:80px;position:relative;transform-style:preserve-3d}
+.shadow{position:absolute;left:12%;right:12%;bottom:-15px;height:11px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.3),transparent);pointer-events:none}
+.coin .face::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.6) 50%,transparent 62%);background-size:260% 100%;background-position:130% 0;opacity:0}
+.coin.landed .face::after{animation:glint .7s ease-out}
+@keyframes glint{0%{background-position:130% 0;opacity:1}100%{background-position:-40% 0;opacity:1}}
 .coin .face{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid var(--coin-edge);box-shadow:inset 0 0 0 5px rgba(255,255,255,.16), inset 0 -6px 10px rgba(0,0,0,.18)}
 .coin .yang{background:radial-gradient(circle at 35% 30%, #E7C27A 0, var(--coin-yang) 55%, #8A6424 100%)}
 .coin .yin{background:radial-gradient(circle at 35% 30%, #F2F4F5 0, var(--coin-yin) 58%, #66707A 100%);border-color:#59626B;transform:rotateY(180deg)}
@@ -99,7 +104,7 @@ textarea::placeholder{color:var(--muted)}
 .coin .yang .rim{fill:rgba(62,40,8,.9);color:rgba(62,40,8,.55)}
 .coin .yin .rim{fill:rgba(26,32,42,.85);color:rgba(26,32,42,.45)}
 .yarrow-note{display:none;text-align:center;color:var(--muted);font-size:13px;max-width:36ch;margin:0 auto}
-.method-yarrow .coins .coin{display:none}
+.method-yarrow .coins .coin-slot{display:none}
 .method-yarrow .yarrow-note{display:block}
 .tally{text-align:center;font-family:var(--f-mono);font-size:13px;color:var(--muted);min-height:20px;margin-top:14px}
 .tally b{color:var(--ink);font-weight:500}
@@ -300,7 +305,7 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
   .zh{font-size:36px}
 }
 @media (prefers-reduced-motion: reduce){
-  .coin{transition:none}
+  .coin.landed .face::after{animation:none}
   .brow.new .ln{animation:none}
 }
 </style>
@@ -339,9 +344,9 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
           </div>
           <div>
             <div class="coins" id="coins" aria-live="polite">
-              <div class="coin" data-i="0" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-k0" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-k0" startOffset="50%" text-anchor="middle">KULL · 3</textPath></text></svg></div><div class="face yin"><span class="num">2</span><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-r0" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-r0" startOffset="50%" text-anchor="middle">KIRI</textPath></text></svg></div></div>
-              <div class="coin" data-i="1" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-k1" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-k1" startOffset="50%" text-anchor="middle">KULL · 3</textPath></text></svg></div><div class="face yin"><span class="num">2</span><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-r1" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-r1" startOffset="50%" text-anchor="middle">KIRI</textPath></text></svg></div></div>
-              <div class="coin" data-i="2" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-k2" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-k2" startOffset="50%" text-anchor="middle">KULL · 3</textPath></text></svg></div><div class="face yin"><span class="num">2</span><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-r2" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-r2" startOffset="50%" text-anchor="middle">KIRI</textPath></text></svg></div></div>
+              <div class="coin-slot"><div class="coin" data-i="0" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-k0" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-k0" startOffset="50%" text-anchor="middle">KULL · 3</textPath></text></svg></div><div class="face yin"><span class="num">2</span><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-r0" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-r0" startOffset="50%" text-anchor="middle">KIRI</textPath></text></svg></div></div><span class="shadow" aria-hidden="true"></span></div>
+              <div class="coin-slot"><div class="coin" data-i="1" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-k1" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-k1" startOffset="50%" text-anchor="middle">KULL · 3</textPath></text></svg></div><div class="face yin"><span class="num">2</span><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-r1" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-r1" startOffset="50%" text-anchor="middle">KIRI</textPath></text></svg></div></div><span class="shadow" aria-hidden="true"></span></div>
+              <div class="coin-slot"><div class="coin" data-i="2" aria-hidden="true"><div class="face yang"><svg class="bird" aria-hidden="true" focusable="false"><use href="#kull-ikoon"/></svg><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-k2" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-k2" startOffset="50%" text-anchor="middle">KULL · 3</textPath></text></svg></div><div class="face yin"><span class="num">2</span><svg class="rim" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle class="beads" cx="50" cy="50" r="43.5"/><path id="kaar-r2" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/><text><textPath href="#kaar-r2" startOffset="50%" text-anchor="middle">KIRI</textPath></text></svg></div></div><span class="shadow" aria-hidden="true"></span></div>
               <p class="yarrow-note">Jäljendab 49 raudrohuvarre meetodi tõenäosusi iga joone kohta:<br>6 → 1/16 · 7 → 5/16 · 8 → 7/16 · 9 → 3/16</p>
             </div>
             <div class="tally" id="tally">Kull (pildiga pool) annab 3, kiri (numbriga pool) 2.</div>
@@ -744,16 +749,40 @@ function setMethod(m){
   $('#castPanel').classList.toggle('method-yarrow', m==='yarrow');
   tally.textContent = m==='coins' ? TALLY_COINS : TALLY_YARROW;
 }
+/* Mündi vise: hoovõtt, lend koos pöörlemisega ümber X-telje, maandumine põrkega ja läige.
+   rotateX liigub täispöörete kaupa, nii et lõpus näeb õiget poolt õiget pidi; nähtava poole määrab rotateY (0 = kull, 180 = kiri). */
+const STAGGER = 80;
 function flipCoins(faces, dur){
-  coinsEl.querySelectorAll('.coin').forEach((c,i)=>{
-    const spins = reduceMotion ? 0 : (2 + rand(3));
-    const target = faces[i]===3 ? 0 : 180;
-    const cur = coinAngles[i];
-    let next = cur - (cur % 360) + spins*360 + target;
-    if(next<=cur) next+=360;
-    coinAngles[i]=next;
-    c.style.transitionDuration = dur+'ms';
-    c.style.transform = `rotateY(${next}deg)`;
+  const lift = window.innerWidth <= 480 ? 76 : 100;
+  const T = (y,x,yy,z,sc) => `translateY(${y}px) rotateX(${x}deg) rotateY(${yy}deg) rotateZ(${z}deg) scale(${sc})`;
+  coinsEl.querySelectorAll('.coin-slot').forEach((slot,i)=>{
+    const c = slot.querySelector('.coin'), sh = slot.querySelector('.shadow');
+    const from = coinAngles[i], to = faces[i]===3 ? 0 : 180;
+    coinAngles[i] = to;
+    const fin = T(0,0,to,0,1);
+    c.classList.remove('landed');
+    c.style.transform = fin;
+    if(reduceMotion || !c.animate) return;
+    const turns = (2 + rand(2)) * 360 * (rand(2) ? 1 : -1);
+    const tilt = (rand(2) ? 1 : -1) * (5 + rand(6));
+    const lf = lift * (0.85 + rand(30)/100);
+    const opts = {duration:dur, delay:i*STAGGER, fill:'backwards'};
+    const a = c.animate([
+      {offset:0,    transform:T(0,0,from,0,1)},
+      {offset:.08,  transform:T(5,0,from,0,.94), easing:'cubic-bezier(.2,.75,.35,1)'},
+      {offset:.47,  transform:T(-lf,turns*.55,(from+to)/2,tilt,1.16), easing:'cubic-bezier(.55,0,.85,.45)'},
+      {offset:.8,   transform:T(0,turns,to,0,1), easing:'cubic-bezier(.25,.6,.45,1)'},
+      {offset:.89,  transform:T(-8,turns,to,-tilt/2,1.02), easing:'cubic-bezier(.55,0,.7,1)'},
+      {offset:1,    transform:T(0,turns,to,0,1)}
+    ], opts);
+    a.onfinish = () => { void c.offsetWidth; c.classList.add('landed'); };
+    if(sh && sh.animate) sh.animate([
+      {offset:0, transform:'scale(1)', opacity:1},
+      {offset:.47, transform:'scale(.45)', opacity:.3},
+      {offset:.8, transform:'scale(1)', opacity:1},
+      {offset:.89, transform:'scale(.85)', opacity:.8},
+      {offset:1, transform:'scale(1)', opacity:1}
+    ], opts);
   });
 }
 function addLine(v, coins){
@@ -769,7 +798,7 @@ function tossOnce(dur){
     if(state.method==='coins'){
       const coins=[0,0,0].map(()=>rand(2)?3:2);
       flipCoins(coins, dur);
-      setTimeout(()=>{ addLine(coins[0]+coins[1]+coins[2], coins); res(); }, reduceMotion?60:dur);
+      setTimeout(()=>{ addLine(coins[0]+coins[1]+coins[2], coins); res(); }, reduceMotion?60:dur+2*STAGGER);
     } else {
       const r=rand(16); const v = r<1?6 : r<6?7 : r<13?8 : 9;
       setTimeout(()=>{ addLine(v); res(); }, reduceMotion?60:Math.min(dur,300));
@@ -777,10 +806,10 @@ function tossOnce(dur){
   });
 }
 function startIfComplete(){ if(state.current){ state.current=null; state.lines=[]; renderBuilder(); if(location.hash.startsWith('#lugemine-')) location.hash='cast'; } }
-async function toss(){ if(state.busy) return; startIfComplete(); state.busy=true; renderBuilder(); await tossOnce(750); state.busy=false; renderBuilder(); }
+async function toss(){ if(state.busy) return; startIfComplete(); state.busy=true; renderBuilder(); await tossOnce(1150); state.busy=false; renderBuilder(); }
 async function tossAll(){
   if(state.busy) return; startIfComplete(); state.busy=true; renderBuilder();
-  while(state.lines.length<6){ await tossOnce(480); await new Promise(r=>setTimeout(r, reduceMotion?0:120)); }
+  while(state.lines.length<6){ await tossOnce(820); await new Promise(r=>setTimeout(r, reduceMotion?0:120)); }
   state.busy=false; renderBuilder();
 }
 function reset(){

@@ -34,7 +34,7 @@ img{max-width:100%}
   --paper:#ECEFE9; --surface:#F7F8F4; --sunk:#E2E6DF;
   --ink:#1B2130; --muted:#586170; --rule:#C9D0C7;
   --bronze:#8A611E; --bronze-soft:#E9DcC0; --jade:#356656; --jade-soft:#D5E4DC;
-  --coin-yang:#B88A3E; --coin-yin:#5F6B5A; --coin-edge:#6E4E17;
+  --coin-yang:#B88A3E; --coin-yin:#AEB5BC; --coin-edge:#6E4E17;
   --f-display:"Cormorant Garamond", "Iowan Old Style", Georgia, serif;
   --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-han:"Noto Serif TC", "Songti TC", "PMingLiU", serif;
@@ -44,14 +44,14 @@ img{max-width:100%}
   --paper:#10141B; --surface:#171C25; --sunk:#0C1016;
   --ink:#E3E6DE; --muted:#9AA2AD; --rule:#2B323D;
   --bronze:#D3A75C; --bronze-soft:#3A3020; --jade:#86BBA7; --jade-soft:#1D3029;
-  --coin-yang:#C99A4C; --coin-yin:#6F7C69; --coin-edge:#3E2C0C;
+  --coin-yang:#C99A4C; --coin-yin:#A2AAB1; --coin-edge:#3E2C0C;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --paper:#10141B; --surface:#171C25; --sunk:#0C1016;
   --ink:#E3E6DE; --muted:#9AA2AD; --rule:#2B323D;
   --bronze:#D3A75C; --bronze-soft:#3A3020; --jade:#86BBA7; --jade-soft:#1D3029;
-  --coin-yang:#C99A4C; --coin-yin:#6F7C69; --coin-edge:#3E2C0C;
+  --coin-yang:#C99A4C; --coin-yin:#A2AAB1; --coin-edge:#3E2C0C;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -88,15 +88,14 @@ textarea::placeholder{color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .coins{display:flex;gap:18px;justify-content:center;padding-block:18px 6px;perspective:600px;min-height:118px;align-items:center}
 .coin{width:80px;height:80px;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
-.coin .face{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:grid;place-items:center;border:3px solid var(--coin-edge);box-shadow:inset 0 0 0 5px rgba(255,255,255,.14), inset 0 -6px 10px rgba(0,0,0,.18)}
-.coin .face::before{content:"";width:20px;height:20px;background:var(--surface);border:2px solid var(--coin-edge);border-radius:2px}
-.coin .face span{position:absolute;font-family:var(--f-han);font-size:13px;font-weight:700;color:rgba(20,14,4,.78)}
-.coin .face span:nth-child(1){top:9px}.coin .face span:nth-child(2){bottom:9px}
-.coin .face span:nth-child(3){left:11px}.coin .face span:nth-child(4){right:11px}
+.coin .face{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:3px solid var(--coin-edge);box-shadow:inset 0 0 0 5px rgba(255,255,255,.16), inset 0 -6px 10px rgba(0,0,0,.18)}
 .coin .yang{background:radial-gradient(circle at 35% 30%, #E7C27A 0, var(--coin-yang) 55%, #8A6424 100%)}
-.coin .yin{background:radial-gradient(circle at 35% 30%, #9DAA92 0, var(--coin-yin) 60%, #3E4838 100%);transform:rotateY(180deg)}
-.coin .yin span{color:rgba(230,236,224,.85)}
-.coin .val{position:absolute;bottom:-26px;left:0;right:0;text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--muted);transform:translateZ(1px)}
+.coin .yin{background:radial-gradient(circle at 35% 30%, #F2F4F5 0, var(--coin-yin) 58%, #66707A 100%);border-color:#59626B;transform:rotateY(180deg)}
+.coin .bird{width:66%;height:auto;fill:rgba(62,40,8,.85);margin-top:10%;margin-bottom:4%}
+.coin .num{font-family:var(--f-display);font-weight:700;font-size:40px;line-height:.85;color:rgba(26,32,42,.85);margin-top:6%}
+.coin .cap{font-family:var(--f-body);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;line-height:1}
+.coin .yang .cap{color:rgba(62,40,8,.88)}
+.coin .yin .cap{color:rgba(26,32,42,.82)}
 .yarrow-note{display:none;text-align:center;color:var(--muted);font-size:13px;max-width:36ch;margin:0 auto}
 .method-yarrow .coins .coin{display:none}
 .method-yarrow .yarrow-note{display:block}
@@ -289,6 +288,8 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
 }
 @media (max-width: 480px){
   .coin{width:66px;height:66px}
+  .coin .num{font-size:33px}
+  .coin .cap{font-size:8.5px}
   .coins{gap:12px}
   .brow{grid-template-columns:42px minmax(0,1fr) 84px;gap:8px}
   .chg-row{grid-template-columns:minmax(0,1fr);gap:4px}
@@ -335,9 +336,9 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
           </div>
           <div>
             <div class="coins" id="coins" aria-live="polite">
-              <div class="coin" data-i="0"><div class="face yang"><span>通</span><span>寶</span><span>開</span><span>元</span></div><div class="face yin"><span>陰</span><span>陰</span><span>陰</span><span>陰</span></div></div>
-              <div class="coin" data-i="1"><div class="face yang"><span>通</span><span>寶</span><span>開</span><span>元</span></div><div class="face yin"><span>陰</span><span>陰</span><span>陰</span><span>陰</span></div></div>
-              <div class="coin" data-i="2"><div class="face yang"><span>通</span><span>寶</span><span>開</span><span>元</span></div><div class="face yin"><span>陰</span><span>陰</span><span>陰</span><span>陰</span></div></div>
+              <div class="coin" data-i="0" aria-hidden="true"><div class="face yang"><svg class="bird" viewBox="0.5 8.5 23 11" aria-hidden="true"><path d="M12 9.2c.9 0 1.6.6 1.8 1.4l.2.8 3.4-1.6c1.7-.8 3.7-.7 5.4.2l.2.1c-.9.5-1.9.8-2.9.9l-1.4.1c-1.5.1-2.9.7-4 1.7l-.7.6.5 3.3c.1.6-.2 1.2-.7 1.5l-1.8 1-1.8-1c-.5-.3-.8-.9-.7-1.5l.5-3.3-.7-.6c-1.1-1-2.5-1.6-4-1.7l-1.4-.1c-1-.1-2-.4-2.9-.9l.2-.1c1.7-.9 3.7-1 5.4-.2l3.4 1.6.2-.8c.2-.8.9-1.4 1.8-1.4z"/></svg><span class="cap">kull · 3</span></div><div class="face yin"><span class="num">2</span><span class="cap">kiri</span></div></div>
+              <div class="coin" data-i="1" aria-hidden="true"><div class="face yang"><svg class="bird" viewBox="0.5 8.5 23 11" aria-hidden="true"><path d="M12 9.2c.9 0 1.6.6 1.8 1.4l.2.8 3.4-1.6c1.7-.8 3.7-.7 5.4.2l.2.1c-.9.5-1.9.8-2.9.9l-1.4.1c-1.5.1-2.9.7-4 1.7l-.7.6.5 3.3c.1.6-.2 1.2-.7 1.5l-1.8 1-1.8-1c-.5-.3-.8-.9-.7-1.5l.5-3.3-.7-.6c-1.1-1-2.5-1.6-4-1.7l-1.4-.1c-1-.1-2-.4-2.9-.9l.2-.1c1.7-.9 3.7-1 5.4-.2l3.4 1.6.2-.8c.2-.8.9-1.4 1.8-1.4z"/></svg><span class="cap">kull · 3</span></div><div class="face yin"><span class="num">2</span><span class="cap">kiri</span></div></div>
+              <div class="coin" data-i="2" aria-hidden="true"><div class="face yang"><svg class="bird" viewBox="0.5 8.5 23 11" aria-hidden="true"><path d="M12 9.2c.9 0 1.6.6 1.8 1.4l.2.8 3.4-1.6c1.7-.8 3.7-.7 5.4.2l.2.1c-.9.5-1.9.8-2.9.9l-1.4.1c-1.5.1-2.9.7-4 1.7l-.7.6.5 3.3c.1.6-.2 1.2-.7 1.5l-1.8 1-1.8-1c-.5-.3-.8-.9-.7-1.5l.5-3.3-.7-.6c-1.1-1-2.5-1.6-4-1.7l-1.4-.1c-1-.1-2-.4-2.9-.9l.2-.1c1.7-.9 3.7-1 5.4-.2l3.4 1.6.2-.8c.2-.8.9-1.4 1.8-1.4z"/></svg><span class="cap">kull · 3</span></div><div class="face yin"><span class="num">2</span><span class="cap">kiri</span></div></div>
               <p class="yarrow-note">Jäljendab 49 raudrohuvarre meetodi tõenäosusi iga joone kohta:<br>6 → 1/16 · 7 → 5/16 · 8 → 7/16 · 9 → 3/16</p>
             </div>
             <div class="tally" id="tally">Kull (pildiga pool) annab 3, kiri (numbriga pool) 2.</div>

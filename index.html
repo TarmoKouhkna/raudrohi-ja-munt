@@ -4,6 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Eestikeelne I Chingi (Muutuste raamatu) rakendus: heida heksagramm, loe seletusi ja pea päevikut.">
+<meta name="theme-color" content="#1B2130">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="et_EE">
+<meta property="og:title" content="Raudrohi &amp; Münt – I Ching eesti keeles">
+<meta property="og:description" content="Heida heksagramm, loe selle tähendust tänapäeva keeles koos klassikalise tekstiga ja pea oma lugemiste päevikut.">
+<meta property="og:url" content="https://tarmokouhkna.github.io/raudrohi-ja-munt/">
+<meta property="og:image" content="https://tarmokouhkna.github.io/raudrohi-ja-munt/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <style>
 /* Baasstiilid (claude.ai artefakti raamistiku asemel) */
 :root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -227,6 +240,46 @@ dialog::backdrop{background:rgba(8,10,16,.55)}
 dialog .card{max-height:85vh;overflow:auto}
 .dlg-close{align-self:flex-end;border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:4px 12px;font-size:13px}
 
+/* juhend */
+.guide-page{display:flex;flex-direction:column;gap:18px;max-width:800px}
+.guide-page h2{font-size:34px}
+.guide-page .lead{font-size:17px;margin:0;max-width:62ch}
+.gsec{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.gsec h3{font-size:24px}
+.gsec p{margin:0;max-width:65ch}
+.gsec ul,.gsec ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:65ch}
+.qex{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.qex>div{border-radius:10px;padding:10px 14px;background:var(--sunk)}
+.qex ul{padding-left:18px;margin-top:6px}
+.qex .bad .adv-h{color:var(--bronze)}
+.vtable{display:grid;grid-template-columns:auto 86px minmax(0,1fr);gap:12px 16px;align-items:center}
+.vtable .sum{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.vtable .ln{--h:12px;margin-right:18px}
+.vtable b{font-weight:600}
+.trig{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.trig>div{background:var(--sunk);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:center}
+.trig .s{font-size:28px;line-height:1}
+.trig b{display:block;font-weight:600}
+.trig small{color:var(--muted)}
+.guide-link{margin:-8px 0 0;font-size:13px;color:var(--muted)}
+.guide-link a{color:var(--jade)}
+/* märkmed, jagamine, varukoopia */
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:8px}
+.notes,.backup{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.notes h3,.backup h3{font-size:20px}
+.notes textarea{min-height:90px}
+.hint,.msg{font-size:13px;color:var(--muted);margin:0;max-width:70ch;overflow-wrap:anywhere}
+.share-row{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
+.backup textarea{font-family:var(--f-mono);font-size:12px;min-height:110px;width:100%}
+.jnote{font-size:13px;color:var(--muted);margin-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.shared-tag{background:var(--bronze-soft);color:var(--bronze)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+#impFile:focus-visible + label{outline:2px solid var(--jade);outline-offset:2px}
+@media (max-width: 480px){
+  nav.tabs a{padding:7px 10px;font-size:13px}
+  .qex{grid-template-columns:minmax(0,1fr)}
+  .vtable{grid-template-columns:auto 64px minmax(0,1fr);gap:10px}
+}
 footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid var(--rule);padding-top:14px;max-width:80ch}
 
 @media (max-width: 820px){
@@ -262,6 +315,7 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
       <a href="#cast" data-view="cast">Heida</a>
       <a href="#library" data-view="library">Heksagrammid</a>
       <a href="#journal" data-view="journal">Päevik</a>
+      <a href="#juhend" data-view="juhend">Juhend</a>
     </nav>
   </header>
 
@@ -274,6 +328,7 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
             <span class="eyebrow">Sinu küsimus</span>
             <textarea id="question" rows="2" placeholder="Üks selge küsimus, nt „Kuidas alustada uuel töökohal?“"></textarea>
           </label>
+          <p class="guide-link">Esimest korda? <a href="#juhend">Loe, kuidas küsimust esitada ja vastust lugeda</a>.</p>
           <div class="seg" role="group" aria-label="Heitmise viis">
             <button type="button" id="mCoins" aria-pressed="true">Kolm münti</button>
             <button type="button" id="mYarrow" aria-pressed="false">Raudrohuvarred</button>
@@ -331,14 +386,90 @@ footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid va
         <span class="eyebrow" id="jcount"></span>
       </div>
       <div class="jlist" id="jlist"></div>
-      <p style="margin:0;color:var(--muted);font-size:13px">Lugemisi hoitakse ainult selles brauseris. Saidi andmete kustutamine eemaldab need.</p>
+      <section class="backup" aria-labelledby="bkTitle">
+        <h3 id="bkTitle">Varukoopia</h3>
+        <p class="hint">Päevikut hoitakse ainult selles brauseris ja brauseri andmete kustutamisel kaob see. Tee aeg-ajalt varukoopia – sellega saad lugemised viia ka teise seadmesse.</p>
+        <div class="share-row">
+          <button class="btn sm" type="button" id="expCopy">Kopeeri varukoopia</button>
+          <button class="btn sm" type="button" id="expFile" hidden>Laadi varukoopia alla</button>
+          <input type="file" id="impFile" accept=".json,application/json" class="sr-only">
+          <label class="btn sm" for="impFile">Impordi failist</label>
+          <button class="btn sm" type="button" id="impPasteBtn">Kleebi varukoopia</button>
+        </div>
+        <div id="impPaste" hidden>
+          <label for="impText" class="sr-only">Varukoopia tekst</label>
+          <textarea id="impText" rows="5" placeholder="Kleebi siia varem kopeeritud varukoopia"></textarea>
+          <div class="share-row" style="margin-top:8px"><button class="btn sm primary" type="button" id="impGo">Impordi</button><button class="btn sm" type="button" id="impCancel">Loobu</button></div>
+        </div>
+        <p class="msg" id="bkMsg" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <!-- JUHEND -->
+    <section class="view" id="view-juhend" hidden>
+      <div class="guide-page">
+        <h2>Kuidas I Chingi kasutada</h2>
+        <p class="lead">I Ching ehk Muutuste raamat on umbes 3000 aastat vana Hiina tarkuseraamat. Seda on sajandeid kasutatud olukordade üle järelemõtlemiseks: esitad küsimuse, heidad münte ja saad ühe 64 heksagrammist – kuuest joonest koosneva märgi, mis kirjeldab sinu olukorda ja seda, kuhu see võib liikuda.</p>
+
+        <section class="gsec">
+          <h3>1. Sõnasta küsimus</h3>
+          <p>Hea küsimus on avatud ja puudutab sind ennast. I Ching ei ennusta kindlat tulevikku, vaid aitab olukorda uue nurga alt näha.</p>
+          <div class="qex">
+            <div class="good"><span class="adv-h">Hästi töötab</span><ul><li>„Kuidas peaksin suhtuma uude tööpakkumisse?“</li><li>„Mida pean praegu meie suhtes mõistma?“</li><li>„Milline hoiak aitab mul seda projekti edasi viia?“</li></ul></div>
+            <div class="bad"><span class="adv-h">Töötab halvemini</span><ul><li>„Kas ma saan selle töö?“ – jah/ei-küsimus</li><li>„Mida mu ülemus minust arvab?“ – teise inimese mõtted</li><li>„Millal ma kohtan oma armastust?“ – kindel ennustus</li></ul></div>
+          </div>
+          <p>Hoia küsimust heitmise ajal meeles. Küsi sama asja kohta üks kord. Kui vastus ei meeldi, ära heida kohe uuesti, vaid mõtle sellele.</p>
+        </section>
+
+        <section class="gsec">
+          <h3>2. Heida mündid</h3>
+          <p>Iga joone jaoks visatakse kolm münti. Kirjaga pool annab 3 ja sile pool 2, nii et kolme mündi summa on 6, 7, 8 või 9. Heksagramm ehitatakse alt üles: esimene vise annab alumise joone, kuues vise ülemise.</p>
+          <div class="vtable" id="vtable"></div>
+          <p>Võid kasutada rakenduse münte või visata päris münte ja sisestada summa ise. Raudrohuvarred on vanem meetod, mille tõenäosused on veidi teistsugused: muutuvat jini (6) tuleb harvem ja muutuvat jangi (9) sagedamini.</p>
+        </section>
+
+        <section class="gsec">
+          <h3>3. Loe vastust</h3>
+          <ol>
+            <li><strong>Põhiheksagramm</strong> kirjeldab sinu praegust olukorda. Alusta selle selgitusest ning osadest „Mida teha“ ja „Millest hoiduda“.</li>
+            <li><strong>Muutuvad jooned</strong> (6 ja 9) on vastuse kõige isiklikum osa – need näitavad, mis su olukorras praegu liigub. Rakendus märgib ära, millisele joonele anda kõige rohkem kaalu.</li>
+            <li><strong>Seotud heksagramm</strong> tekib, kui muutuvad jooned pöörduvad oma vastandiks. See näitab, kuhu olukord liigub.</li>
+            <li><strong>Klassikaline tekst</strong> on iidne ja kujundlik. Loe seda pärast tänapäevast seletust ja vaata, milline pilt sinu olukorda kõnetab.</li>
+          </ol>
+          <p>Kui ükski joon ei muutu, on olukord praegu stabiilne ja vastuseks on põhiheksagramm tervikuna.</p>
+        </section>
+
+        <section class="gsec">
+          <h3>4. Mõtle järele</h3>
+          <p>Kõige rohkem kasu on siis, kui seod vastuse oma eluga. Need küsimused aitavad:</p>
+          <ul>
+            <li>Mis selles kirjelduses tundub tuttav?</li>
+            <li>Mida olen seni tähelepanuta jätnud?</li>
+            <li>Mis oleks üks väike samm, mille saan juba täna teha?</li>
+          </ul>
+          <p>Kirjuta oma mõtted lugemise juurde märkmetesse. Hiljem on huvitav vaadata, kuidas asjad tegelikult läksid.</p>
+        </section>
+
+        <section class="gsec">
+          <h3>Trigrammid</h3>
+          <p>Iga heksagramm koosneb kahest kolmejoonelisest osast ehk trigrammist. Alumine trigramm kirjeldab sinu sisemist olukorda, ülemine seda, mis toimub väljaspool.</p>
+          <div class="trig" id="trigList"></div>
+        </section>
+
+        <section class="gsec">
+          <h3>Hea teada</h3>
+          <p>I Ching on mõtisklemise vahend, mitte nõuanne. Tervise, raha, õiguse ja muude tõsiste otsuste puhul pea nõu asjatundjaga.</p>
+          <p>Heksagrammide selgitused ja joonte seletused on tänapäevased tõlgendused. Klassikaline tekst on eestindatud James Legge 1882. aasta ingliskeelse tõlke järgi.</p>
+          <p><a href="#cast" style="color:var(--jade)">Heida oma heksagramm</a></p>
+        </section>
+      </div>
     </section>
   </main>
 
   <footer>Kursiivis klassikaline tekst on eestindatud James Legge ingliskeelse tõlke järgi (<cite>The Sacred Books of the East, vol. 16: The Yi King</cite>, Oxford 1882, avalik omand); see ei ole otsetõlge hiina keelest. Sulgudes olevad sõnad on Legge enda lisatud selgitused. Legge originaali saab vaadata nupuga „Näita ingliskeelset originaali“. Heksagrammide selgitused ja joonte tänapäevased seletused on selle rakenduse jaoks kirjutatud algupärased tõlgendused, mitte tõlge. Jooned loetakse traditsiooniliselt: joon 1 on all, joon 6 üleval. ○ tähistab vana jangi (9) ja × vana jini (6); mõlemad muutuvad oma vastandiks.</footer>
 </div>
 
-<dialog id="dlg"><div class="card" id="dlgBody"></div></dialog>
+<dialog id="dlg" aria-label="Heksagrammi kirjeldus"><div class="card" id="dlgBody"></div></dialog>
 
 <script>
 (function(){
@@ -424,12 +555,12 @@ const HEX = RAW.map((r,i)=>({n:i+1, zh:r[0], py:r[1], en:r[2], upper:r[3], lower
 const BYBITS = {}; HEX.forEach(h=>{ BYBITS[h.bits]=h; });
 
 const POS = [
-  ['Algus','Asi alles algab ja on veel pinna all. Praegu tehtud väikesed valikud määravad suuna.'],
-  ['Sisemine kese','Alumise trigrammi süda. Vaikse tasakaalu ja tundliku jõu koht.'],
-  ['Sisemine lävi','Alumise trigrammi tipp. Surve ja ülemineku koht, kus on oht liiale minna.'],
-  ['Välimine lävi','Ülemise trigrammi esimene joon, võimu lähedal. Nõuab hoolikust ja häid suhteid.'],
-  ['Valitseja koht','Ülemise trigrammi kese, traditsiooniliselt juhtimise ja selge mõju koht.'],
-  ['Kulminatsioon','Asi on jõudnud nii kaugele, kui saab, ja muutumas millekski muuks.']
+  ['algus','Asi alles hakkab kuju võtma. Praegu tehtud väikesed valikud määravad suuna.'],
+  ['sisemine tasakaal','Puudutab sinu enda hoiakut ja tundeid. Hea koht rahulikuks ja tundlikuks tegutsemiseks.'],
+  ['pinge koht','Sisemine on jõudnud oma piirini. Siin on kerge liiale minna või teha kiirustades vale otsus.'],
+  ['lävi välismaailma','Astud teiste inimeste ja võimu lähedale. Vaja on hoolikust ja häid suhteid.'],
+  ['juhi koht','Vastutuse, mõju ja otsustamise koht – traditsiooniliselt heksagrammi tähtsaim joon.'],
+  ['lõpp ja üleminek','Asi on jõudnud oma tippu ja hakkab muutuma millekski muuks.']
 ];
 const VNAME = {6:'vana jin · muutuv',7:'noor jang',8:'noor jin',9:'vana jang · muutuv'};
 const EXAMPLE = {id:'example', q:'Kas käivitada projekt sel kuul või oodata?', date:'2026-11-25T09:00:00Z', method:'coins', lines:[7,7,9,8,7,8], example:true};
@@ -493,6 +624,9 @@ function hexHTML(vals, cls){
   }
   return `<div class="hex ${cls||''}" aria-hidden="true">${rows}</div>`;
 }
+function linesDesc(vals){
+  return 'Jooned alt üles: ' + vals.map(v=>(isYang(v)?'katkematu':'katkendlik')+(isChg(v)?' (muutuv)':'')).join(', ') + '.';
+}
 function linesListHTML(n, hl){
   const L = legge(n);
   let items = '';
@@ -508,7 +642,7 @@ function cardHTML(h, role, vals, opts){
   else if(opts.lines==='details') lines = `<details class="all-lines"${opts.openDetails?' open':''}><summary>Loe kõiki kuut joont</summary>${linesListHTML(h.n, opts.hl)}</details>`;
   return `<article class="card">
     <div class="card-top"><span>${esc(role)}</span><span class="num">Nr ${h.n} / 64</span></div>
-    <div class="card-head">${hexHTML(vals,'md')}<div><div class="zh" lang="zh-Hant">${h.zh}</div><div class="py">${h.py}</div></div></div>
+    <div class="card-head">${hexHTML(vals,'md')}<span class="sr-only">${linesDesc(vals)}</span><div><div class="zh" lang="zh-Hant">${h.zh}</div><div class="py">${h.py}</div></div></div>
     <h3>${h.en}</h3>
     <p class="tri"><span>${up.sym}</span> ${up.name} (${up.attr}) üleval, <span>${lo.sym}</span> ${lo.name} (${lo.attr}) all</p>
     <ul class="kw">${h.kw.map(k=>`<li>${esc(k)}</li>`).join('')}</ul>
@@ -536,9 +670,11 @@ function readingHTML(r){
   const rel = g.ch.length ? BYBITS[relatingBits(r.lines)] : null;
   const d = new Date(r.date);
   const dstr = isNaN(d) ? '' : fmtDate(d) + ' · ' + fmtTime(d);
-  let h = `<div class="reading-head"><div>${r.example?'<span class="example-tag">Näidislugemine</span>':''}
-      <h2>${r.q ? '„'+esc(r.q)+'“' : 'Avatud küsimus'}</h2></div>
-      <div class="meta">${dstr} · ${r.method==='yarrow'?'raudrohu tõenäosused':'kolm münti'} · jooned ${r.lines.join(' ')}</div></div>`;
+  const tag = r.example ? '<span class="example-tag">Näidislugemine</span>' : r.shared ? '<span class="example-tag shared-tag">Jagatud lugemine</span>' : '';
+  const meta = r.shared ? `jooned ${r.lines.join(' ')}` : `${dstr} · ${r.method==='yarrow'?'raudrohu tõenäosused':'kolm münti'} · jooned ${r.lines.join(' ')}`;
+  let h = `<div class="reading-head"><div>${tag}
+      <h2>${r.q ? '„'+esc(r.q)+'“' : (r.shared ? 'Keegi jagas sinuga lugemist' : 'Avatud küsimus')}</h2></div>
+      <div class="meta">${meta}</div></div>`;
   h += `<div class="pair${rel?'':' single'}">${cardHTML(p, 'Põhiheksagramm · praegu', r.lines, {lines:'details', hl:g.ch, openDetails:!g.ch.length})}${rel?`<div class="arrow" aria-hidden="true">→</div>${cardHTML(rel,'Seotud heksagramm · kuhu see viib', bitsToVals(rel.bits))}`:''}</div>`;
   h += `<div class="guide"><strong>${g.title}</strong><p>${g.text}</p><small>Need on levinud lugemisreeglid; traditsioonid erinevad.</small></div>`;
   if(g.ch.length){
@@ -546,8 +682,17 @@ function readingHTML(r){
     h += `<section class="changes"><div class="changes-head"><h3>Muutuvad jooned</h3><p>Muutuv joon näitab, mis sinu olukorras praegu liigub ja millele tähelepanu pöörata. Iga joone juures on tänapäevane seletus, selle all klassikaline tekst ja joone koha tähendus.</p></div>${(g.ch.length===6 && p.n<=2) ? `<div class="chg-row key"><div class="lab"><b>Kõik kuus joont</b>${p.n===1?'kõik 9 ○':'kõik 6 ×'}</div><div>${plain(p.n,6)}<span class="src cls-h">Klassikaline tekst · ${srcTag()}</span>${classic(L&&L.l[6])}<p class="pos-note">Kui heksagrammi ${p.n===1?'„Loov jõud“':'„Vastuvõtlikkus“'} kõik jooned muutuvad, on klassikas selle jaoks eraldi tekst.</p></div></div>` : ''}${g.ch.map(i=>{
       const v=r.lines[i];
       return `<div class="chg-row${g.key.includes(i)?' key':''}"><div class="lab"><b>Joon ${i+1}</b>${v} ${v===9?'○':'×'} ${v===9?'jang → jin':'jin → jang'}${g.key.includes(i)?'<span class="key-tag">peamine</span>':''}</div>
-        <div>${plain(p.n,i)}<span class="src cls-h">Klassikaline tekst · ${srcTag()}</span>${classic(L&&L.l[i])}<p class="pos-note"><strong>Joone koht: ${POS[i][0].toLowerCase()}.</strong> ${POS[i][1]}</p></div></div>`;
+        <div>${plain(p.n,i)}<span class="src cls-h">Klassikaline tekst · ${srcTag()}</span>${classic(L&&L.l[i])}<p class="pos-note"><strong>Joone koht: ${POS[i][0]}.</strong> ${POS[i][1]}</p></div></div>`;
     }).join('')}</section>`;
+  }
+  if(r.shared){
+    h += `<section class="notes"><h3>Salvesta endale</h3><p class="hint">See lugemine avati lingi kaudu ja seda pole veel sinu päevikus. Salvestamisel lisatakse sinu küsimuse väljale kirjutatud küsimus.</p><div class="share-row"><button class="btn sm primary" type="button" data-save-shared>Salvesta päevikusse</button></div></section>`;
+  } else if(!r.example){
+    h += `<section class="notes"><h3><label for="notesInput">Minu märkmed</label></h3>
+      <textarea id="notesInput" placeholder="Mida see vastus sulle tähendab? Mis juhtus hiljem?">${esc(r.notes||'')}</textarea>
+      <p class="hint" id="notesHint" aria-live="polite">Märkmed salvestuvad automaatselt sinu päevikusse.</p>
+      <div class="share-row"><button class="btn sm" type="button" data-share>Jaga lugemist lingiga</button><span class="msg" id="shareMsg" aria-live="polite"></span></div>
+      <p class="hint">Lingiga jagatakse ainult heksagramm ja jooned – sinu küsimus ja märkmed jäävad sulle.</p></section>`;
   }
   return h;
 }
@@ -626,7 +771,7 @@ function tossOnce(dur){
     }
   });
 }
-function startIfComplete(){ if(state.current){ state.current=null; state.lines=[]; renderBuilder(); } }
+function startIfComplete(){ if(state.current){ state.current=null; state.lines=[]; renderBuilder(); if(location.hash.startsWith('#lugemine-')) location.hash='cast'; } }
 async function toss(){ if(state.busy) return; startIfComplete(); state.busy=true; renderBuilder(); await tossOnce(750); state.busy=false; renderBuilder(); }
 async function tossAll(){
   if(state.busy) return; startIfComplete(); state.busy=true; renderBuilder();
@@ -641,7 +786,7 @@ function reset(){
 }
 function finishReading(){
   const r={id:String(Date.now()), q:qEl.value.trim(), date:new Date().toISOString(), method:state.method, lines:state.lines.slice()};
-  const j=store.get(); j.unshift(r); store.set(j.slice(0,200));
+  const j=store.get(); j.unshift(r); store.set(j.slice(0,500));
   state.current=r;
   renderReadingArea();
   renderJournal();
@@ -652,6 +797,43 @@ function renderReadingArea(){
   if(state.current){ el.innerHTML = readingHTML(state.current); return; }
   if(state.lines.length===0 && store.get().length===0){ el.innerHTML = readingHTML(EXAMPLE); return; }
   el.innerHTML='';
+}
+function showShared(lines){
+  state.current={id:'shared', q:'', date:new Date().toISOString(), method:'coins', lines:lines.slice(), shared:true};
+  state.lines=lines.slice();
+  tally.innerHTML = `Jagatud lugemine · jooned <b>${lines.join(' ')}</b>`;
+  renderBuilder(); renderReadingArea();
+}
+function saveShared(){
+  if(!state.current || !state.current.shared) return;
+  const r={id:String(Date.now()), q:qEl.value.trim(), date:new Date().toISOString(), method:'coins', lines:state.current.lines.slice()};
+  const j=store.get(); j.unshift(r); store.set(j.slice(0,500));
+  state.current=r; renderReadingArea(); renderJournal();
+  if(location.hash.startsWith('#lugemine-')) location.hash='cast';
+}
+let notesTimer=null;
+function saveNotes(text){
+  if(!state.current || state.current.example || state.current.shared) return;
+  state.current.notes=text;
+  clearTimeout(notesTimer);
+  notesTimer=setTimeout(()=>{
+    const j=store.get(); const e=j.find(x=>x.id===state.current.id);
+    if(e){ e.notes=text; store.set(j); renderJournal(); const hint=$('#notesHint'); if(hint) hint.textContent='Salvestatud.'; }
+  },400);
+}
+const canCopyUrl = /(^|\.)github\.io$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
+function shareReading(){
+  if(!state.current) return;
+  const hash='lugemine-'+state.current.lines.join('');
+  const msg=$('#shareMsg');
+  if(canCopyUrl){
+    const url=location.href.split('#')[0]+'#'+hash;
+    const shown=()=>{ if(msg) msg.innerHTML=`Kopeeri see link: <span style="user-select:all">${esc(url)}</span>`; };
+    try{ navigator.clipboard.writeText(url).then(()=>{ if(msg) msg.textContent='Link on kopeeritud. Saada see, kellele soovid.'; }).catch(shown); }catch(e){ shown(); }
+  } else {
+    location.hash = hash;
+    if(msg) msg.textContent='Selle lugemise link on nüüd aadressiribal – kopeeri see sealt.';
+  }
 }
 function showSaved(r){
   state.current=r; state.lines=r.lines.slice();
@@ -675,7 +857,7 @@ function renderLibrary(){
     if(triQ) return h.upper===triQ || h.lower===triQ;
     return String(h.n)===q || norm(h.en).includes(q) || norm(h.py).includes(q) || h.zh.includes(q) || h.kw.some(k=>norm(k).includes(q)) || norm(TRI[h.upper].name)===q || norm(TRI[h.lower].name)===q;
   });
-  $('#grid64').innerHTML = list.length ? list.map(h=>`<button type="button" class="tile" data-n="${h.n}">
+  $('#grid64').innerHTML = list.length ? list.map(h=>`<button type="button" class="tile" data-n="${h.n}" aria-label="${h.n}. ${h.en}">
       <div class="t1">${hexHTML(bitsToVals(h.bits),'sm')}<span class="n">${String(h.n).padStart(2,'0')}</span></div>
       <span class="z" lang="zh-Hant">${h.zh}</span><span class="e">${h.en}</span></button>`).join('')
     : '<p class="empty-note">Ükski heksagramm ei vasta otsingule.</p>';
@@ -707,7 +889,7 @@ function renderJournal(){
     return `<div class="jrow">${hexHTML(r.lines,'sm')}
       <div style="min-width:0"><div class="qq">${r.q?esc(r.q):'Avatud küsimus'}</div>
         <div class="hn"><b>${p.n}. ${p.en}</b>${rel?` → ${rel.n}. ${rel.en}`:''}</div>
-        <div class="dt">${isNaN(d)?'':fmtDate(d)}</div></div>
+        <div class="dt">${isNaN(d)?'':fmtDate(d)}</div>${r.notes?`<div class="jnote">${esc(r.notes)}</div>`:''}</div>
       <div class="jbtns">${conf
         ? `<span style="font-size:13px;color:var(--muted)">Kas kustutada see lugemine?</span><button type="button" class="danger" data-del="${r.id}">Kustuta</button><button type="button" data-cancel="1">Jäta alles</button>`
         : `<button type="button" data-open="${r.id}">Ava</button><button type="button" data-ask="${r.id}">Kustuta</button>`}</div>
@@ -715,10 +897,65 @@ function renderJournal(){
   }).join('');
 }
 
+/* ---------- varukoopia ---------- */
+function backupJSON(){ return JSON.stringify({app:'raudrohi-ja-munt', version:1, exported:new Date().toISOString(), readings:store.get()}, null, 1); }
+function bkMsg(t){ $('#bkMsg').textContent=t; }
+function validReading(r){ return r && typeof r==='object' && Array.isArray(r.lines) && r.lines.length===6 && r.lines.every(v=>[6,7,8,9].includes(v)); }
+function importBackup(text){
+  let data; try{ data=JSON.parse(text); }catch(e){ bkMsg('Teksti ei õnnestunud lugeda – see ei ole selle rakenduse varukoopia.'); return; }
+  const list = Array.isArray(data) ? data : (data && Array.isArray(data.readings) ? data.readings : null);
+  if(!list){ bkMsg('See ei ole selle rakenduse varukoopia.'); return; }
+  const j=store.get(); const ids=new Set(j.map(x=>x.id)); const sig=new Set(j.map(x=>x.date+'|'+x.lines.join('')));
+  let added=0, dup=0, bad=0;
+  list.forEach(r=>{
+    if(!validReading(r)){ bad++; return; }
+    const id = typeof r.id==='string' && r.id ? r.id : String(Date.now()+Math.random());
+    if(ids.has(id) || sig.has(r.date+'|'+r.lines.join(''))){ dup++; return; }
+    j.push({id, q:typeof r.q==='string'?r.q:'', date:typeof r.date==='string'?r.date:new Date().toISOString(), method:r.method==='yarrow'?'yarrow':'coins', lines:r.lines.slice(), ...(typeof r.notes==='string'&&r.notes?{notes:r.notes}:{})});
+    ids.add(id); added++;
+  });
+  j.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  store.set(j); renderJournal(); renderReadingArea();
+  bkMsg(`Imporditud ${added} ${added===1?'lugemine':'lugemist'}.` + (dup?` ${dup} ${dup===1?'oli':'olid'} juba päevikus.`:'') + (bad?` ${bad} ${bad===1?'vigane kirje jäeti':'vigast kirjet jäeti'} vahele.`:''));
+  $('#impPaste').hidden=true; $('#impText').value='';
+}
+if(canCopyUrl) $('#expFile').hidden=false;
+$('#expCopy').addEventListener('click', ()=>{
+  const txt=backupJSON();
+  const fallback=()=>{ $('#impPaste').hidden=false; $('#impText').value=txt; $('#impText').select(); bkMsg('Automaatne kopeerimine ei õnnestunud. Tekst on allpool valitud – kopeeri see käsitsi.'); };
+  try{ navigator.clipboard.writeText(txt).then(()=>bkMsg(`Varukoopia (${(n=>n===1?'1 lugemine':n+' lugemist')(store.get().length)}) on kopeeritud. Kleebi see turvalisse kohta, näiteks e-kirja või märkmetesse.`)).catch(fallback); }catch(e){ fallback(); }
+});
+$('#expFile').addEventListener('click', ()=>{
+  const blob=new Blob([backupJSON()],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='raudrohi-ja-munt-paevik-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  bkMsg('Varukoopia fail on alla laaditud.');
+});
+$('#impFile').addEventListener('change', e=>{
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  const rd=new FileReader(); rd.onload=()=>importBackup(String(rd.result)); rd.onerror=()=>bkMsg('Faili ei õnnestunud lugeda.'); rd.readAsText(f);
+  e.target.value='';
+});
+$('#impPasteBtn').addEventListener('click', ()=>{ $('#impPaste').hidden=false; $('#impText').value=''; $('#impText').focus(); bkMsg(''); });
+$('#impCancel').addEventListener('click', ()=>{ $('#impPaste').hidden=true; bkMsg(''); });
+$('#impGo').addEventListener('click', ()=>importBackup($('#impText').value));
+
+/* ---------- juhend ---------- */
+function renderGuide(){
+  $('#vtable').innerHTML = [[6,'2 + 2 + 2','muutuv jin','katkendlik joon, mis muutub katkematuks'],[7,'3 + 2 + 2','noor jang','katkematu joon'],[8,'3 + 3 + 2','noor jin','katkendlik joon'],[9,'3 + 3 + 3','muutuv jang','katkematu joon, mis muutub katkendlikuks']]
+    .map(([v,sum,name,desc])=>`<span class="sum">${v} = ${sum}</span>${hexLine(v)}<span><b>${name}</b> – ${desc}</span>`).join('');
+  $('#trigList').innerHTML = Object.values(TRI).map(t=>`<div><span class="s" aria-hidden="true">${t.sym}</span><span><b>${t.name}</b><small>${t.attr}</small></span></div>`).join('');
+}
+
 /* ---------- vaated ---------- */
-const VIEWS=['cast','library','journal'];
+const VIEWS=['cast','library','journal','juhend'];
 function route(){
-  const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'cast';
+  const m = location.hash.match(/^#lugemine-([6-9]{6})$/);
+  if(m){
+    if(!(state.current && state.current.lines.join('')===m[1])) showShared([...m[1]].map(Number));
+  }
+  const v = m ? 'cast' : (VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'cast');
   VIEWS.forEach(x=>{ $('#view-'+x).hidden = x!==v; });
   document.querySelectorAll('nav.tabs a').forEach(a=>{ if(a.dataset.view===v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
 }
@@ -747,6 +984,11 @@ $('#jlist').addEventListener('click', e=>{
   else if(b.dataset.cancel){ confirmId=null; renderJournal(); }
   else if(b.dataset.del){ store.set(store.get().filter(x=>x.id!==b.dataset.del)); confirmId=null; if(state.current&&state.current.id===b.dataset.del){ state.current=null; state.lines=[]; renderBuilder(); } renderJournal(); renderReadingArea(); }
 });
+$('#reading').addEventListener('input', e=>{ if(e.target.id==='notesInput') saveNotes(e.target.value); });
+$('#reading').addEventListener('click', e=>{
+  if(e.target.closest('[data-share]')) shareReading();
+  else if(e.target.closest('[data-save-shared]')) saveShared();
+});
 window.addEventListener('hashchange', route);
 
 function afterClassic(){
@@ -757,8 +999,9 @@ function afterClassic(){
 }
 
 setMethod('coins');
-renderBuilder(); renderReadingArea(); renderTriFilter(); renderLibrary(); renderJournal(); route();
+renderBuilder(); renderReadingArea(); renderTriFilter(); renderLibrary(); renderJournal(); renderGuide(); route();
 loadClassic(classicLang);
+if('serviceWorker' in navigator && canCopyUrl && location.protocol!=='file:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 })();
 </script>
 

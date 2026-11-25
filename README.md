@@ -2,6 +2,8 @@
 
 Eestikeelne I Chingi (Muutuste raamatu) rakendus brauseris. Heida heksagramm, loe selle tähendust tänapäeva keeles koos klassikalise tekstiga, sirvi kõiki 64 heksagrammi ja pea oma lugemiste päevikut.
 
+**Kasuta veebis:** <https://tarmokouhkna.github.io/raudrohi-ja-munt/>
+
 ## Võimalused
 
 - **Heitmine:** kolm virtuaalset münti (kirjaga pool 3, sile pool 2) või raudrohuvarte meetodi tõenäosused. Kui heidad päris münte, saad joone summa (6, 7, 8, 9) ka ise sisestada.
@@ -9,7 +11,11 @@ Eestikeelne I Chingi (Muutuste raamatu) rakendus brauseris. Heida heksagramm, lo
 - **Selgitused:** igal heksagrammil on tänapäevane selgitus koos osadega „Mida teha“ ja „Millest hoiduda“. Igal joonel on lühike seletus argikeeles.
 - **Klassikaline tekst:** iga heksagrammi otsus ja iga joone tekst James Legge tõlke järgi, eestindatuna. Nupuga saab vaadata ka Legge ingliskeelset originaali.
 - **Heksagrammid:** kõik 64 heksagrammi. Otsida saab nime, numbri, märksõna või trigrammi järgi.
-- **Päevik:** iga lõpetatud lugemine salvestatakse automaatselt sinu brauserisse (`localStorage`).
+- **Päevik:** iga lõpetatud lugemine salvestatakse automaatselt sinu brauserisse (`localStorage`). Igale lugemisele saab lisada märkmeid.
+- **Varukoopia:** päeviku saab kopeerida või failina alla laadida ning hiljem (ka teises seadmes) tagasi importida.
+- **Jagamine:** lugemist saab jagada lingiga (`#lugemine-779878`). Lingis on ainult jooned – küsimus ja märkmed jäävad jagajale.
+- **Juhend:** jaotis „Juhend“ selgitab algajale, kuidas küsimust sõnastada, münte heita ja vastust lugeda.
+- **Paigaldatav rakendus:** telefonis saab lehe lisada avaekraanile („Lisa avakuvale“ / „Install app“) ja see töötab ka ilma internetita.
 
 ## Käivitamine
 
@@ -33,11 +39,23 @@ Repo saab avaldada GitHub Pagesis: **Settings → Pages → Build and deployment
 | `legge-et.json` | Klassikaline tekst eesti keeles (Legge järgi): 64 otsust ja 384 joont, 1. ja 2. heksagrammil lisatekst |
 | `legge.json` | James Legge ingliskeelne originaaltekst (1882) |
 | `jooned.json` | Joonte tänapäevased seletused (64 × 6, 1. ja 2. heksagrammil lisaks 7.) |
+| `manifest.webmanifest`, `sw.js`, `icons/` | Paigaldatava rakenduse (PWA) failid; `sw.js` võimaldab töötada ilma internetita |
+| `og.png` | Eelvaatepilt, mida näidatakse lingi jagamisel |
+| `tools/check.py` | Andmete terviklikkuse kontroll (käivitub GitHubis iga pushi peale) |
+| `tools/make_artifact.py` | Teeb `index.html`-ist claude.ai artefakti versiooni |
 
 JSON-failide struktuur:
 
 - `legge*.json`: massiiv 64 objektiga `{ "j": otsus, "l": [joon1, …, joon6, (kõik muutuvad)] }`, King Wen'i järjekorras.
 - `jooned.json`: massiiv 64 massiiviga `[joon1, …, joon6, (kõik muutuvad)]`.
+
+## Kontroll
+
+```bash
+python3 tools/check.py
+```
+
+Skript kontrollib, et heksagramme on 64 ja trigramme 8, nimed on unikaalsed, märksõnad ei korda nime ning iga joone tekst (katkematu/katkendlik) vastab heksagrammi tegelikule joonele. Sama kontroll käivitub GitHub Actionsis iga pushi ja pull requesti peale.
 
 ## Tekstide päritolu
 
@@ -54,3 +72,5 @@ Kood ja selle rakenduse jaoks kirjutatud tekstid (selgitused, joonte seletused j
 - Väliseid teeke ei kasutata, ainult Google Fontsi kirjatüübid (Cormorant Garamond, IBM Plex Sans, IBM Plex Mono, Noto Serif TC).
 - Leht kohandub telefoni ekraaniga ning toetab heledat ja tumedat teemat.
 - Juhuslikkuse allikas on `crypto.getRandomValues`.
+- Ekraanilugejale kirjeldatakse heksagrammi jooned tekstina.
+- Service worker laadib oma failid esmalt võrgust (uuendused jõuavad kohe kasutajani) ja kasutab vahemälu ainult siis, kui ühendust pole.

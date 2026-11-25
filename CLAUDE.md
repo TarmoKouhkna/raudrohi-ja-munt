@@ -11,6 +11,10 @@ Eestikeelne I Chingi rakendus: üks staatiline leht (`index.html`) ja kolm JSON-
 - `legge-et.json` – klassikaline tekst eesti keeles: 64 × `{ "j": otsus, "l": [joon1…joon6, (kõik muutuvad)] }`. 7. element on ainult heksagrammidel 1 ja 2.
 - `legge.json` – sama struktuur, James Legge ingliskeelne originaal (1882, avalik omand).
 - `jooned.json` – joonte tänapäevased seletused: 64 × `[joon1…joon6, (kõik muutuvad)]`.
+- `manifest.webmanifest`, `sw.js`, `icons/`, `og.png` – PWA ja jagamise eelvaade. **Ainult GitHubi versioonis**: neid ei avaldata artefakti ja nende päisesildid on ainult repo `index.html` `<head>`-is. `sw.js` kasutab oma failide puhul võrk-enne-vahemälu strateegiat; kui lisad uue andmefaili, lisa see ka `CORE` loendisse ja suurenda `CACHE` versiooni.
+- `tools/check.py` – andmete kontroll (käivitub ka GitHub Actionsis, `.github/workflows/check.yml`). `tools/make_artifact.py` – teeb artefakti versiooni.
+
+Vaated (aadressi `#`): `#cast` (heitmine), `#library`, `#journal`, `#juhend`. `#lugemine-XXXXXX` (6 numbrit 6–9) avab jagatud lugemise; lingis ei ole küsimust ega märkmeid. Päeviku kirje: `{id, q, date, method, lines, notes?}` võtme `yc-journal` all `localStorage`-is.
 
 Andmefailid laaditakse `fetch()`-iga, seega testi lehte serveri kaudu, mitte `file://` kaudu.
 
@@ -24,14 +28,16 @@ Andmefailid laaditakse `fetch()`-iga, seega testi lehte serveri kaudu, mitte `fi
 
 ## Kontrollid enne commiti
 
-1. Andmed: 64 heksagrammi, igal 6 joont, heksagrammidel 1 ja 2 lisaks 7. Kõik 64 trigrammipaari (`alumine + ülemine` bitid) on unikaalsed ja kõik 64 nime erinevad.
+1. Andmed: käivita `python3 tools/check.py` (64 heksagrammi, joonte arv, unikaalsed nimed ja trigrammipaarid, märksõnad ei korda nime, „katkematu/katkendlik“ vastab joonele).
 2. Leht kohalikult: `python3 -m http.server 8000`, seejärel ava http://localhost:8000. Kontrolli Playwrightiga (Chromium on keskkonnas olemas), et konsoolis vigu pole, andmed laadivad (`.classic.wait` ja `.plain.wait` puuduvad) ja `document.documentElement.scrollWidth` on telefonilaiusel (390 px) 390.
 
 ## claude.ai artefakt
 
 Rakendusest on olemas ka claude.ai artefakt: https://claude.ai/artifact/QALdoaKSqjmpNyfs9xB3Ee (failid `index.html`, `legge.json`, `legge-et.json`, `jooned.json`). Hoia see GitHubi versiooniga samas seisus: kui muudad repot, uuenda ka artefakti.
 
-Artefakti `index.html` on repo `index.html` **ilma** raamistikuta: claude.ai lisab ise `<!doctype>`, `<html>`, `<head>`, `<body>` ja põhistiilid. Seega eemalda artefakti jaoks repo failist `<!doctype html>`, `<html>`, `<head>`-i algus koos baasstiilide plokiga ning `</head><body>`, `</body>`, `</html>`. Fail peab algama `<title>`-iga. Lisa `<title>`-i järele `<meta name="claude:viewport-fit-sides" content="cover">`.
+Artefakti `index.html` on repo `index.html` **ilma** raamistikuta: claude.ai lisab ise `<!doctype>`, `<html>`, `<head>`, `<body>` ja põhistiilid. Tee see käsuga `python3 tools/make_artifact.py VÄLJUND.html` – skript eemaldab raamistiku ja ainult GitHubile mõeldud päisesildid ning lisab `<meta name="claude:viewport-fit-sides" content="cover">`. Avalda väljund artefakti `index.html`-ina; andmefailid avalda ainult siis, kui need muutusid.
+
+Kood töötab mõlemas keskkonnas: allalaadimise nupp, lingi kopeerimine ja service worker lülituvad sisse ainult GitHub Pagesis ja `localhost`-is (`canCopyUrl`). Artefaktis paneb „Jaga lugemist“ lingi aadressiribale.
 
 ## Litsents
 

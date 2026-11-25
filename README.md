@@ -45,6 +45,10 @@ JSON-failide struktuur:
 - **Eestikeelne klassikaline tekst** on tõlgitud Legge ingliskeelsest tekstist, mitte otse hiina keelest. Sulgudes olevad sõnad on Legge enda lisatud selgitused.
 - **Heksagrammide selgitused ja joonte tänapäevased seletused** on selle rakenduse jaoks kirjutatud algupärased tõlgendused.
 
+## Litsents
+
+Kood ja selle rakenduse jaoks kirjutatud tekstid (selgitused, joonte seletused ja eestikeelne tõlge) on avaldatud [MIT-litsentsi](LICENSE) all. James Legge 1882. aasta ingliskeelne tekst (`legge.json`) on avalikus omandis.
+
 ## Tehniline
 
 - Väliseid teeke ei kasutata, ainult Google Fontsi kirjatüübid (Cormorant Garamond, IBM Plex Sans, IBM Plex Mono, Noto Serif TC).

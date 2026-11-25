@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Eestikeelne I Chingi (Muutuste raamatu) rakendus: heida heksagramm, loe seletusi ja pea päevikut.">
+<style>
+/* Baasstiilid (claude.ai artefakti raamistiku asemel) */
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Raudrohi &amp; Münt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Serif+TC:wght@500;700&display=swap">
+<style>
+/* Layout: a casting desk (coins + hexagram being built) beside the reading; library and journal as sibling views under one tab bar. */
+:root{
+  --paper:#ECEFE9; --surface:#F7F8F4; --sunk:#E2E6DF;
+  --ink:#1B2130; --muted:#586170; --rule:#C9D0C7;
+  --bronze:#8A611E; --bronze-soft:#E9DcC0; --jade:#356656; --jade-soft:#D5E4DC;
+  --coin-yang:#B88A3E; --coin-yin:#5F6B5A; --coin-edge:#6E4E17;
+  --f-display:"Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-han:"Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#10141B; --surface:#171C25; --sunk:#0C1016;
+  --ink:#E3E6DE; --muted:#9AA2AD; --rule:#2B323D;
+  --bronze:#D3A75C; --bronze-soft:#3A3020; --jade:#86BBA7; --jade-soft:#1D3029;
+  --coin-yang:#C99A4C; --coin-yin:#6F7C69; --coin-edge:#3E2C0C;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#10141B; --surface:#171C25; --sunk:#0C1016;
+  --ink:#E3E6DE; --muted:#9AA2AD; --rule:#2B323D;
+  --bronze:#D3A75C; --bronze-soft:#3A3020; --jade:#86BBA7; --jade-soft:#1D3029;
+  --coin-yang:#C99A4C; --coin-yin:#6F7C69; --coin-edge:#3E2C0C;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 48px}
+.wrap{max-width:1120px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--jade);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;text-wrap:balance;margin:0;line-height:1.15}
+
+/* header */
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;padding-block:22px 18px;border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:center;gap:12px}
+.seal{width:40px;height:40px;border-radius:6px;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-family:var(--f-han);font-weight:700;font-size:22px}
+.brand h1{font-size:28px;letter-spacing:.01em}
+.brand small{display:block;font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-family:var(--f-body)}
+nav.tabs{display:flex;gap:4px;background:var(--sunk);padding:4px;border-radius:999px}
+nav.tabs a{text-decoration:none;color:var(--muted);padding:7px 16px;border-radius:999px;font-weight:500;font-size:14px}
+nav.tabs a[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+main{padding-top:28px}
+.view{display:flex;flex-direction:column;gap:28px}
+.view[hidden]{display:none}
+.eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* casting desk */
+.desk{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:20px;align-items:stretch}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:18px;min-width:0}
+label.q{display:flex;flex-direction:column;gap:6px}
+textarea{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:10px 12px;resize:vertical;min-height:64px}
+textarea::placeholder{color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:3px;gap:2px;align-self:flex-start;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:6px 14px;border-radius:999px;font-size:13px;color:var(--muted);font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.coins{display:flex;gap:18px;justify-content:center;padding-block:18px 6px;perspective:600px;min-height:118px;align-items:center}
+.coin{width:80px;height:80px;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.coin .face{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:grid;place-items:center;border:3px solid var(--coin-edge);box-shadow:inset 0 0 0 5px rgba(255,255,255,.14), inset 0 -6px 10px rgba(0,0,0,.18)}
+.coin .face::before{content:"";width:20px;height:20px;background:var(--surface);border:2px solid var(--coin-edge);border-radius:2px}
+.coin .face span{position:absolute;font-family:var(--f-han);font-size:13px;font-weight:700;color:rgba(20,14,4,.78)}
+.coin .face span:nth-child(1){top:9px}.coin .face span:nth-child(2){bottom:9px}
+.coin .face span:nth-child(3){left:11px}.coin .face span:nth-child(4){right:11px}
+.coin .yang{background:radial-gradient(circle at 35% 30%, #E7C27A 0, var(--coin-yang) 55%, #8A6424 100%)}
+.coin .yin{background:radial-gradient(circle at 35% 30%, #9DAA92 0, var(--coin-yin) 60%, #3E4838 100%);transform:rotateY(180deg)}
+.coin .yin span{color:rgba(230,236,224,.85)}
+.coin .val{position:absolute;bottom:-26px;left:0;right:0;text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--muted);transform:translateZ(1px)}
+.yarrow-note{display:none;text-align:center;color:var(--muted);font-size:13px;max-width:36ch;margin:0 auto}
+.method-yarrow .coins .coin{display:none}
+.method-yarrow .yarrow-note{display:block}
+.tally{text-align:center;font-family:var(--f-mono);font-size:13px;color:var(--muted);min-height:20px;margin-top:14px}
+.tally b{color:var(--ink);font-weight:500}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:1px solid var(--rule);background:var(--surface);padding:10px 18px;border-radius:10px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.primary:hover{opacity:.9}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.manual{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:14px}
+.manual button{border:1px solid var(--rule);background:transparent;border-radius:8px;padding:4px 10px;font-family:var(--f-mono);font-size:13px}
+.manual button:hover{border-color:var(--bronze);color:var(--bronze)}
+
+/* builder */
+.builder{display:flex;flex-direction:column-reverse;gap:10px;flex:1;justify-content:flex-end}
+.brow{display:grid;grid-template-columns:52px minmax(0,1fr) 108px;align-items:center;gap:12px;font-size:12px;color:var(--muted)}
+.brow .pos{font-family:var(--f-mono)}
+.brow .desc{text-align:right}
+.brow.chg .desc{color:var(--bronze);font-weight:500}
+.brow.new .ln{animation:drop .45s ease-out}
+@keyframes drop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.builder-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.builder-head h2{font-size:22px}
+.builder-name{font-family:var(--f-display);font-size:20px;min-height:28px;color:var(--muted)}
+.builder-name b{color:var(--ink);font-weight:600}
+
+/* hexagram lines */
+.hex{display:flex;flex-direction:column-reverse;gap:var(--g,7px);width:var(--w,120px);flex:none}
+.ln{position:relative;height:var(--h,12px);display:block}
+.ln .bar{position:absolute;inset:0;border-radius:2px;background:var(--ink)}
+.ln.yin .bar{background:linear-gradient(to right, var(--ink) 0 42%, transparent 42% 58%, var(--ink) 58% 100%)}
+.ln.chg .bar{background:var(--bronze)}
+.ln.chg.yin .bar{background:linear-gradient(to right, var(--bronze) 0 42%, transparent 42% 58%, var(--bronze) 58% 100%)}
+.ln .mk{position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:6px;font-size:calc(var(--h,12px) + 2px);color:var(--bronze);line-height:1;font-weight:600}
+.ln.empty .bar{background:transparent;border:1.5px dashed var(--rule)}
+.builder .ln{--h:16px}
+.hex.sm{--w:44px;--h:5px;--g:3px}
+.hex.md{--w:84px;--h:10px;--g:6px}
+.hex.lg{--w:120px;--h:14px;--g:9px}
+
+/* reading */
+.reading{display:flex;flex-direction:column;gap:18px}
+.reading-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px 20px;border-bottom:1px solid var(--rule);padding-bottom:14px}
+.reading-head h2{font-size:30px;max-width:30ch}
+.reading-head .meta{font-size:13px;color:var(--muted);font-family:var(--f-mono)}
+.example-tag{display:inline-block;background:var(--jade-soft);color:var(--jade);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:8px}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:16px;align-items:stretch}
+.pair.single{grid-template-columns:minmax(0,1fr)}
+.arrow{display:grid;place-items:center;color:var(--bronze);font-size:26px;font-family:var(--f-display)}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card-top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.card-top .num{font-family:var(--f-mono);letter-spacing:0}
+.card-head{display:flex;align-items:center;gap:22px;padding-right:22px}
+.zh{font-family:var(--f-han);font-size:44px;font-weight:700;line-height:1}
+.py{color:var(--muted);font-size:14px;margin-top:6px}
+.card h3{font-size:28px}
+.tri{margin:0;color:var(--muted);font-size:14px}
+.tri span{font-size:17px;color:var(--ink)}
+.kw{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0}
+.kw li{font-size:12px;background:var(--sunk);padding:3px 10px;border-radius:999px;color:var(--muted)}
+.card p.mean{margin:0;max-width:62ch;font-size:16px;line-height:1.6}
+.advice{display:flex;flex-direction:column;gap:8px}
+.advice>div{background:var(--sunk);border-radius:10px;padding:10px 14px}
+.advice p{margin:3px 0 0;max-width:62ch}
+.adv-h{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--jade)}
+.advice .avoid .adv-h{color:var(--bronze)}
+.legge{display:flex;flex-direction:column;gap:4px;padding-top:12px;border-top:1px solid var(--rule)}
+.src-row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px}
+.lang-t{border:0;background:none;padding:0;font-size:12px;color:var(--jade);text-decoration:underline;text-underline-offset:2px}
+.src{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.classic{font-family:var(--f-display);font-style:italic;font-weight:500;font-size:19px;line-height:1.4;margin:0;max-width:60ch}
+.classic.wait{font-style:normal;font-family:var(--f-body);font-size:13px;color:var(--muted)}
+details.all-lines{border-top:1px solid var(--rule);padding-top:12px}
+details.all-lines summary{cursor:pointer;color:var(--jade);font-weight:500;font-size:14px}
+.ll{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column-reverse;gap:12px}
+.ll li{display:grid;grid-template-columns:58px minmax(0,1fr);gap:12px;align-items:baseline}
+.ll .k{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.ll li.on .k{color:var(--bronze);font-weight:500}
+.ll li.extra{order:-1}
+.chg-row .classic{font-size:16px;color:var(--muted)}
+.plain{margin:0;font-size:16px;line-height:1.55;max-width:62ch}
+.plain.wait{font-size:13px;color:var(--muted)}
+.ll .classic{font-size:15px;color:var(--muted);margin-top:4px}
+.ll li > div{min-width:0}
+.ll-note{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.cls-h{display:block;margin-top:10px}
+.changes-head{padding:16px 20px 8px;display:flex;flex-direction:column;gap:4px}
+.changes .changes-head h3{padding:0}
+.changes .chg-row{grid-template-columns:118px minmax(0,1fr)}
+@media (max-width: 480px){ .changes .chg-row{grid-template-columns:minmax(0,1fr)} }
+.changes-head p{margin:0;font-size:13px;color:var(--muted);max-width:75ch}
+.key-tag{display:inline-block;margin-top:6px;font-family:var(--f-body);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:var(--bronze);color:var(--surface);padding:2px 8px;border-radius:999px}
+.chg-row .pos-note{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.guide{background:var(--bronze-soft);border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:4px}
+.guide strong{font-family:var(--f-display);font-size:19px}
+.guide p{margin:0;max-width:75ch}
+.guide small{color:var(--muted)}
+.changes{display:flex;flex-direction:column;gap:0;border:1px solid var(--rule);border-radius:14px;background:var(--surface);overflow:hidden}
+.changes h3{font-size:20px;padding:16px 20px 6px}
+.chg-row{display:grid;grid-template-columns:90px minmax(0,1fr);gap:16px;padding:14px 20px;border-top:1px solid var(--rule)}
+.chg-row:first-of-type{border-top:0}
+.chg-row .lab{font-family:var(--f-mono);font-size:13px;color:var(--bronze)}
+.chg-row p{margin:0}
+.chg-row .lab b{display:block;color:var(--ink);font-family:var(--f-body);font-weight:600;font-size:14px}
+.chg-row.key{background:var(--bronze-soft)}
+
+/* library */
+.lib-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.lib-tools h2{font-size:30px}
+input[type="search"]{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:9px 12px;min-width:0;width:260px;max-width:100%}
+.tri-filter{display:flex;flex-wrap:wrap;gap:6px}
+.tri-filter button{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--muted)}
+.tri-filter button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.grid64{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;text-align:left}
+.tile:hover{border-color:var(--bronze)}
+.tile .t1{display:flex;justify-content:space-between;align-items:flex-start}
+.tile .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.tile .z{font-family:var(--f-han);font-size:22px;font-weight:700;line-height:1}
+.tile .e{font-family:var(--f-display);font-size:18px;font-weight:600;line-height:1.15}
+.empty-note{color:var(--muted);padding:20px 0}
+
+/* journal */
+.jlist{display:flex;flex-direction:column;gap:10px}
+.jrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:14px 18px}
+.jrow .open{all:unset;cursor:pointer;display:contents}
+.jrow .qq{font-family:var(--f-display);font-size:20px;font-weight:600;line-height:1.2;overflow-wrap:anywhere}
+.jrow .hn{font-size:13px;color:var(--muted)}
+.jrow .hn b{color:var(--ink);font-weight:500}
+.jrow .dt{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.jbtns{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.jbtns button{border:1px solid var(--rule);background:transparent;border-radius:8px;padding:5px 10px;font-size:13px}
+.jbtns .danger{color:#B23B2A;border-color:currentColor}
+.jempty{background:var(--surface);border:1px dashed var(--rule);border-radius:14px;padding:28px;text-align:center;color:var(--muted)}
+
+/* dialog */
+dialog{border:0;padding:0;background:transparent;max-width:min(640px, calc(100vw - 32px));width:100%;color:var(--ink)}
+dialog::backdrop{background:rgba(8,10,16,.55)}
+dialog .card{max-height:85vh;overflow:auto}
+.dlg-close{align-self:flex-end;border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:4px 12px;font-size:13px}
+
+footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid var(--rule);padding-top:14px;max-width:80ch}
+
+@media (max-width: 820px){
+  .desk{grid-template-columns:minmax(0,1fr)}
+  .pair{grid-template-columns:minmax(0,1fr)}
+  .arrow{transform:rotate(90deg);padding:0}
+}
+@media (max-width: 480px){
+  .coin{width:66px;height:66px}
+  .coins{gap:12px}
+  .brow{grid-template-columns:42px minmax(0,1fr) 84px;gap:8px}
+  .chg-row{grid-template-columns:minmax(0,1fr);gap:4px}
+  .jrow{grid-template-columns:auto minmax(0,1fr)}
+  .jbtns{grid-column:1 / -1;justify-content:flex-start}
+  .reading-head h2{font-size:25px}
+  .zh{font-size:36px}
+}
+@media (prefers-reduced-motion: reduce){
+  .coin{transition:none}
+  .brow.new .ln{animation:none}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="seal" aria-hidden="true">易</div>
+      <div><h1>Raudrohi &amp; Münt</h1><small>I Ching · Muutuste raamat</small></div>
+    </div>
+    <nav class="tabs" aria-label="Jaotised">
+      <a href="#cast" data-view="cast">Heida</a>
+      <a href="#library" data-view="library">Heksagrammid</a>
+      <a href="#journal" data-view="journal">Päevik</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- CAST -->
+    <section class="view" id="view-cast">
+      <div class="desk">
+        <div class="panel" id="castPanel">
+          <label class="q" for="question">
+            <span class="eyebrow">Sinu küsimus</span>
+            <textarea id="question" rows="2" placeholder="Üks selge küsimus, nt „Kuidas alustada uuel töökohal?“"></textarea>
+          </label>
+          <div class="seg" role="group" aria-label="Heitmise viis">
+            <button type="button" id="mCoins" aria-pressed="true">Kolm münti</button>
+            <button type="button" id="mYarrow" aria-pressed="false">Raudrohuvarred</button>
+          </div>
+          <div>
+            <div class="coins" id="coins" aria-live="polite">
+              <div class="coin" data-i="0"><div class="face yang"><span>通</span><span>寶</span><span>開</span><span>元</span></div><div class="face yin"><span>陰</span><span>陰</span><span>陰</span><span>陰</span></div></div>
+              <div class="coin" data-i="1"><div class="face yang"><span>通</span><span>寶</span><span>開</span><span>元</span></div><div class="face yin"><span>陰</span><span>陰</span><span>陰</span><span>陰</span></div></div>
+              <div class="coin" data-i="2"><div class="face yang"><span>通</span><span>寶</span><span>開</span><span>元</span></div><div class="face yin"><span>陰</span><span>陰</span><span>陰</span><span>陰</span></div></div>
+              <p class="yarrow-note">Jäljendab 49 raudrohuvarre meetodi tõenäosusi iga joone kohta:<br>6 → 1/16 · 7 → 5/16 · 8 → 7/16 · 9 → 3/16</p>
+            </div>
+            <div class="tally" id="tally">Kirjaga pool annab 3, sile pool 2.</div>
+          </div>
+          <div class="actions">
+            <button class="btn primary" type="button" id="tossBtn">Heida joon 1 (kuuest)</button>
+            <button class="btn" type="button" id="allBtn">Heida kõik kuus</button>
+            <button class="btn" type="button" id="resetBtn">Alusta uuesti</button>
+          </div>
+          <div class="manual" role="group" aria-label="Sisesta joon oma müntidest">
+            <span>Kasutad päris münte? Sisesta joone summa:</span>
+            <button type="button" data-v="6" title="Vana jin, muutuv">6</button>
+            <button type="button" data-v="7" title="Noor jang">7</button>
+            <button type="button" data-v="8" title="Noor jin">8</button>
+            <button type="button" data-v="9" title="Vana jang, muutuv">9</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="builder-head">
+            <h2>Sinu heksagramm</h2>
+            <span class="eyebrow">Ehitatakse alt üles</span>
+          </div>
+          <div class="builder" id="builder"></div>
+          <div class="builder-name" id="builderName"></div>
+        </div>
+      </div>
+
+      <div class="reading" id="reading"></div>
+    </section>
+
+    <!-- LIBRARY -->
+    <section class="view" id="view-library" hidden>
+      <div class="lib-tools">
+        <h2>64 heksagrammi</h2>
+        <input type="search" id="libSearch" placeholder="Otsi nime või numbri järgi" aria-label="Otsi heksagramme">
+      </div>
+      <div class="tri-filter" id="triFilter" role="group" aria-label="Filtreeri trigrammi järgi"></div>
+      <div class="grid64" id="grid64"></div>
+    </section>
+
+    <!-- JOURNAL -->
+    <section class="view" id="view-journal" hidden>
+      <div class="lib-tools">
+        <h2>Päevik</h2>
+        <span class="eyebrow" id="jcount"></span>
+      </div>
+      <div class="jlist" id="jlist"></div>
+      <p style="margin:0;color:var(--muted);font-size:13px">Lugemisi hoitakse ainult selles brauseris. Saidi andmete kustutamine eemaldab need.</p>
+    </section>
+  </main>
+
+  <footer>Kursiivis klassikaline tekst on eestindatud James Legge ingliskeelse tõlke järgi (<cite>The Sacred Books of the East, vol. 16: The Yi King</cite>, Oxford 1882, avalik omand); see ei ole otsetõlge hiina keelest. Sulgudes olevad sõnad on Legge enda lisatud selgitused. Legge originaali saab vaadata nupuga „Näita ingliskeelset originaali“. Heksagrammide selgitused ja joonte tänapäevased seletused on selle rakenduse jaoks kirjutatud algupärased tõlgendused, mitte tõlge. Jooned loetakse traditsiooniliselt: joon 1 on all, joon 6 üleval. ○ tähistab vana jangi (9) ja × vana jini (6); mõlemad muutuvad oma vastandiks.</footer>
+</div>
+
+<dialog id="dlg"><div class="card" id="dlgBody"></div></dialog>
+
+<script>
+(function(){
+try{ document.documentElement.lang = 'et'; }catch(e){}
+const TRI = {
+  qian:{bits:'111',name:'Taevas',zh:'乾',sym:'☰',attr:'tugev, loov'},
+  dui: {bits:'110',name:'Järv',zh:'兌',sym:'☱',attr:'rõõmus, avatud'},
+  li:  {bits:'101',name:'Tuli',zh:'離',sym:'☲',attr:'selge, valgustav'},
+  zhen:{bits:'100',name:'Äike',zh:'震',sym:'☳',attr:'äkiline, liikumapanev'},
+  xun: {bits:'011',name:'Tuul',zh:'巽',sym:'☴',attr:'pehme, läbitungiv'},
+  kan: {bits:'010',name:'Vesi',zh:'坎',sym:'☵',attr:'sügav, ohtlik'},
+  gen: {bits:'001',name:'Mägi',zh:'艮',sym:'☶',attr:'vaikne, kindel'},
+  kun: {bits:'000',name:'Maa',zh:'坤',sym:'☷',attr:'vastuvõtlik, toetav'}
+};
+// [hanzi, pinyin, nimi, ülemine, alumine, märksõnad, mida see tähendab, mida teha, millest hoiduda] – King Wen'i järjekorras
+const RAW = [
+['乾','Qián','Loov jõud','qian','qian','algatus · energia · järjekindlus','Sul on praegu palju energiat ja võimalus midagi ise algatada. See on aeg, mil sinu tegudel on mõju ja asjad liiguvad, kui sa neid järjekindlalt edasi viid. Jõud ei tule aga ühest suurest pingutusest, vaid sellest, et teed õiget asja päevast päeva.','Võta juhtroll ja tee plaan, millest suudad kinni pidada. Seo oma eesmärgid sellega, mis on õiglane ja ka teistele kasulik. Hoia tempo ühtlane nagu pikamaajooksja.','Ära muutu ülbeks ega suru oma tahet teistele peale. Liiga kõrgele pürgimine nii, et kaotad maapinna jalge alt, on selle heksagrammi peamine oht.'],
+['坤','Kūn','Vastuvõtlikkus','kun','kun','toetamine · kannatlikkus · usaldus','See ei ole aeg ise juhtida, vaid toetada ja kaasa minna. Sinu tugevus on praegu kuulamises, kannatlikkuses ja oskuses aidata teistel oma asju ellu viia. Nagu maa, mis laseb seemnel kasvada, võid sa olla see, kelle peale saab loota.','Kuula, enne kui otsustad, ja vaata, kus sinu abi kõige rohkem vaja on. Ole usaldusväärne meeskonnaliige või toetav partner. Lase asjadel loomulikult areneda.','Ära püüa juhtimist enda kätte haarata ega asju jõuga kiirendada. Järgimine ei tähenda enda kaotamist – hoia oma väärtusi ka siis, kui teised juhivad.'],
+['屯','Zhūn','Alguse raskused','kan','zhen','uus algus · segadus · visadus','Oled millegi uue alguses – uus töö, suhe, projekt või elumuutus – ja kõik tundub segane. See on normaalne: nagu taim, mis murrab end läbi mulla, vajab uus asi aega, et kuju võtta. Raskused ei tähenda, et oled valel teel.','Pane paika põhilised asjad: kord, rutiin ja inimesed, kes saavad aidata. Küsi julgelt abi ja tee üks samm korraga. Hoia eesmärk silme ees, isegi kui tee on konarlik.','Ära alusta korraga liiga paljuga ega anna alla esimeste tagasilöökide peale. Ära püüa ka kogu teekonda kohe läbi mõelda.'],
+['蒙','Méng','Kogenematus','gen','kan','õppimine · alandlikkus · õpetaja','Sul puudub praegu mingi oluline teadmine või kogemus, ja see on täiesti okei. Asi ei ole selles, et oled rumal, vaid selles, et oled õppija rollis. Õige suhtumine – alandlik ja avatud – avab ukse õpetajale või lahendusele.','Otsi kedagi, kes asja tunneb, ja küsi temalt siiralt. Kuula vastus ära ja proovi seda ellu viia. Õpi ka oma vigadest, mitte ainult teiste nõuannetest.','Ära küsi sama küsimust ikka ja jälle, lootes teistsugust vastust – ka mitte sellelt oraaklilt. Ära teeskle, et tead rohkem, kui tead.'],
+['需','Xū','Ootamine','kan','qian','kannatlikkus · ettevalmistus · õige hetk','Asjad ei liigu praegu nii kiiresti, kui tahaksid, ja see ei ole sinu süü. Olud ei ole veel küpsed: nagu pilved enne vihma on midagi tulemas, kuid mitte kohe. Ootamine ei ole siin passiivsus, vaid ettevalmistus.','Kasuta aega targalt: puhka, valmistu, kogu infot ja hoolitse oma tervise eest. Hoia rahulik meel ja usu, et õige hetk tuleb. Kui see tuleb, ole valmis kohe tegutsema.','Ära sunni asju enneaegselt ega tee närvilisi otsuseid ainult sellepärast, et ootamine on ebamugav. Ära lase end ka kibestuda.'],
+['訟','Sòng','Tüli','qian','kan','vaidlus · ettevaatus · kompromiss','Oled konfliktis või sellele lähedal – tööl, perekonnas või mõne lepingu üle. Isegi kui sul on õigus, võib tüli lõpuni ajamine maksta rohkem, kui see sulle tagasi annab: aega, närve ja suhteid. See heksagramm soovitab ettevaatust.','Püüa leida kompromiss või kaasa erapooletu vahendaja. Mõtle, mis on sinu jaoks tegelikult oluline, ja seisa selle eest rahulikult. Kui võimalik, lahenda asi varakult.','Ära lase uhkusel end vaidlusse kinni jätta. Ära alusta praegu suuri ja riskantseid ettevõtmisi, sest pinged võivad need rikkuda.'],
+['師','Shī','Sõjavägi','kun','kan','distsipliin · korraldus · juhtimine','Olukord nõuab organiseeritud ühist pingutust, nagu hästi juhitud meeskond. Edu sõltub distsipliinist, selgest juhtimisest ja sellest, et kõik teavad oma rolli. Eesmärk peab olema õiglane, siis järgnevad inimesed meelsasti.','Sea selged reeglid ja ülesanded ning vali juhiks kogenud ja usaldusväärne inimene – võib-olla sina ise. Hoia meeskond koos ja kohtle inimesi õiglaselt. Planeeri hoolikalt enne tegutsemist.','Ära tegutse impulsiivselt ega luba kaost. Ära pane vastutavatele kohtadele inimesi, kes selleks valmis ei ole.'],
+['比','Bǐ','Ühtehoidmine','kan','kun','liit · kuuluvus · lojaalsus','See on aeg teistega ühineda ja kuhugi kuuluda: sõprus, meeskond, kogukond või partnerlus. Tugev side tekib ühise keskme ümber, olgu see inimene, eesmärk või väärtused. Kõik ei saa olla keskmes, kuid kõik saavad olla osa.','Mõtle, kellega ja millega sa tõeliselt ühineda tahad, ning küsi ausalt, kas oled ise hea kaaslane. Võta initsiatiiv ja ühine aegsasti. Ole lojaalne ja usaldusväärne.','Ära kõhkle liiga kaua – hilinejad võivad jääda ukse taha. Ära seo end inimestega, kelle väärtused sinu omadega ei sobi.'],
+['小畜','Xiǎo Chù','Väike ohjeldus','xun','qian','väikesed sammud · kannatlikkus · üksikasjad','Sul on plaan ja jõudu, kuid miski väike hoiab sind tagasi – aeg, raha, teiste vastuseis või lihtsalt olud. Suurt läbimurret veel ei tule. See on aeg väikeste sammude ja peenhäälestuse jaoks.','Tegele üksikasjadega, mida saad praegu parandada. Kasuta sõbralikkust ja kannatlikkust, mitte survet. Kogu jõudu ja ressursse hilisemaks.','Ära püüa asju jõuga läbi suruda ega ole pettunud, et suur muutus viibib. Ära alahinda väikeste asjade mõju.'],
+['履','Lǚ','Käitumine','qian','dui','taktitunne · ettevaatus · viisakus','Liigud olukorras, mis nõuab erilist taktitunnet – näiteks suhtlus võimuka inimese, ülemuse või raske iseloomuga sugulasega. See on nagu tiigri sabal kõndimine: ohtlik, kuid kui käitud viisakalt ja tead oma kohta, ei juhtu midagi halba.','Ole viisakas, selge ja ettevaatlik. Tunne ära, kus on piirid ja kuidas teised asjale vaatavad. Lihtsus ja siirus kaitsevad sind kõige paremini.','Ära hakka uljaks ega provotseeri. Ära ülehinda oma jõudu ega positsiooni.'],
+['泰','Tài','Rahu','kun','qian','harmoonia · õitseng · koostöö','Hea aeg: asjad sujuvad, inimesed saavad omavahel hästi läbi ja pingutused kannavad vilja. See on nagu kevad, kui taevas ja maa kohtuvad ning kõik kasvab. Harmoonia ja arengu periood.','Kasuta seda aega arukalt: alusta olulisi asju, tugevda suhteid ja jaga head teistega. Loo varusid ja aluseid, mis kannavad ka hiljem. Naudi, kuid ole tänulik.','Ära muutu muretuks ega hooletuks. Head ajad ei kesta igavesti – ära raiska seda perioodi ega eelda, et see jääb samaks.'],
+['否','Pǐ','Seisak','qian','kun','ummikseis · taandumine · põhimõttekindlus','Asjad on kinni: suhtlus ei toimi, plaanid ei edene ja tundub, et sinu head kavatsused ei leia vastukaja. Ümbritsev õhkkond ei pruugi soosida ausaid inimesi. See on ajutine seis, kuid seda tuleb tunnistada.','Hoia oma põhimõtetest kinni ja keskendu sellele, mida saad ise mõjutada. Hoia madalat profiili ja kasuta aega enesearenguks. Oota, kuni olud muutuvad.','Ära tee kahtlasi kompromisse ega liitu nendega, kes olukorda ära kasutavad. Ära raiska energiat seinaga võitlemisele.'],
+['同人','Tóng Rén','Inimeste ühtsus','qian','li','kogukond · avatus · ühised eesmärgid','See heksagramm räägib ühtekuuluvusest ühise eesmärgi nimel. Tõeline koostöö tekib siis, kui inimesed ühinevad ausalt ja avalikult, mitte isikliku kasu või klannivaimu pärast. Koos saab ette võtta ka suuri asju.','Otsi inimesi, kellel on sinuga sama eesmärk, ka väljaspool oma tavapärast ringi. Tegutse avalikult ja läbipaistvalt. Kuula erinevaid vaatenurki.','Ära jää kinni oma väikesesse seltskonda ega soosi ainult „omasid“. Ära lase salajastel kokkulepetel ühist asja lõhkuda.'],
+['大有','Dà Yǒu','Suur vara','li','qian','edu · heldus · vastutus','Sul on praegu palju: edu, vahendeid, oskusi või mõjuvõimu. See on õnnelik aeg, kuid suur omand tähendab ka suurt vastutust. Edu püsib, kui seda kasutatakse heaks ja jagatakse.','Ole helde ja kasuta oma võimalusi nii, et neist on kasu ka teistele. Hoia selge pea ja tagasihoidlikkus. Investeeri sellesse, mis on pikas plaanis väärtuslik.','Ära lase edul endale pähe hakata ega raiska. Ära unusta inimesi, kes sind aitasid.'],
+['謙','Qiān','Tagasihoidlikkus','kun','gen','alandlikkus · tasakaal · vaikne jõud','Tõeline väärtus ei vaja kära. See heksagramm kiidab inimest, kes teeb head tööd ilma uhkeldamata ja kohtleb kõiki võrdselt. Tagasihoidlikkus ei ole siin nõrkus, vaid tasakaalu ja enesekindluse märk.','Lase oma tegudel rääkida. Aita ebavõrdsust tasandada – anna sellele, kel on vähe, ja vähenda seal, kus on liiga palju. Ole tähelepanelik ka nende vastu, kes on sinust nõrgemas seisus.','Ära kiitle ega püüa tunnustust. Ära aja samas tagasihoidlikkust segamini enda alavääristamisega.'],
+['豫','Yù','Vaimustus','zhen','kun','entusiasm · valmisolek · hoog','Õhus on entusiasmi ja energiat: inimesed on valmis kaasa tulema ja ideed leiavad toetust. See on hea aeg teisi inspireerida ja midagi käima lükata. Vaimustus on jõud, mis paneb asjad liikuma.','Kasuta hoogu, kuid valmistu hästi ette: tee plaan ja vali õiged inimesed. Kõneta inimeste tundeid ja ühiseid väärtusi. Hoia rõõmu ja motivatsiooni üleval.','Ära lase vaimustusel muutuda pealiskaudseks peoks või naiivsuseks. Ära eelda, et ainuüksi hea tunne asjad ära teeb.'],
+['隨','Suí','Järgimine','dui','zhen','kohanemine · paindlikkus · usaldus','Selleks, et teised sind järgiksid, pead ise oskama järgida ja kohaneda. See heksagramm räägib aja ja olukorraga kaasas käimisest. Vahel on tark lasta teistel juhtida või muuta oma plaane vastavalt olukorrale.','Ole paindlik ja avatud uutele ideedele. Järgi inimesi, keda austad ja kes on järgimist väärt. Puhka, kui on puhkuse aeg.','Ära järgi pimesi ega kaota oma põhimõtteid. Ära klammerdu ka vanade harjumuste külge ainult harjumusest.'],
+['蠱','Gǔ','Vigade parandamine','gen','xun','vanad vead · uuendus · vastutus','Midagi on hakanud mädanema: hooletusse jäetud suhe, probleemid tööl, vana harjumus või isegi suguvõsas korduv muster. Sellised asjad ei parane iseenesest. Hea uudis on see, et parandamine on võimalik ja toob edu.','Vaata probleemile otse otsa ja leia selle põhjus. Tee plaan, kuidas asja parandada, ja mõtle ka sellele, mis saab pärast. Võta vastutus, isegi kui probleem ei ole sinu tekitatud.','Ära süüdista teisi ega jäta asja järgmisele põlvkonnale. Ära ole samas liiga karm teiste ega enda vastu – parandamine nõuab ka mõistmist.'],
+['臨','Lín','Lähenemine','kun','dui','kasvav mõju · lahkus · tõusuaeg','Midagi head on tulemas ja sinu mõjuvõim kasvab. See on nagu kevade algus: soojust tuleb juurde ja asjad hakkavad kasvama. Teised on sinu suhtes vastuvõtlikud ning sul on võimalus neid hästi mõjutada.','Kasuta seda aega aktiivselt: suhtle, toeta, õpeta ja juhenda. Ole lahke ja mõistev nende vastu, kellega kokku puutud. Planeeri ka ette.','Ära jää loorberitele puhkama – iga tõus saab kord otsa. Ära kuritarvita kasvavat mõjuvõimu.'],
+['觀','Guān','Vaatlus','xun','kun','mõtisklus · laiem pilt · eeskuju','Praegu on aeg vaadata ja mõelda, mitte kiirustada. Astu samm tagasi ja vaata olukorda laiemalt. Pea ka meeles, et teised vaatavad sind – sinu käitumine on neile eeskujuks.','Jälgi, kuula ja analüüsi enne otsustamist. Mõtle ka oma elule: kuhu oled teel ja kas see on õige suund. Käitu nii, nagu tahaksid, et teised käituksid.','Ära tee kiirustatud järeldusi ega vaata asju ainult oma kitsast vaatenurgast. Ära ole silmakirjalik.'],
+['噬嗑','Shì Kè','Takistuse kõrvaldamine','li','zhen','otsustavus · õiglus · selgus','Kahe asja vahel on takistus, mis ei lase neil kokku saada – näiteks vale, arusaamatus või keegi, kes asju segab. See ei kao iseenesest. Vaja on otsustavat ja õiglast tegutsemist, et takistus kõrvaldada.','Selgita välja, mis täpselt on probleem, ja tegele sellega otse. Kehtesta selged reeglid ja tagajärjed. Ole kindel, kuid õiglane.','Ära lükka probleemiga tegelemist edasi ega sulge silmi. Ära karista samas liiga karmilt ega tegutse vihast.'],
+['賁','Bì','Ilu','gen','li','esteetika · vorm · lihtsus','Ilu, stiil ja vorm muudavad elu meeldivamaks ja annavad asjadele väärtust. See heksagramm tuletab meelde, et välimus on oluline, kuid ei asenda sisu. Kaunistus sobib väikeste asjade juurde, mitte suurte otsuste aluseks.','Pane rõhku esteetikale, suhtlusele ja meeldivale vormile. Naudi ilu ja kunsti. Tee asjad ilusaks, aga veendu, et sisu on korras.','Ära lase end petta pealispinnast ega tee suuri otsuseid ainult välimuse põhjal. Ära keskendu ainult sellele, kuidas asjad paistavad.'],
+['剝','Bō','Lagunemine','gen','kun','allakäik · lahtilaskmine · kannatlikkus','Midagi laguneb aeglaselt altpoolt – suhe, organisatsioon, olukord või vana eluviis. Praegu ei saa seda jõuga päästa. See on lõpu ja lahtilaskmise aeg, mis valmistab pinda ette millelegi uuele.','Hoia madalat profiili ja kaitse seda, mis on tõeliselt oluline. Ole helde ja toeta neid, kes sinust sõltuvad. Lase minna sellel, mis on niikuinii lõppemas.','Ära alusta praegu suuri ettevõtmisi ega võitle vältimatu vastu. Ära lase lagunemisel end kibestada.'],
+['復','Fù','Tagasipöördumine','kun','zhen','pöördepunkt · uus algus · taastumine','Pärast rasket perioodi hakkab olukord paranema. See on pöördepunkt – nagu talvine pööripäev, pärast mida päevad hakkavad pikenema. Midagi head tuleb tagasi: energia, tervis, lootus või suhe.','Lase uuel algusel tasapisi kasvada. Pöördu tagasi selle juurde, mis on sulle õige ja hea. Puhka ja kogu jõudu.','Ära kiirusta ega nõua kohe suurt muutust. Ära korda vigu, mis viisid sind varem raskustesse.'],
+['無妄','Wú Wàng','Puhas süda','qian','zhen','siirus · loomulikkus · ootamatused','Parimad tulemused tulevad praegu siirast ja loomulikust käitumisest, ilma tagamõteteta. Kui tegutsed puhtast südamest, liiguvad asjad sinu kasuks. Elu võib aga tuua ka ootamatusi, mis ei ole sinu süü.','Ole aus ja spontaanne. Tee seda, mis tundub õige, ilma kalkuleerimata. Kui juhtub midagi ootamatut, võta seda rahulikult.','Ära manipuleeri ega taga omakasu. Ära püüa kõike kontrollida ega ette planeerida.'],
+['大畜','Dà Chù','Suur ohjeldus','gen','qian','talletatud jõud · enesedistsipliin · õppimine','Sul on palju jõudu ja potentsiaali, kuid praegu tuleb see talletada ja suunata, mitte kohe ära kulutada. Nagu tamm, mis hoiab vett, et seda hiljem kasulikult kasutada. See on õppimise, kogumise ja enesedistsipliini aeg.','Õpi, arenda oskusi ja kogu kogemusi. Hoia oma energia kontrolli all ja suuna see tähendusrikkasse töösse. Valmistu suuremaks väljakutseks.','Ära raiska jõudu tühja peale ega torma enneaegselt. Ära jää ka lihtsalt koju istuma – maailm vajab sinu panust.'],
+['頤','Yí','Toitumine','gen','zhen','toit ja mõtted · hoolitsus · sõnade valik','See heksagramm räägib sellest, mis meid toidab – nii toidust kui ka mõtetest, sõnadest ja suhetest. Mida sa endasse lased ja mida teistele annad? Sinu tervis ja meeleolu sõltuvad sellest, millega end toidad.','Pööra tähelepanu toitumisele, unele ning sellele, mida loed ja vaatad. Vali sõnu hoolikalt. Hoolitse nii enda kui ka lähedaste eest.','Ära toida end negatiivsuse, kadeduse ega rämpsuga. Ära lase ka teistel sinu energiat ära kasutada.'],
+['大過','Dà Guò','Ülekoormus','dui','xun','surve · erakorraline olukord · otsustav muutus','Koormus on liiga suur: liiga palju tööd, vastutust või survet, ja midagi hakkab murduma. Olukord on erakorraline ja nõuab erakorralist lahendust. Tegutsemine peab aga olema läbimõeldud, mitte paaniline.','Tunnista, et praegune olukord ei ole jätkusuutlik. Leia viis koormust vähendada või ümber jagada. Tegutse kiiresti, kuid rahulikult ja leebelt.','Ära eita probleemi ega püüa kõike üksi kanda. Ära astu ka üle reageerivaid, drastilisi samme.'],
+['坎','Kǎn','Kuristik','kan','kan','oht · vastupidavus · usk','Oled raskes ja ohtlikus olukorras ning raskused tunduvad korduvat. See võib olla stress, kriis või hirm. Heksagramm õpetab olema nagu vesi: vesi ei peatu ega anna alla, vaid voolab edasi ja täidab iga lohu, kuni pääseb välja.','Jää endale truuks ja ära kaota usku. Liigu edasi samm-sammult, isegi kui see on aeglane. Õpi raskustest ja kasuta neid kogemusena.','Ära paanitse ega anna alla. Ära harju ka ohuga nii, et see hakkab tunduma normaalne.'],
+['離','Lí','Selgus','li','li','valgus · nägemine · sõltuvus','Tuli annab valgust, kuid vajab midagi, mille külge kinnituda. Samamoodi vajame meie allikaid, mis annavad selgust ja inspiratsiooni. See heksagramm räägib selgusest, nägemisest ja sellest, millele sa oma elu toetad.','Mõtle, millest sa sõltud ja mis annab sulle jõudu. Toetu sellele, mis on õige ja tõene. Ole selge ja aus nii mõtetes kui ka suhtluses.','Ära põle läbi ega lase emotsioonidel üle pea kasvada. Ära klammerdu inimeste või asjade külge, mis sulle kahju teevad.'],
+['咸','Xián','Külgetõmme','dui','gen','armastus · avatus · vastastikune mõju','See heksagramm räägib vastastikusest tõmbest ja sellest, kuidas inimesed teineteist mõjutavad – eriti armastuses ja sõpruses. Tõeline mõju ei tule survest, vaid avatusest ja vastuvõtlikkusest. See on soodne aeg suheteks.','Ole avatud ja tundlik teiste tunnete suhtes. Lase inimestel endale läheneda ja kuula neid. Ole siiras.','Ära manipuleeri ega suru oma tahet peale. Ära tegutse ainult hetke tormaka tunde ajel.'],
+['恆','Héng','Püsivus','zhen','xun','truudus · järjekindlus · pikaajalisus','Püsivad asjad – pikaajaline suhe, karjäär, hea harjumus – vajavad järjekindlust. Kestvus ei tähenda paigalseisu, vaid kindlat suunda, mille sees saab muutuda ja kohaneda. Nagu abielu, mis kestab, sest mõlemad kasvavad koos.','Ole truu oma kohustustele ja väärtustele. Tee igapäevaseid häid asju järjekindlalt. Kohanda üksikasju, kuid hoia suunda.','Ära vaheta pidevalt suunda ega anna alla, kui asi muutub igavaks. Ära aja segamini püsivust ja jäikust.'],
+['遯','Dùn','Taandumine','qian','gen','õigeaegne lahkumine · väärikus · jõu säästmine','Olud on muutunud ebasoodsaks ja vastasjõud kasvavad. Tark käik on praegu taanduda – mitte põgeneda, vaid teadlikult ja väärikalt eemalduda, et kaitsta ennast ja oma jõudu. Taandumine on siin strateegia, mitte kaotus.','Tunne ära, millal on aeg lahkuda, ja tee seda õigel ajal. Säilita oma väärikus ja ära põleta sildu. Kasuta aega jõu taastamiseks.','Ära jää liiga kauaks olukorda, mis sind kurnab. Ära lahku ka vihaga ega paanikas.'],
+['大壯','Dà Zhuàng','Suur jõud','zhen','qian','tugevus · enesevalitsus · õiglus','Sul on praegu palju jõudu, energiat ja mõjuvõimu. See on tugev positsioon, kuid tugevusega kaasneb kiusatus seda valesti kasutada. Tõeline jõud tähendab ka oskust end tagasi hoida.','Kasuta oma jõudu õiglaselt ja õige eesmärgi nimel. Mõtle enne tegutsemist, kas see on tõesti vajalik. Ole kindel, kuid mitte agressiivne.','Ära torma peaga vastu seina ega suru oma tahet jõuga läbi. Ära kasuta oma positsiooni teiste kahjuks.'],
+['晉','Jìn','Edenemine','li','kun','tunnustus · areng · nähtavus','Asjad lähevad hästi: sind märgatakse, tunnustatakse ja sinu töö kannab vilja. See on nagu päikesetõus – valgust tuleb juurde ja kõik muutub selgemaks. Hea aeg karjääriks ja eneseteostuseks.','Ole nähtav ja näita oma oskusi. Jaga au teistega ja ole helde. Kasuta võimalusi, mis sulle avanevad.','Ära muutu edevaks ega unusta neid, kes sind aitasid. Ära lase edul end ettevaatamatuks muuta.'],
+['明夷','Míng Yí','Pimenev valgus','kun','li','rasked ajad · sisemine valgus · vastupidamine','Oled keerulises olukorras, kus head inimesed ja ideed ei saa avalikult särada – näiteks ebaõiglane ülemus, mürgine töökeskkond või raske eluperiood. Valgus on peidus, kuid mitte kustunud. Heksagramm õpetab, kuidas hoida sisemist valgust ka pimedal ajal.','Hoia oma väärtused ja lootus endas, isegi kui väliselt pead olema ettevaatlik. Ole diplomaatiline ja kaitse ennast. Pea vastu – see aeg möödub.','Ära lase olukorral end muuta ega reeda oma põhimõtteid. Ära astu avalikku konflikti, kus sul pole võimalust võita.'],
+['家人','Jiā Rén','Perekond','xun','li','kodu · lähedased · kord','See heksagramm räägib kodust, perest ja lähedastest suhetest, aga ka igast väikesest kokkuhoidvast grupist. Hea pere põhineb selgetel rollidel, armastusel ja sellel, et sõnad ja teod klapivad. Kord kodus loob turvatunde.','Pööra tähelepanu lähedastele ja suhetele kodus. Ole järjekindel ja usaldusväärne, pea oma sõna. Loo selged kokkulepped ja rutiinid.','Ära ole liiga range ega liiga lõtv. Ära nõua teistelt seda, mida ise ei tee.'],
+['睽','Kuí','Vastuolu','li','dui','erimeelsused · erinevad vaated · väikesed sammud','Inimesed või asjad tõmbavad eri suundadesse: erimeelsused, arusaamatused või lihtsalt erinevad vaated. Suured ühised projektid on praegu keerulised. Erinevus ei pea aga tähendama vaenulikkust – väikestes asjades saab ikka koostööd teha.','Aktsepteeri, et teised mõtlevad teisiti. Otsi väikseid ühisosi ja tee koostööd seal, kus saab. Ole kannatlik ja mõistev.','Ära püüa kedagi jõuga oma vaatele pöörata. Ära tee praegu suuri ühiseid otsuseid, mis vajavad täielikku üksmeelt.'],
+['蹇','Jiǎn','Takistus','kan','gen','seisak · enesevaatlus · abi otsimine','Ees on takistus, mida ei saa otse ületada, ja edasi tormamine teeb asja ainult hullemaks. Heksagramm soovitab peatuda, vaadata iseendasse ja otsida abi. Takistus on ka võimalus õppida.','Mõtle, milline on sinu enda osa olukorras ja mida saad muuta. Otsi teistelt tuge ja nõu. Leia ümbersõit või oota sobivamat aega.','Ära süüdista ainult teisi ega olusid. Ära pressi ikka ja jälle vastu sama seina.'],
+['解','Xiè','Vabanemine','zhen','kan','kergendus · andestus · uus algus','Pinge on lõpuks lahtumas: probleem laheneb, raske periood lõpeb või konflikt vaibub. Nagu äikesetorm, mis puhastab õhu. Nüüd on aeg tunda kergendust ja edasi liikuda.','Lahenda allesjäänud probleemid kiiresti ja pöördu tagasi tavaelu juurde. Andesta nii teistele kui ka endale. Alusta puhtalt lehelt.','Ära jää minevikku kinni ega kanna viha. Ära lase väikestel lahendamata asjadel venida.'],
+['損','Sǔn','Vähenemine','gen','dui','lihtsustamine · ohverdus · siirus','Midagi tuleb vähendada: kulutusi, kohustusi, ootusi või ego. See ei ole kaotus, vaid lihtsustamine, mis teeb ruumi olulisele. Vahel tähendab vähem rohkem.','Vaata üle, mis on tõeliselt vajalik, ja loobu ülejäänust. Anna siiralt – oma aega või tähelepanu sellele, mis on oluline. Ohjelda ka oma emotsioone ja soove.','Ära kärbi sealt, kus see kahjustab tõeliselt olulist. Ära tunne end vähendamise pärast vaesena.'],
+['益','Yì','Kasv','xun','zhen','võimalused · abi · aktiivsus','Hea aeg: võimalused avanevad, abi tuleb ja asjad kasvavad. See on soodne periood uuteks ettevõtmisteks ja arenguks. Kasv jõuab kõigini, kui seda õigesti kasutada.','Tegutse aktiivselt ja võta ette olulisi asju. Aita ka teisi – headus tuleb tagasi. Õpi teistelt ja võta üle nende head omadused.','Ära lase võimalusi käest. Ära muutu ahneks – kasv, mida jagatakse, kestab kauem.'],
+['夬','Guài','Läbimurre','dui','qian','otsus · ausus · julgus','Pinge on kogunenud ja on aeg otsustavalt tegutseda: rääkida tõde välja, teha halvale olukorrale lõpp või langetada ammu edasi lükatud otsus. Seda tuleb aga teha targalt ja avalikult, mitte vägivaldselt.','Ütle oma sõnum selgelt ja ausalt välja. Leia liitlasi ja tegutse läbipaistvalt. Ole kindel, kuid ära lähe isiklikuks.','Ära kasuta jõudu ega viha. Ära alahinda oma nõrkusi – need võivad sind otsustaval hetkel alt vedada.'],
+['姤','Gòu','Kohtumine','qian','xun','kiusatus · piirid · ettevaatus','Midagi ootamatut ja mõjuvõimsat ilmub sinu ellu – inimene, pakkumine, kiusatus või idee. See võib tunduda süütu, kuid võib kiiresti suuremaks kasvada. Heksagramm soovitab olla tähelepanelik, kellele ja millele uksed avad.','Vaata hoolikalt, kes või mis su ellu tuleb ja mida see kaasa toob. Sea piirid juba alguses. Usalda oma sisetunnet.','Ära lase end esmamuljest pimestada. Ära anna kellelegi liiga palju võimu oma elu üle.'],
+['萃','Cuì','Kogunemine','dui','kun','ühine eesmärk · juhtimine · kokkutulek','Inimesed tulevad kokku: perekokkutulek, meeskond, kogukond või liikumine. Ühine eesmärk ja hea juht hoiavad kogunemist koos. See on jõud, kuid kus on palju inimesi, seal on ka pingeid.','Too inimesi kokku ühise eesmärgi ümber ja hoolitse hea korralduse eest. Austa traditsioone ja ühiseid väärtusi. Valmistu ka ootamatusteks.','Ära jäta korraldust juhuse hooleks. Ära lase väikestel tülidel ühist asja lõhkuda.'],
+['升','Shēng','Tõus','kun','xun','järjekindlus · pingutus · areng','Sinu areng on tõusuteel – nagu puu, mis kasvab maast tasapisi, aga kindlalt. Edu tuleb järjekindlast tööst, mitte hüpetest. Uksed avanevad, kui koputad õigetele.','Jätka järjekindlalt ja tee iga päev väikesi samme. Otsi abi ja mentoreid, kes saavad sind toetada. Ole julge, kuid kannatlik.','Ära püüa samme vahele jätta. Ära kaota motivatsiooni, kui tulemusi ei ole kohe näha.'],
+['困','Kùn','Kitsikus','dui','kan','kurnatus · raskused · sisemine jõud','Oled kurnatud ja olukord tundub lootusetu: vahendid on otsas, sind ei kuulata ja kõik tundub raske. See heksagramm ütleb aga, et raskus võib olla ka proovikivi, mis näitab sinu tõelist tugevust.','Hoia oma väärtustest ja lootusest kinni, isegi kui teised sind ei mõista. Keskendu sellele, mida saad ise mõjutada. Puhka ja hoolitse enda eest.','Ära raiska energiat liigsele rääkimisele ega õigustamisele – sõnadel on praegu vähe kaalu. Ära anna alla.'],
+['井','Jǐng','Kaev','kan','xun','allikas · kogukond · hoolitsus','Kaev on ühine allikas, millest kõik saavad juua. See heksagramm räägib sügavatest väärtustest ja varudest, mis ei muutu – tarkusest, teadmistest, kogukonnast ja inimlikust headusest. Need on alati olemas, kuid neid tuleb hoida.','Ammuta jõudu sügavatest allikatest: traditsioonidest, õpetustest, sõprusest. Hoolitse oma „kaevu“ eest – oma oskuste ja tervise eest. Jaga seda, mida tead.','Ära lase oma allikatel risustuda ega jäta neid hooletusse. Ära loobu poolel teel, kui oled lahendusele juba lähedal.'],
+['革','Gé','Murrang','dui','li','muutus · ajastus · uuenemine','On aeg suureks muutuseks: töökoha vahetus, suhte lõpp, uus elustiil või põhjalik ümberkorraldus. Muutus on vältimatu ja vajalik, kuid see õnnestub ainult siis, kui aeg on küps ja inimesed mõistavad selle vajadust.','Valmistu muutuseks hoolikalt ja selgita teistele, miks see on vajalik. Vali õige aeg. Kui muutus on tehtud, ole järjekindel.','Ära tee muutusi ainult muutmise pärast ega kiirusta. Ära eelda, et kõik toetavad sind kohe.'],
+['鼎','Dǐng','Pada','li','xun','loovus · väärtused · muundumine','Pada on iidne sümbol: selles muutub toores toit toitvaks. See heksagramm räägib muundumisest, kultuurist ja millegi väärtusliku loomisest. Sul on võimalus muuta toorainet – ideid, oskusi, kogemusi – millekski, mis toidab ka teisi.','Investeeri oma arengusse ja loovusesse. Hoia au sees väärtusi ja traditsioone, mis on sind kasvatanud. Loo midagi, mis kestab ja on teistele kasulik.','Ära raiska andeid ega võimalusi. Pea meeles, et ka parim pada on kasutu, kui sinna midagi head sisse ei pane.'],
+['震','Zhèn','Vapustus','zhen','zhen','šokk · ärkamine · meelerahu','Miski ootamatu raputab sind – šokk, halb uudis või järsk muutus. Esimene reaktsioon on hirm, kuid selline vapustus võib sind ka äratada. Kui jääd rahulikuks, tuleb lõpuks kergendus.','Hinga sügavalt ja säilita meelerahu. Kasuta seda hetke, et vaadata üle oma elu ja tähtsuse järjekord. Õpi kogemusest.','Ära paanitse ega tee hirmu pealt kiirustatud otsuseid. Ära ignoreeri ka hoiatusmärki.'],
+['艮','Gèn','Peatumine','gen','gen','vaikus · puhkus · keskendumine','See on aeg peatuda ja vaikida, nagu mägi, mis seisab paigal. Rahutu meel vajab puhkust ja keha samuti. Õige aeg peatumiseks on sama oluline kui õige aeg tegutsemiseks.','Võta aega puhkuseks, mediteerimiseks või lihtsalt vaikuseks. Keskendu olevikule ja sellele, mis on sinu enda teha. Lase mõtetel settida.','Ära sunni end tegutsema, kui sisetunne ütleb „peatu“. Ära lase rahutusel ja mõtete keerlemisel end juhtida.'],
+['漸','Jiàn','Järkjärguline areng','xun','gen','samm-sammult · kannatlikkus · õige järjekord','Asjad arenevad aeglaselt, kuid kindlalt – nagu puu, mis kasvab mäenõlval. See heksagramm soosib kannatlikkust ja õiget järjekorda. Püsiv edu tuleb samm-sammult, mitte üleöö.','Tee asju õiges järjekorras ja ära jäta samme vahele. Ole kannatlik nii suhetes kui ka karjääris. Usalda protsessi.','Ära kiirusta ega otsi otseteid. Ära anna alla, kui tulemused tulevad aeglaselt.'],
+['歸妹','Guī Mèi','Mehele minev neiu','zhen','dui','alluv roll · suhted · taktitunne','Oled olukorras, kus otsustajaks ei ole sina – näiteks uus inimene meeskonnas, alluva roll või suhe, kus teine pool on tugevam. See ei ole halb, kuid nõuab taktitunnet ja kannatlikkust.','Ole tagasihoidlik ja tähelepanelik. Õpi tundma reegleid ja inimesi. Mõtle pikas plaanis ja vali oma lahingud targalt.','Ära nõua liiga palju liiga vara. Ära tee tormakaid samme, mis võivad sinu positsiooni kahjustada.'],
+['豐','Fēng','Küllus','zhen','li','tipphetk · täius · otsustavus','Oled tipus: kõike on palju – edu, energiat, rõõmu, võimalusi. See on nagu päike keskpäeval. Naudi seda, sest tipp on elutsükli loomulik osa, kuid pea meeles, et sellele järgneb muutus.','Naudi ja kasuta seda aega täiel määral. Tee olulised otsused ära, kuni sul on selgust ja jõudu. Jaga oma õnne teistega.','Ära muretse liiga palju selle pärast, et see lõpeb. Ära muutu ka ülbeks või hooletuks.'],
+['旅','Lǚ','Rändur','li','gen','reis · võõras koht · ettevaatus','Oled ajutises olukorras: reisil, uues kohas, üleminekuperioodis või lihtsalt võõras keskkonnas. Rändurina pead olema tähelepanelik ja austama kohalikke reegleid. See ei ole püsivalt paika jäämise aeg.','Ole viisakas, tagasihoidlik ja ettevaatlik. Hoia oma asjad korras ja sidemed kerged. Õpi uuest keskkonnast.','Ära tekita konflikte ega käitu nagu kodus. Ära seo end liiga tugevalt kohaga, kuhu sa ei kuulu.'],
+['巽','Xùn','Õrn mõju','xun','xun','järjekindlus · pehmus · veenmine','Tuul pääseb igale poole – mitte jõuga, vaid pideva õrna survega. See heksagramm räägib pehmest, kuid järjekindlast mõjust. Muutus tuleb väikeste, korduvate sammude kaudu.','Ole järjekindel ja püsiv, kuid sõbralik. Selgita oma ideid ikka ja jälle, kuni need juurduvad. Tee selge plaan ja pea sellest kinni.','Ära kõhkle liiga palju ega muuda pidevalt suunda. Ära püüa asju jõuga läbi suruda.'],
+['兌','Duì','Rõõm','dui','dui','suhtlus · sõprus · avatus','Rõõm, suhtlemine ja ühised hetked. Nagu kaks järve, mis teineteist värskendavad, toidab hea suhtlus mõlemat poolt. See on hea aeg sõpruseks, koostööks ja õppimiseks.','Suhtle avatult ja rõõmsalt. Jaga mõtteid ja õpi teistelt. Too rõõmu inimeste ellu.','Ära lase rõõmul muutuda pealiskaudseks lõbu otsimiseks. Ära usalda meelitajaid, kelle sõbralikkus ei ole siiras.'],
+['渙','Huàn','Hajumine','xun','kan','pingete lahtumine · lepitus · ühendamine','Midagi jäika hakkab sulama: pinged, eraldatus, kinnised mõtted või vanad tülid. See on aeg tõkkeid lammutada ja inimesi uuesti kokku tuua. Mõnikord tuleb isekusest lahti lasta, et sünniks midagi suuremat.','Ava end teistele ja otsi seda, mis ühendab. Lahenda vanad konfliktid. Pühendu millelegi, mis on sinust endast suurem.','Ära jää kinni oma uhkusesse ega isekusse. Ära lase grupil laiali minna ilma ühise eesmärgita.'],
+['節','Jié','Mõõdukus','kan','dui','piirid · eelarve · tasakaal','Piirid annavad elule struktuuri: eelarve, ajakava, reeglid ja isiklikud piirid. Ilma piirideta valgub kõik laiali. Liiga ranged piirid muutuvad aga vanglaks.','Sea mõistlikud piirid oma ajale, rahale ja energiale. Kehtesta reeglid, mida on võimalik järgida. Austa ka teiste piire.','Ära ole enda ega teiste vastu liiga karm. Ära loobu ka kõigist piiridest – mõõdukus on võti.'],
+['中孚','Zhōng Fú','Siirus','xun','dui','ausus · usaldus · kaasatundmine','Tõeline mõju tuleb sisemisest siirusest. Kui oled aus ja ehtne, tunnevad inimesed seda ka siis, kui nad on muidu umbusklikud. See heksagramm räägib usaldusest ja kaasatundmisest.','Ole siiras ja aus nii enda kui ka teistega. Püüa mõista teisi seestpoolt, nende vaatenurgast. Kuula süvenenult.','Ära teeskle ega mängi rolli. Ära usalda ainult välist muljet – vaata südamesse.'],
+['小過','Xiǎo Guò','Ettevaatlikkus','zhen','gen','väikesed sammud · täpsus · tagasihoidlikkus','Praegu on aeg väikesteks asjadeks, mitte suurteks hüpeteks. Ettevaatus, tagasihoidlikkus ja tähelepanu üksikasjadele on edu võti – nagu väike lind, kes lendab madalalt ja turvaliselt.','Tee väikesi, kindlaid samme. Ole täpne ja hoolikas. Hoia madalat profiili ja käitu tagasihoidlikult.','Ära võta ette suuri riskantseid projekte. Ära püüa olla rohkem, kui sa praegu oled.'],
+['既濟','Jì Jì','Lõpule viidud','kan','li','saavutus · valvsus · hoidmine','Eesmärk on saavutatud ja kõik on oma kohal. See on hea tunne, kuid just sel hetkel tekib oht muutuda hooletuks. Korda on lihtsam saavutada kui hoida.','Ole valvas ja hoia saavutatut. Tegele väikeste probleemidega enne, kui need suureks kasvavad. Planeeri ka edasist.','Ära jää loorberitele puhkama. Ära alahinda väikesi märke, mis viitavad probleemidele.'],
+['未濟','Wèi Jì','Veel lõpetamata','li','kan','üleminek · viimased sammud · hoolikus','Oled peaaegu kohal, kuid veel mitte päris. Üleminek on käimas ja viimased sammud on kõige olulisemad – nagu noor rebane, kes jõge ületades saab märjaks, kui kiirustab.','Ole viimaste sammude juures hoolikas ja tähelepanelik. Vii asjad lõpuni rahulikult ja süsteemselt. Usu, et lõpp on lähedal.','Ära kiirusta lõpu poole ega kuuluta võitu liiga vara. Ära anna alla vahetult enne eesmärki.']
+];
+const HEX = RAW.map((r,i)=>({n:i+1, zh:r[0], py:r[1], en:r[2], upper:r[3], lower:r[4], kw:r[5].split(' · '), meaning:r[6], todo:r[7], avoid:r[8], bits:TRI[r[4]].bits + TRI[r[3]].bits}));
+const BYBITS = {}; HEX.forEach(h=>{ BYBITS[h.bits]=h; });
+
+const POS = [
+  ['Algus','Asi alles algab ja on veel pinna all. Praegu tehtud väikesed valikud määravad suuna.'],
+  ['Sisemine kese','Alumise trigrammi süda. Vaikse tasakaalu ja tundliku jõu koht.'],
+  ['Sisemine lävi','Alumise trigrammi tipp. Surve ja ülemineku koht, kus on oht liiale minna.'],
+  ['Välimine lävi','Ülemise trigrammi esimene joon, võimu lähedal. Nõuab hoolikust ja häid suhteid.'],
+  ['Valitseja koht','Ülemise trigrammi kese, traditsiooniliselt juhtimise ja selge mõju koht.'],
+  ['Kulminatsioon','Asi on jõudnud nii kaugele, kui saab, ja muutumas millekski muuks.']
+];
+const VNAME = {6:'vana jin · muutuv',7:'noor jang',8:'noor jin',9:'vana jang · muutuv'};
+const EXAMPLE = {id:'example', q:'Kas käivitada projekt sel kuul või oodata?', date:'2026-11-25T09:00:00Z', method:'coins', lines:[7,7,9,8,7,8], example:true};
+const LOCALE = 'et-EE';
+
+const $ = (s,r=document)=>r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isYang = v => v===7 || v===9;
+const isChg = v => v===6 || v===9;
+const primaryBits = ls => ls.map(v=>isYang(v)?'1':'0').join('');
+const relatingBits = ls => ls.map(v=> v===6?'1' : v===9?'0' : (isYang(v)?'1':'0')).join('');
+const bitsToVals = b => b.split('').map(c=>c==='1'?7:8);
+const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function rand(n){ try{ const a=new Uint32Array(1); crypto.getRandomValues(a); return a[0]%n; }catch(e){ return Math.floor(Math.random()*n); } }
+const reduceMotion = (()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } })();
+const fmtDate = d => d.toLocaleDateString(LOCALE,{day:'numeric',month:'short',year:'numeric'});
+const fmtTime = d => d.toLocaleTimeString(LOCALE,{hour:'2-digit',minute:'2-digit'});
+
+const store = {
+  get(){ try{ const v = JSON.parse(localStorage.getItem('yc-journal')||'[]'); return Array.isArray(v)?v:[]; }catch(e){ return []; } },
+  set(v){ try{ localStorage.setItem('yc-journal', JSON.stringify(v)); }catch(e){} }
+};
+
+/* ---------- klassikaline tekst (Legge) ---------- */
+/* legge-et.json: eestikeelne tõlge Legge järgi; legge.json: Legge ingliskeelne originaal (1882). {j: otsus, l: [joon1..joon6, (kõik muutuvad)]} */
+const CLASSIC = {et:null, en:null}; // null = laadimisel, false = ebaõnnestus, massiiv = laaditud
+let classicLang = (()=>{ try{ return localStorage.getItem('yc-classic')==='en' ? 'en' : 'et'; }catch(e){ return 'et'; } })();
+function loadClassic(lang){
+  if(CLASSIC[lang]) return;
+  CLASSIC[lang] = null;
+  fetch(lang==='et' ? 'legge-et.json' : 'legge.json').then(r=>r.ok ? r.json() : Promise.reject(r.status))
+    .then(d=>{ if(!Array.isArray(d) || d.length!==64) throw new Error('bad data'); CLASSIC[lang]=d; afterClassic(); })
+    .catch(()=>{ CLASSIC[lang]=false; afterClassic(); });
+}
+const legge = n => Array.isArray(CLASSIC[classicLang]) ? CLASSIC[classicLang][n-1] : null;
+/* jooned.json: tänapäevased joonte seletused, [[joon1..joon6,(kõik muutuvad)], ...] */
+let JOONED = null; // null = laadimisel, false = ebaõnnestus, massiiv = laaditud
+fetch('jooned.json').then(r=>r.ok ? r.json() : Promise.reject(r.status))
+  .then(d=>{ if(!Array.isArray(d) || d.length!==64) throw new Error('bad data'); JOONED=d; afterClassic(); })
+  .catch(()=>{ JOONED=false; afterClassic(); });
+function plain(n, i){
+  const t = Array.isArray(JOONED) ? JOONED[n-1][i] : null;
+  if(t) return `<p class="plain">${esc(t)}</p>`;
+  return `<p class="plain wait">${JOONED===false ? 'Seletusi ei õnnestunud laadida. Proovi lehte uuesti laadida.' : 'Laadin seletusi…'}</p>`;
+}
+function classic(text){
+  if(text) return `<p class="classic" lang="${classicLang==='en'?'en':'et'}">${esc(text)}</p>`;
+  return `<p class="classic wait">${CLASSIC[classicLang]===false ? 'Klassikalist teksti ei õnnestunud laadida. Proovi lehte uuesti laadida.' : 'Laadin klassikalist teksti…'}</p>`;
+}
+const srcTag = () => classicLang==='et' ? 'Legge järgi' : 'Legge, 1882 · inglise k.';
+const toggleBtn = () => `<button type="button" class="lang-t" data-classic-toggle>${classicLang==='et' ? 'Näita ingliskeelset originaali' : 'Näita eesti keeles'}</button>`;
+
+/* ---------- joonistamine ---------- */
+function hexHTML(vals, cls){
+  let rows='';
+  for(let i=0;i<6;i++){
+    const v=vals[i];
+    if(v===undefined){ rows+='<div class="ln empty"><span class="bar"></span></div>'; continue; }
+    const c=isChg(v);
+    rows+=`<div class="ln ${isYang(v)?'yang':'yin'}${c?' chg':''}"><span class="bar"></span>${c?`<span class="mk">${v===9?'○':'×'}</span>`:''}</div>`;
+  }
+  return `<div class="hex ${cls||''}" aria-hidden="true">${rows}</div>`;
+}
+function linesListHTML(n, hl){
+  const L = legge(n);
+  let items = '';
+  for(let i=0;i<6;i++) items += `<li class="${hl&&hl.includes(i)?'on':''}"><span class="k">Joon ${i+1}${hl&&hl.includes(i)?'<br>muutuv':''}</span><div>${plain(n,i)}${classic(L&&L.l[i])}</div></li>`;
+  if(n<=2) items += `<li class="extra"><span class="k">Kõik kuus</span><div>${plain(n,6)}${classic(L&&L.l[6])}</div></li>`;
+  return `<p class="ll-note">Iga joone juures on esmalt tänapäevane seletus, selle all kursiivis klassikaline tekst (${srcTag()}). Joon 1 on all, joon 6 üleval.</p><ol class="ll">${items}</ol>`;
+}
+function cardHTML(h, role, vals, opts){
+  opts = opts || {};
+  const up=TRI[h.upper], lo=TRI[h.lower], L=legge(h.n);
+  let lines = '';
+  if(opts.lines==='open') lines = `<div class="legge"><span class="src">Jooned</span>${linesListHTML(h.n, opts.hl)}</div>`;
+  else if(opts.lines==='details') lines = `<details class="all-lines"${opts.openDetails?' open':''}><summary>Loe kõiki kuut joont</summary>${linesListHTML(h.n, opts.hl)}</details>`;
+  return `<article class="card">
+    <div class="card-top"><span>${esc(role)}</span><span class="num">Nr ${h.n} / 64</span></div>
+    <div class="card-head">${hexHTML(vals,'md')}<div><div class="zh" lang="zh-Hant">${h.zh}</div><div class="py">${h.py}</div></div></div>
+    <h3>${h.en}</h3>
+    <p class="tri"><span>${up.sym}</span> ${up.name} (${up.attr}) üleval, <span>${lo.sym}</span> ${lo.name} (${lo.attr}) all</p>
+    <ul class="kw">${h.kw.map(k=>`<li>${esc(k)}</li>`).join('')}</ul>
+    <p class="mean">${h.meaning}</p>
+    <div class="advice"><div class="do"><span class="adv-h">Mida teha</span><p>${h.todo}</p></div><div class="avoid"><span class="adv-h">Millest hoiduda</span><p>${h.avoid}</p></div></div>
+    <div class="legge"><div class="src-row"><span class="src">Otsus · ${srcTag()}</span>${toggleBtn()}</div>${classic(L&&L.j)}</div>
+    ${lines}
+  </article>`;
+}
+function guidance(lines){
+  const ch = lines.map((v,i)=>isChg(v)?i:-1).filter(i=>i>=0);
+  const n = ch.length;
+  let key=[], title, text;
+  if(n===0){ title='Rahulik olukord'; text='Ükski joon ei muutu. Loe põhiheksagrammi tervikuna; see kirjeldab olukorda, mis on praegu stabiilne.'; }
+  else if(n===1){ key=[ch[0]]; title=`Vastuse kese on joon ${ch[0]+1}`; text='Kui muutub üks joon, on see vastuse süda. Seotud heksagramm näitab, kuhu olukord liigub.'; }
+  else if(n===2){ key=[ch[1]]; title=`Anna kõige rohkem kaalu joonele ${ch[1]+1}`; text=`Muutub kaks joont. Traditsioon annab ülemisele (joon ${ch[1]+1}) suurema kaalu ja joon ${ch[0]+1} jääb taustaks.`; }
+  else if(n===3){ title='Tasakaal kahe seisundi vahel'; text='Muutub kolm joont. Loe põhi- ja seotud heksagrammi võrdse kaaluga: oled nende kahe vahel poolel teel.'; }
+  else if(n<6){ title='Praegune annab teed'; text='Enamik jooni muutub. Anna kõige rohkem kaalu seotud heksagrammile; see kirjeldab, milleks olukord muutub.'; }
+  else { title='Kõik pöördub'; text='Kõik kuus joont muutuvad. Olukord muutub oma vastandiks, seega keskendu seotud heksagrammile.'; }
+  return {key, title, text, ch};
+}
+function readingHTML(r){
+  const p = BYBITS[primaryBits(r.lines)];
+  const g = guidance(r.lines);
+  const rel = g.ch.length ? BYBITS[relatingBits(r.lines)] : null;
+  const d = new Date(r.date);
+  const dstr = isNaN(d) ? '' : fmtDate(d) + ' · ' + fmtTime(d);
+  let h = `<div class="reading-head"><div>${r.example?'<span class="example-tag">Näidislugemine</span>':''}
+      <h2>${r.q ? '„'+esc(r.q)+'“' : 'Avatud küsimus'}</h2></div>
+      <div class="meta">${dstr} · ${r.method==='yarrow'?'raudrohu tõenäosused':'kolm münti'} · jooned ${r.lines.join(' ')}</div></div>`;
+  h += `<div class="pair${rel?'':' single'}">${cardHTML(p, 'Põhiheksagramm · praegu', r.lines, {lines:'details', hl:g.ch, openDetails:!g.ch.length})}${rel?`<div class="arrow" aria-hidden="true">→</div>${cardHTML(rel,'Seotud heksagramm · kuhu see viib', bitsToVals(rel.bits))}`:''}</div>`;
+  h += `<div class="guide"><strong>${g.title}</strong><p>${g.text}</p><small>Need on levinud lugemisreeglid; traditsioonid erinevad.</small></div>`;
+  if(g.ch.length){
+    const L = legge(p.n);
+    h += `<section class="changes"><div class="changes-head"><h3>Muutuvad jooned</h3><p>Muutuv joon näitab, mis sinu olukorras praegu liigub ja millele tähelepanu pöörata. Iga joone juures on tänapäevane seletus, selle all klassikaline tekst ja joone koha tähendus.</p></div>${(g.ch.length===6 && p.n<=2) ? `<div class="chg-row key"><div class="lab"><b>Kõik kuus joont</b>${p.n===1?'kõik 9 ○':'kõik 6 ×'}</div><div>${plain(p.n,6)}<span class="src cls-h">Klassikaline tekst · ${srcTag()}</span>${classic(L&&L.l[6])}<p class="pos-note">Kui heksagrammi ${p.n===1?'„Loov jõud“':'„Vastuvõtlikkus“'} kõik jooned muutuvad, on klassikas selle jaoks eraldi tekst.</p></div></div>` : ''}${g.ch.map(i=>{
+      const v=r.lines[i];
+      return `<div class="chg-row${g.key.includes(i)?' key':''}"><div class="lab"><b>Joon ${i+1}</b>${v} ${v===9?'○':'×'} ${v===9?'jang → jin':'jin → jang'}${g.key.includes(i)?'<span class="key-tag">peamine</span>':''}</div>
+        <div>${plain(p.n,i)}<span class="src cls-h">Klassikaline tekst · ${srcTag()}</span>${classic(L&&L.l[i])}<p class="pos-note"><strong>Joone koht: ${POS[i][0].toLowerCase()}.</strong> ${POS[i][1]}</p></div></div>`;
+    }).join('')}</section>`;
+  }
+  return h;
+}
+
+/* ---------- heitmise olek ---------- */
+const state = { method:'coins', lines:[], busy:false, current:null };
+const coinsEl=$('#coins'), tally=$('#tally'), tossBtn=$('#tossBtn'), allBtn=$('#allBtn'), resetBtn=$('#resetBtn'), qEl=$('#question');
+const coinAngles=[0,0,0];
+const TALLY_COINS = 'Kirjaga pool annab 3, sile pool 2.';
+const TALLY_YARROW = 'Iga joon loositakse raudrohumeetodi tõenäosustega.';
+
+function hexLine(v){
+  if(v===undefined) return '<div class="ln empty"><span class="bar"></span></div>';
+  const c=isChg(v);
+  return `<div class="ln ${isYang(v)?'yang':'yin'}${c?' chg':''}"><span class="bar"></span>${c?`<span class="mk">${v===9?'○':'×'}</span>`:''}</div>`;
+}
+function renderBuilder(newIdx){
+  const b=$('#builder'); let html='';
+  for(let i=0;i<6;i++){
+    const v=state.lines[i];
+    html+=`<div class="brow${v!==undefined&&isChg(v)?' chg':''}${i===newIdx?' new':''}"><span class="pos">Joon ${i+1}</span>${hexLine(v)}<span class="desc">${v!==undefined? v+' · '+VNAME[v] : ''}</span></div>`;
+  }
+  b.innerHTML=html;
+  const nm=$('#builderName');
+  if(state.lines.length===6){
+    const p=BYBITS[primaryBits(state.lines)];
+    const ch=state.lines.some(isChg) ? BYBITS[relatingBits(state.lines)] : null;
+    nm.innerHTML=`<b>${p.n}. ${p.en}</b>${ch?` → ${ch.n}. ${ch.en}`:''}`;
+  } else if(state.current){
+    nm.textContent='';
+  } else {
+    const left = 6-state.lines.length;
+    nm.textContent = state.lines.length ? `Veel ${left} ${left===1?'joon':'joont'}` : 'Kuus viset annavad ühe heksagrammi.';
+  }
+  tossBtn.textContent = state.lines.length<6 ? `Heida joon ${state.lines.length+1} (kuuest)` : 'Lugemine valmis';
+  const full = state.lines.length>=6;
+  tossBtn.disabled = full || state.busy; allBtn.disabled = full || state.busy;
+  document.querySelectorAll('.manual button').forEach(x=>x.disabled = full || state.busy);
+}
+function setMethod(m){
+  state.method=m;
+  $('#mCoins').setAttribute('aria-pressed', m==='coins');
+  $('#mYarrow').setAttribute('aria-pressed', m==='yarrow');
+  $('#castPanel').classList.toggle('method-yarrow', m==='yarrow');
+  tally.textContent = m==='coins' ? TALLY_COINS : TALLY_YARROW;
+}
+function flipCoins(faces, dur){
+  coinsEl.querySelectorAll('.coin').forEach((c,i)=>{
+    const spins = reduceMotion ? 0 : (2 + rand(3));
+    const target = faces[i]===3 ? 0 : 180;
+    const cur = coinAngles[i];
+    let next = cur - (cur % 360) + spins*360 + target;
+    if(next<=cur) next+=360;
+    coinAngles[i]=next;
+    c.style.transitionDuration = dur+'ms';
+    c.style.transform = `rotateY(${next}deg)`;
+  });
+}
+function addLine(v, coins){
+  if(state.current){ state.current=null; state.lines=[]; }
+  state.lines.push(v);
+  tally.innerHTML = coins ? `${coins.join(' + ')} = <b>${v}</b> · ${VNAME[v]}` : `Joon ${state.lines.length}: <b>${v}</b> · ${VNAME[v]}`;
+  renderBuilder(state.lines.length-1);
+  if(state.lines.length===6) finishReading();
+  else renderReadingArea();
+}
+function tossOnce(dur){
+  return new Promise(res=>{
+    if(state.method==='coins'){
+      const coins=[0,0,0].map(()=>rand(2)?3:2);
+      flipCoins(coins, dur);
+      setTimeout(()=>{ addLine(coins[0]+coins[1]+coins[2], coins); res(); }, reduceMotion?60:dur);
+    } else {
+      const r=rand(16); const v = r<1?6 : r<6?7 : r<13?8 : 9;
+      setTimeout(()=>{ addLine(v); res(); }, reduceMotion?60:Math.min(dur,300));
+    }
+  });
+}
+function startIfComplete(){ if(state.current){ state.current=null; state.lines=[]; renderBuilder(); } }
+async function toss(){ if(state.busy) return; startIfComplete(); state.busy=true; renderBuilder(); await tossOnce(750); state.busy=false; renderBuilder(); }
+async function tossAll(){
+  if(state.busy) return; startIfComplete(); state.busy=true; renderBuilder();
+  while(state.lines.length<6){ await tossOnce(480); await new Promise(r=>setTimeout(r, reduceMotion?0:120)); }
+  state.busy=false; renderBuilder();
+}
+function reset(){
+  if(state.busy) return;
+  state.lines=[]; state.current=null;
+  tally.textContent = state.method==='coins' ? TALLY_COINS : TALLY_YARROW;
+  renderBuilder(); renderReadingArea();
+}
+function finishReading(){
+  const r={id:String(Date.now()), q:qEl.value.trim(), date:new Date().toISOString(), method:state.method, lines:state.lines.slice()};
+  const j=store.get(); j.unshift(r); store.set(j.slice(0,200));
+  state.current=r;
+  renderReadingArea();
+  renderJournal();
+  setTimeout(()=>{ const el=$('#reading'); if(el && el.scrollIntoView) el.scrollIntoView({behavior:reduceMotion?'auto':'smooth', block:'start'}); }, 150);
+}
+function renderReadingArea(){
+  const el=$('#reading');
+  if(state.current){ el.innerHTML = readingHTML(state.current); return; }
+  if(state.lines.length===0 && store.get().length===0){ el.innerHTML = readingHTML(EXAMPLE); return; }
+  el.innerHTML='';
+}
+function showSaved(r){
+  state.current=r; state.lines=r.lines.slice();
+  qEl.value=r.q||''; setMethod(r.method==='yarrow'?'yarrow':'coins');
+  tally.innerHTML = `Salvestatud lugemine · jooned <b>${r.lines.join(' ')}</b>`;
+  renderBuilder(); renderReadingArea();
+}
+
+/* ---------- heksagrammide kogu ---------- */
+let triSel=null;
+function renderTriFilter(){
+  const f=$('#triFilter');
+  f.innerHTML = `<button type="button" data-t="" aria-pressed="${!triSel}">Kõik</button>` + Object.entries(TRI).map(([k,t])=>`<button type="button" data-t="${k}" aria-pressed="${triSel===k}">${t.sym} ${t.name}</button>`).join('');
+}
+function renderLibrary(){
+  const q=norm($('#libSearch').value.trim());
+  const triQ = Object.keys(TRI).find(k=>norm(TRI[k].name)===q);
+  const list=HEX.filter(h=>{
+    if(triSel && h.upper!==triSel && h.lower!==triSel) return false;
+    if(!q) return true;
+    if(triQ) return h.upper===triQ || h.lower===triQ;
+    return String(h.n)===q || norm(h.en).includes(q) || norm(h.py).includes(q) || h.zh.includes(q) || h.kw.some(k=>norm(k).includes(q)) || norm(TRI[h.upper].name)===q || norm(TRI[h.lower].name)===q;
+  });
+  $('#grid64').innerHTML = list.length ? list.map(h=>`<button type="button" class="tile" data-n="${h.n}">
+      <div class="t1">${hexHTML(bitsToVals(h.bits),'sm')}<span class="n">${String(h.n).padStart(2,'0')}</span></div>
+      <span class="z" lang="zh-Hant">${h.zh}</span><span class="e">${h.en}</span></button>`).join('')
+    : '<p class="empty-note">Ükski heksagramm ei vasta otsingule.</p>';
+}
+let dlgHex = null;
+function renderHexDialog(){
+  const h=HEX[dlgHex-1];
+  const inner = cardHTML(h,'Heksagramm',bitsToVals(h.bits),{lines:'open'}).trim().replace(/^<article class="card">/,'').replace(/<\/article>$/,'');
+  $('#dlgBody').innerHTML = `<button type="button" class="dlg-close" id="dlgClose">Sulge</button>` + inner;
+}
+function openHex(n){
+  dlgHex = n; renderHexDialog();
+  const d=$('#dlg');
+  try{ d.showModal(); }catch(e){ d.setAttribute('open',''); }
+  $('#dlgClose').focus();
+}
+function dlgIsOpen(){ return $('#dlg').hasAttribute('open'); }
+
+/* ---------- päevik ---------- */
+let confirmId=null;
+function renderJournal(){
+  const j=store.get(), el=$('#jlist');
+  $('#jcount').textContent = j.length ? (j.length===1 ? '1 lugemine' : `${j.length} lugemist`) : '';
+  if(!j.length){ el.innerHTML='<div class="jempty">Sinu lugemised ilmuvad siia. Iga lõpetatud heitmine salvestatakse automaatselt.<br><br><a href="#cast" style="color:var(--jade)">Heida oma esimene heksagramm</a></div>'; return; }
+  el.innerHTML = j.map(r=>{
+    const p=BYBITS[primaryBits(r.lines)]; const rel = r.lines.some(isChg)? BYBITS[relatingBits(r.lines)] : null;
+    const d=new Date(r.date);
+    const conf = confirmId===r.id;
+    return `<div class="jrow">${hexHTML(r.lines,'sm')}
+      <div style="min-width:0"><div class="qq">${r.q?esc(r.q):'Avatud küsimus'}</div>
+        <div class="hn"><b>${p.n}. ${p.en}</b>${rel?` → ${rel.n}. ${rel.en}`:''}</div>
+        <div class="dt">${isNaN(d)?'':fmtDate(d)}</div></div>
+      <div class="jbtns">${conf
+        ? `<span style="font-size:13px;color:var(--muted)">Kas kustutada see lugemine?</span><button type="button" class="danger" data-del="${r.id}">Kustuta</button><button type="button" data-cancel="1">Jäta alles</button>`
+        : `<button type="button" data-open="${r.id}">Ava</button><button type="button" data-ask="${r.id}">Kustuta</button>`}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- vaated ---------- */
+const VIEWS=['cast','library','journal'];
+function route(){
+  const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'cast';
+  VIEWS.forEach(x=>{ $('#view-'+x).hidden = x!==v; });
+  document.querySelectorAll('nav.tabs a').forEach(a=>{ if(a.dataset.view===v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+}
+
+/* ---------- sündmused ---------- */
+tossBtn.addEventListener('click', toss);
+allBtn.addEventListener('click', tossAll);
+resetBtn.addEventListener('click', reset);
+$('#mCoins').addEventListener('click', ()=>{ if(!state.busy) setMethod('coins'); });
+$('#mYarrow').addEventListener('click', ()=>{ if(!state.busy) setMethod('yarrow'); });
+document.querySelectorAll('.manual button').forEach(b=>b.addEventListener('click', ()=>{ if(state.busy) return; startIfComplete(); addLine(+b.dataset.v); renderBuilder(); }));
+$('#libSearch').addEventListener('input', renderLibrary);
+$('#triFilter').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; triSel = b.dataset.t || null; renderTriFilter(); renderLibrary(); });
+$('#grid64').addEventListener('click', e=>{ const t=e.target.closest('.tile'); if(t) openHex(+t.dataset.n); });
+$('#dlg').addEventListener('click', e=>{ const d=$('#dlg'); if(e.target===d || e.target.id==='dlgClose'){ try{ d.close(); }catch(_){ d.removeAttribute('open'); } } });
+document.addEventListener('click', e=>{
+  const b=e.target.closest('[data-classic-toggle]'); if(!b) return;
+  classicLang = classicLang==='et' ? 'en' : 'et';
+  try{ localStorage.setItem('yc-classic', classicLang); }catch(_){}
+  loadClassic(classicLang); afterClassic();
+});
+$('#jlist').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.open){ const r=store.get().find(x=>x.id===b.dataset.open); if(r){ showSaved(r); location.hash='cast'; window.scrollTo(0,0); } }
+  else if(b.dataset.ask){ confirmId=b.dataset.ask; renderJournal(); }
+  else if(b.dataset.cancel){ confirmId=null; renderJournal(); }
+  else if(b.dataset.del){ store.set(store.get().filter(x=>x.id!==b.dataset.del)); confirmId=null; if(state.current&&state.current.id===b.dataset.del){ state.current=null; state.lines=[]; renderBuilder(); } renderJournal(); renderReadingArea(); }
+});
+window.addEventListener('hashchange', route);
+
+function afterClassic(){
+  const openStates = [...document.querySelectorAll('#reading details.all-lines')].map(d=>d.open);
+  renderReadingArea();
+  document.querySelectorAll('#reading details.all-lines').forEach((d,i)=>{ if(openStates[i]!==undefined) d.open = openStates[i]; });
+  if(dlgHex && dlgIsOpen()) renderHexDialog();
+}
+
+setMethod('coins');
+renderBuilder(); renderReadingArea(); renderTriFilter(); renderLibrary(); renderJournal(); route();
+loadClassic(classicLang);
+})();
+</script>
+
+</body>
+</html>

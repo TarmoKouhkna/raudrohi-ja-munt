@@ -14,6 +14,7 @@ Eestikeelne I Chingi (Muutuste raamatu) rakendus brauseris. Heida heksagramm, lo
 - **Päevik:** iga lõpetatud lugemine salvestatakse automaatselt sinu brauserisse (`localStorage`). Igale lugemisele saab lisada märkmeid.
 - **Varukoopia:** päeviku saab kopeerida või failina alla laadida ning hiljem (ka teises seadmes) tagasi importida.
 - **Jagamine:** lugemist saab jagada lingiga (`#lugemine-779878`). Lingis on ainult jooned – küsimus ja märkmed jäävad jagajale.
+- **Esmakülastaja tutvustus:** avalehel on uuele kasutajale lühike riba (mis see on ja kolm sammu); see kaob pärast esimest lugemist või sulgemist.
 - **Juhend:** jaotis „Juhend“ selgitab algajale, kuidas küsimust sõnastada, münte heita ja vastust lugeda.
 - **Paigaldatav rakendus:** telefonis saab lehe lisada avaekraanile („Lisa avakuvale“ / „Install app“) ja see töötab ka ilma internetita.
 

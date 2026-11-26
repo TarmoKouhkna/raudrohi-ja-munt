@@ -73,7 +73,7 @@ Virtuaalmündi kullipoolel olev kotkas on ikoon „Eagle emblem“ saidilt [game
 ## Tehniline
 
 - Väliseid teeke ei kasutata, ainult Google Fontsi kirjatüübid (Cormorant Garamond, IBM Plex Sans, IBM Plex Mono, Noto Serif TC).
-- Leht kohandub telefoni ekraaniga ning toetab heledat ja tumedat teemat.
+- Leht kohandub telefoni ekraaniga. Hele ja tume režiim järgivad vaikimisi süsteemi seadet; päise nupuga saab režiimi vahetada ja valik jäetakse meelde.
 - Juhuslikkuse allikas on `crypto.getRandomValues`.
 - Ekraanilugejale kirjeldatakse heksagrammi jooned tekstina.
 - Service worker laadib oma failid esmalt võrgust (uuendused jõuavad kohe kasutajani) ja kasutab vahemälu ainult siis, kui ühendust pole.

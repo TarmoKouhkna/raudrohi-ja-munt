@@ -1,7 +1,7 @@
 /* Raudrohi & Münt – service worker: võimaldab rakendust kasutada ka ilma võrguühenduseta.
    Oma failide puhul proovitakse esmalt võrku (nii jõuavad uuendused kohe kasutajani)
    ja ainult ühenduse puudumisel kasutatakse vahemälu. Fondid tulevad vahemälust. */
-const CACHE = 'raudrohi-v1';
+const CACHE = 'raudrohi-v2';
 const CORE = [
   './', 'index.html', 'legge-et.json', 'legge.json', 'jooned.json', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-32.png', 'icons/apple-touch-icon.png'

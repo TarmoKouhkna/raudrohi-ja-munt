@@ -10,7 +10,7 @@ Eestikeelne I Chingi (Muutuste raamatu) rakendus brauseris. Heida heksagramm, lo
 - **Lugemine:** põhiheksagramm (praegune olukord) ja muutuvate joonte korral seotud heksagramm (kuhu olukord liigub). Lisaks juhis, millele lugemisel kõige rohkem kaalu anda.
 - **Selgitused:** igal heksagrammil on tänapäevane selgitus koos osadega „Mida teha“ ja „Millest hoiduda“. Igal joonel on lühike seletus argikeeles.
 - **Klassikaline tekst:** iga heksagrammi otsus ja iga joone tekst James Legge tõlke järgi, eestindatuna. Nupuga saab vaadata ka Legge ingliskeelset originaali.
-- **Heksagrammid:** kõik 64 heksagrammi. Otsida saab nime, numbri, märksõna või trigrammi järgi.
+- **Heksagrammid:** kõik 64 heksagrammi. Otsida saab nime, numbri või märksõna järgi; filtreerida ülemise ja alumise trigrammi järgi (mõlema valimisel jääb alles täpselt üks heksagramm).
 - **Päevik:** iga lõpetatud lugemine salvestatakse automaatselt sinu brauserisse (`localStorage`). Igale lugemisele saab lisada märkmeid.
 - **Varukoopia:** päeviku saab kopeerida või failina alla laadida ning hiljem (ka teises seadmes) tagasi importida.
 - **Jagamine:** lugemist saab jagada lingiga (`#lugemine-779878`). Lingis on ainult jooned – küsimus ja märkmed jäävad jagajale.

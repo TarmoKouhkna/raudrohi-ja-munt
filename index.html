@@ -228,7 +228,11 @@ details.all-lines summary{cursor:pointer;color:var(--jade);font-weight:500;font-
 .lib-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
 .lib-tools h2{font-size:30px}
 input[type="search"]{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:9px 12px;min-width:0;width:260px;max-width:100%}
-.tri-filter{display:flex;flex-wrap:wrap;gap:6px}
+.tri-filters{display:flex;flex-direction:column;gap:8px}
+.tri-filter{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tri-filter .lab{width:58px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.lib-count{margin:0;font-size:13px;color:var(--muted)}
+.lib-count b{color:var(--ink);font-weight:600}
 .tri-filter button{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--muted)}
 .tri-filter button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .grid64{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
@@ -408,7 +412,8 @@ footer a{color:inherit}
         <h2>64 heksagrammi</h2>
         <input type="search" id="libSearch" placeholder="Otsi nime või numbri järgi" aria-label="Otsi heksagramme">
       </div>
-      <div class="tri-filter" id="triFilter" role="group" aria-label="Filtreeri trigrammi järgi"></div>
+      <div class="tri-filters" id="triFilter"></div>
+      <p class="lib-count" id="libCount" aria-live="polite"></p>
       <div class="grid64" id="grid64"></div>
     </section>
 
@@ -942,16 +947,20 @@ function showSaved(r){
 }
 
 /* ---------- heksagrammide kogu ---------- */
-let triSel=null;
+let triUp=null, triLo=null;
 function renderTriFilter(){
   const f=$('#triFilter');
-  f.innerHTML = `<button type="button" data-t="" aria-pressed="${!triSel}">Kõik</button>` + Object.entries(TRI).map(([k,t])=>`<button type="button" data-t="${k}" aria-pressed="${triSel===k}">${t.sym} ${t.name}</button>`).join('');
+  const row = (pos, label, sel) => `<div class="tri-filter" role="group" aria-label="${label} trigramm"><span class="lab" aria-hidden="true">${pos==='up'?'Üleval':'All'}</span>`
+    + `<button type="button" data-pos="${pos}" data-t="" aria-pressed="${!sel}">Kõik</button>`
+    + Object.entries(TRI).map(([k,t])=>`<button type="button" data-pos="${pos}" data-t="${k}" aria-pressed="${sel===k}">${t.sym} ${t.name}</button>`).join('') + '</div>';
+  f.innerHTML = row('up','Ülemine',triUp) + row('lo','Alumine',triLo);
 }
 function renderLibrary(){
   const q=norm($('#libSearch').value.trim());
   const triQ = Object.keys(TRI).find(k=>norm(TRI[k].name)===q);
   const list=HEX.filter(h=>{
-    if(triSel && h.upper!==triSel && h.lower!==triSel) return false;
+    if(triUp && h.upper!==triUp) return false;
+    if(triLo && h.lower!==triLo) return false;
     if(!q) return true;
     if(triQ) return h.upper===triQ || h.lower===triQ;
     return String(h.n)===q || norm(h.en).includes(q) || norm(h.py).includes(q) || h.zh.includes(q) || h.kw.some(k=>norm(k).includes(q)) || norm(TRI[h.upper].name)===q || norm(TRI[h.lower].name)===q;
@@ -960,6 +969,9 @@ function renderLibrary(){
       <div class="t1">${hexHTML(bitsToVals(h.bits),'sm')}<span class="n">${String(h.n).padStart(2,'0')}</span></div>
       <span class="z" lang="zh-Hant">${h.zh}</span><span class="e">${h.en}</span></button>`).join('')
     : '<p class="empty-note">Ükski heksagramm ei vasta otsingule.</p>';
+  const parts=[]; if(triUp) parts.push(`üleval <b>${TRI[triUp].sym} ${TRI[triUp].name}</b>`); if(triLo) parts.push(`all <b>${TRI[triLo].sym} ${TRI[triLo].name}</b>`);
+  const cnt = list.length===1 ? '1 heksagramm' : `${list.length} heksagrammi`;
+  $('#libCount').innerHTML = parts.length ? ((t=>t.charAt(0).toUpperCase()+t.slice(1))(parts.join(', ')) + ': ' + cnt) : (q ? `Otsingule vastab ${cnt}.` : '');
 }
 let dlgHex = null;
 function renderHexDialog(){
@@ -1067,7 +1079,7 @@ $('#mCoins').addEventListener('click', ()=>{ if(!state.busy) setMethod('coins');
 $('#mYarrow').addEventListener('click', ()=>{ if(!state.busy) setMethod('yarrow'); });
 document.querySelectorAll('.manual button').forEach(b=>b.addEventListener('click', ()=>{ if(state.busy) return; startIfComplete(); addLine(+b.dataset.v); renderBuilder(); }));
 $('#libSearch').addEventListener('input', renderLibrary);
-$('#triFilter').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; triSel = b.dataset.t || null; renderTriFilter(); renderLibrary(); });
+$('#triFilter').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; const t=b.dataset.t||null; if(b.dataset.pos==='up') triUp=t; else triLo=t; renderTriFilter(); renderLibrary(); const nb=$(`#triFilter button[data-pos="${b.dataset.pos}"][data-t="${b.dataset.t}"]`); if(nb) nb.focus(); });
 $('#grid64').addEventListener('click', e=>{ const t=e.target.closest('.tile'); if(t) openHex(+t.dataset.n); });
 $('#dlg').addEventListener('click', e=>{ const d=$('#dlg'); if(e.target===d || e.target.id==='dlgClose'){ try{ d.close(); }catch(_){ d.removeAttribute('open'); } } });
 document.addEventListener('click', e=>{

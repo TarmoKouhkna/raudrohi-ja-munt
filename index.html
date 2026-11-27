@@ -455,7 +455,7 @@ footer a{color:inherit}
             <button type="button" id="mYarrow" aria-pressed="true">Raudrohuvarred</button>
             <button type="button" id="mCoins" aria-pressed="false">Kolm münti</button>
             <button type="button" id="mMeihua" aria-pressed="false">Küsimusest</button>
-            <button type="button" id="mTime" aria-pressed="false">Ajast</button>
+            <button type="button" id="mTime" aria-pressed="false">Aja põhjal</button>
           </div>
           <div>
             <div class="coins" id="coins" aria-live="polite">
@@ -574,7 +574,7 @@ footer a{color:inherit}
           <p>Iga joone jaoks visatakse kolm münti. Kull (pildiga pool) annab 3 ja kiri (numbriga pool) 2, nii et kolme mündi summa on 6, 7, 8 või 9. Heksagramm ehitatakse alt üles: esimene vise annab alumise joone, kuues vise ülemise.</p>
           <div class="vtable" id="vtable"></div>
           <p>Võid kasutada rakenduse münte või visata päris münte ja sisestada summa ise. Raudrohuvarred on vanem meetod, mille tõenäosused on veidi teistsugused: muutuvat jini (6) tuleb harvem ja muutuvat jangi (9) sagedamini.</p>
-          <p>Kaks viimast viisi ei heida, vaid arvutavad: <strong>Küsimusest</strong> arvutab heksagrammi küsimuse sõnadest ja kellaajast, <strong>Ajast</strong> Hiina kalendri järgi praegusest kuupäevast ja kellaajast. Kuidas see käib, on selgitatud allpool jaotises „Ploomiõie numeroloogia“.</p>
+          <p>Kaks viimast viisi ei heida, vaid arvutavad: <strong>Küsimusest</strong> arvutab heksagrammi küsimuse sõnadest ja kellaajast, <strong>Aja põhjal</strong> Hiina kalendri järgi praegusest kuupäevast ja kellaajast. Kuidas see käib, on selgitatud allpool jaotises „Ploomiõie numeroloogia“.</p>
           <p>Mõnes vanemas raamatus on kulli ja kirja väärtused vastupidi. Vahet pole, kumba viisi kasutad – peaasi, et jääd ühe juurde.</p>
         </section>
 
@@ -609,7 +609,7 @@ footer a{color:inherit}
         <section class="gsec">
           <h3>Ploomiõie numeroloogia</h3>
           <p>Ploomiõie numeroloogia (<span lang="zh-Hant">梅花易數</span>, Méihuā Yìshù) on Songi-aegsele filosoofile Shao Yongile (<span lang="zh-Hant">邵雍</span>, 11. sajand) omistatud meetod, mille puhul heksagrammi ei heideta, vaid arvutatakse arvudest. Arv jagatakse 8-ga ja jääk määrab trigrammi nn varasema taeva järjekorras: 1 ☰ Taevas, 2 ☱ Järv, 3 ☲ Tuli, 4 ☳ Äike, 5 ☴ Tuul, 6 ☵ Vesi, 7 ☶ Mägi, 8 (ehk jääk 0) ☷ Maa. Muutuv joon on alati üks.</p>
-          <p><strong>Ajast</strong> – klassikaline põhivariant. Arvud võetakse Hiina kalendrist: aasta number (aasta looma järgi, vt tabelit), kuukalendri kuu ja päev ning kahetunnise aja number.</p>
+          <p><strong>Aja põhjal</strong> – klassikaline põhivariant. Arvud võetakse Hiina kalendrist: aasta number (aasta looma järgi, vt tabelit), kuukalendri kuu ja päev ning kahetunnise aja number.</p>
           <ol>
             <li><strong>Ülemine trigramm:</strong> (aasta + kuu + päev) : 8 → jääk.</li>
             <li><strong>Alumine trigramm:</strong> (aasta + kuu + päev + tund) : 8 → jääk.</li>
@@ -617,8 +617,8 @@ footer a{color:inherit}
           </ol>
           <p>Näide: 2026 on hobuse aasta (<span lang="zh-Hant">午</span> = 7). Oletame, et on kuukalendri 10. kuu 9. päev ja kell on 10 hommikul (<span lang="zh-Hant">巳</span> = 6). Ülemine: 7 + 10 + 9 = 26 → jääk 2 → ☱ Järv. Alumine: 26 + 6 = 32 → jääk 0 → ☷ Maa. Muutuv joon: 32 : 6 → jääk 2. Tulemus on 45. Kogunemine, mille teine joon muutub.</p>
           <div class="shichen" id="shichen"></div>
-          <p>Kuukalendri kuu ja päev ei lange tavakalendriga kokku: kuu algab noorkuuga ja mõnel aastal on 13 kuud. Näiteks 27. november 2026 on kuukalendri 10. kuu 19. päev. Rakenduse heitmisviis <strong>Ajast</strong> arvutab kuukalendri kuupäeva ise sinu seadme kuupäeva järgi (aastad 1900–2100) ja näitab arvutuse lahti. Lisakuu saab sama numbri kui sellele eelnev kuu. Kell 23 algab <span lang="zh-Hant">子</span> aeg ja koos sellega traditsiooni järgi ka järgmine päev. Hiina uusaasta on jaanuari lõpus või veebruaris, nii et aasta alguses on kuukalendris veel eelmine aasta.</p>
-          <p>Ajast arvutatud heksagramm sõltub ainult ajast, mitte küsijast: kõik, kes arvutavad samas ajavööndis sama kahetunnise aja sees, saavad sama tulemuse. Traditsioonis ei arvutatagi seda suvalisel hetkel. Põhimõte on „kui miski ei liigu, ära ennusta“ (<span lang="zh-Hant">不動不占</span>): heksagramm arvutatakse siis, kui juhtub midagi tähelepanuväärset või kui küsimus sinus tõesti tekib. Shao Yong nägi kord kahte varblast ploomioksal tülitsemas ja maha kukkumas ning arvutas heksagrammi just selle hetke järgi. Seepärast saad rakenduses praeguse aja asemel valida ka muu hetke – näiteks aja, mil sündmus juhtus või mil küsimus sul tekkis.</p>
+          <p>Kuukalendri kuu ja päev ei lange tavakalendriga kokku: kuu algab noorkuuga ja mõnel aastal on 13 kuud. Näiteks 27. november 2026 on kuukalendri 10. kuu 19. päev. Rakenduse heitmisviis <strong>Aja põhjal</strong> arvutab kuukalendri kuupäeva ise sinu seadme kuupäeva järgi (aastad 1900–2100) ja näitab arvutuse lahti. Lisakuu saab sama numbri kui sellele eelnev kuu. Kell 23 algab <span lang="zh-Hant">子</span> aeg ja koos sellega traditsiooni järgi ka järgmine päev. Hiina uusaasta on jaanuari lõpus või veebruaris, nii et aasta alguses on kuukalendris veel eelmine aasta.</p>
+          <p>Aja põhjal arvutatud heksagramm sõltub ainult ajast, mitte küsijast: kõik, kes arvutavad samas ajavööndis sama kahetunnise aja sees, saavad sama tulemuse. Traditsioonis ei arvutatagi seda suvalisel hetkel. Põhimõte on „kui miski ei liigu, ära ennusta“ (<span lang="zh-Hant">不動不占</span>): heksagramm arvutatakse siis, kui juhtub midagi tähelepanuväärset või kui küsimus sinus tõesti tekib. Shao Yong nägi kord kahte varblast ploomioksal tülitsemas ja maha kukkumas ning arvutas heksagrammi just selle hetke järgi. Seepärast saad rakenduses praeguse aja asemel valida ka muu hetke – näiteks aja, mil sündmus juhtus või mil küsimus sul tekkis.</p>
           <p><strong>Küsimusest</strong> – rakenduse viis. Klassikas loetakse küsimuse hiina kirjamärkide kriipse: esimese poole kriipsud annavad ülemise trigrammi, teise poole kriipsud alumise. Eesti keeles on kirjamärgi asemel sõna ja kriipsude asemel tähed: küsimuse sõnad jagatakse kaheks pooleks (paaritu arvu korral saab ülemine pool ühe sõna vähem) ja kummagi poole tähtede arv jagatakse 8-ga. Muutuv joon on kahe poole tähtede arvu ja kahetunnise aja numbri summa jääk 6-ga jagamisel. Tähtede lugemine on selle rakenduse kohandus eesti keelele, mitte klassikaline meetod. Sama küsimus annab samal kahetunnisel ajal sama vastuse.</p>
           <p>Ploomiõie traditsioonis võetakse arve ka sellest, mida parasjagu näed või kuuled – näiteks lindude arv puul või kellalöökide arv.</p>
         </section>
@@ -896,7 +896,7 @@ function readingHTML(r){
   const dstr = isNaN(d) ? '' : fmtDate(d) + ' · ' + fmtTime(d);
   const atStr = (r, d) => { const a = r.at ? new Date(r.at) : null; return a && !isNaN(a) && !(Math.abs(a-d) < 60000) ? ` (aeg ${fmtDate(a)} kell ${fmtTime(a)})` : ''; };
   const tag = r.example ? '<span class="example-tag">Näidislugemine</span>' : r.shared ? '<span class="example-tag shared-tag">Jagatud lugemine</span>' : '';
-  const meta = r.shared ? `jooned ${r.lines.join(' ')}` : `${dstr} · ${r.method==='yarrow'?'raudrohu tõenäosused':r.method==='meihua'?'küsimusest arvutatud':r.method==='time'?'ajast arvutatud'+atStr(r, d):'kolm münti'} · jooned ${r.lines.join(' ')}`;
+  const meta = r.shared ? `jooned ${r.lines.join(' ')}` : `${dstr} · ${r.method==='yarrow'?'raudrohu tõenäosused':r.method==='meihua'?'küsimusest arvutatud':r.method==='time'?'aja põhjal arvutatud'+atStr(r, d):'kolm münti'} · jooned ${r.lines.join(' ')}`;
   let h = `<div class="reading-head"><div>${tag}
       <h2>${r.q ? '„'+esc(r.q)+'“' : (r.shared ? 'Keegi jagas sinuga lugemist' : 'Avatud küsimus')}</h2></div>
       <div class="meta">${meta}</div></div>`;
@@ -1007,7 +1007,7 @@ function meihua(q, d){
   const up = XIANTIAN[A%8], lo = XIANTIAN[B%8], mv = ((A+B+H)%6) || 6;
   return {upW, loW, A, B, H, up, lo, mv, lines:linesFrom(up, lo, mv)};
 }
-/* Ajast arvutamine – Ploomiõie numeroloogia klassikaline põhivariant.
+/* Aja põhjal arvutamine – Ploomiõie numeroloogia klassikaline põhivariant.
    Aasta = kuukalendri aasta maise haru number (rott 1 … siga 12), kuu ja päev kuukalendri järgi (lisakuu = sama number),
    tund = kahetunnise aja number. Ülemine = (aasta + kuu + päev) : 8, alumine = (sama + tund) : 8, muutuv joon = (sama + tund) : 6.
    Kell 23 algab 子 aeg ja traditsiooni järgi ka uus päev. */
@@ -1094,7 +1094,7 @@ async function castComputed(){
   const bl=$('#blossom'); if(bl && bl.animate && !reduceMotion) bl.animate([{transform:'rotate(0deg) scale(1)'},{transform:'rotate(72deg) scale(1.12)',offset:.6},{transform:'rotate(72deg) scale(1)'}],{duration:900,easing:'ease-in-out'});
   const ms=$('.m-seal'); if(ms && ms.animate && !reduceMotion) ms.animate([{transform:'rotate(-4deg) scale(1)'},{transform:'rotate(-7deg) scale(1.14)',offset:.72},{transform:'rotate(-4deg) scale(1)'}],{duration:900,easing:'ease-out'});
   for(const v of r.lines){ addLine(v); await new Promise(res=>setTimeout(res, reduceMotion?0:140)); }
-  tally.innerHTML = `Arvutatud ${time?'ajast':'küsimusest'}: üleval ${TRI[r.up].sym} ${TRI[r.up].name}, all ${TRI[r.lo].sym} ${TRI[r.lo].name}, muutuv joon ${r.mv}.`;
+  tally.innerHTML = `Arvutatud ${time?'aja põhjal':'küsimusest'}: üleval ${TRI[r.up].sym} ${TRI[r.up].name}, all ${TRI[r.lo].sym} ${TRI[r.lo].name}, muutuv joon ${r.mv}.`;
   state.busy=false; renderBuilder();
 }
 qEl.addEventListener('input', ()=>{ if(state.method==='meihua') renderMeihua(); });

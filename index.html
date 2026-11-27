@@ -492,8 +492,8 @@ footer a{color:inherit}
             <button class="btn" type="button" id="allBtn">Heida kõik kuus</button>
             <button class="btn" type="button" id="resetBtn">Alusta uuesti</button>
           </div>
-          <div class="manual" role="group" aria-label="Sisesta joon oma müntidest">
-            <span>Viskad päris münte? Kull = 3, kiri = 2. Sisesta kolme mündi summa:</span>
+          <div class="manual" role="group" aria-label="Sisesta joon päris vartest või müntidest">
+            <span id="manualLabel">Kasutad päris raudrohuvarsi? Sisesta iga joone arv (6–9), alustades alumisest:</span>
             <button type="button" data-v="6" title="Vana jin, muutuv">6</button>
             <button type="button" data-v="7" title="Noor jang">7</button>
             <button type="button" data-v="8" title="Noor jin">8</button>
@@ -570,12 +570,34 @@ footer a{color:inherit}
         </section>
 
         <section class="gsec">
-          <h3>2. Heida mündid</h3>
-          <p>Iga joone jaoks visatakse kolm münti. Kull (pildiga pool) annab 3 ja kiri (numbriga pool) 2, nii et kolme mündi summa on 6, 7, 8 või 9. Heksagramm ehitatakse alt üles: esimene vise annab alumise joone, kuues vise ülemise.</p>
+          <h3>2. Heida heksagramm</h3>
+          <p>Heksagramm ehitatakse alt üles: esimene heide annab alumise joone, kuues ülemise. Iga joon on arv 6, 7, 8 või 9, mis näitab, kas joon on katkematu või katkendlik ja kas see muutub:</p>
           <div class="vtable" id="vtable"></div>
-          <p>Võid kasutada rakenduse münte või visata päris münte ja sisestada summa ise. Raudrohuvarred on vanem meetod, mille tõenäosused on veidi teistsugused: muutuvat jini (6) tuleb harvem ja muutuvat jangi (9) sagedamini.</p>
+          <p>Vaikimisi on valitud <strong>raudrohuvarred</strong> – vanim meetod, mida kirjeldab järgmine jaotis. <strong>Kolme mündiga</strong> visatakse iga joone jaoks kolm münti: kull (pildiga pool) annab 3 ja kiri (numbriga pool) 2, nii et kolme mündi summa on 6, 7, 8 või 9 (vt sulgudes tabelis).</p>
+          <p>Kui heidad päris vartega või müntidega, saad iga joone arvu sisestada heitmise vaate allosas olevate nuppudega 6–9.</p>
           <p>Kaks viimast viisi ei heida, vaid arvutavad: <strong>Küsimusest</strong> arvutab heksagrammi küsimuse sõnadest ja kellaajast, <strong>Aja põhjal</strong> Hiina kalendri järgi praegusest kuupäevast ja kellaajast. Kuidas see käib, on selgitatud allpool jaotises „Ploomiõie numeroloogia“.</p>
           <p>Mõnes vanemas raamatus on kulli ja kirja väärtused vastupidi. Vahet pole, kumba viisi kasutad – peaasi, et jääd ühe juurde.</p>
+        </section>
+
+        <section class="gsec">
+          <h3>Raudrohuvarred</h3>
+          <p>Raudrohuvartega heitmine on I Chingi vanim kirjeldatud heitmisviis – seda kirjeldab juba „Muutuste raamatu“ kommentaar „Xici“ (<span lang="zh-Hant">繫辭</span>). Raudrohi on ka Eestis tavaline taim; Hiinas peeti selle sirgeid ja pikki varsi pühaks. Päris vartega on heitmine aeglane: kuue joone saamiseks kulub 15–30 minutit. See aeglus on osa meetodist – küsimusse jõuab rahulikult süveneda.</p>
+          <p><strong>Rakenduses.</strong> Kui valid „Raudrohuvarred“, loositakse iga joon samade tõenäosustega, mis tekivad päris vartega heites: 6 – 1/16, 7 – 5/16, 8 – 7/16 ja 9 – 3/16. Animatsioon näitab, kuidas kimp jaguneb kaheks hunnikuks ja tuleb kokku tagasi. Vajuta kuus korda „Heida joon“ või korraga „Heida kõik kuus“ – jooned tekivad alt üles.</p>
+          <p><strong>Päris vartega.</strong> Vaja on 50 kuivatatud raudrohuvart (sobivad ka ühepikkused peenikesed pulgad) ja tühja lauda.</p>
+          <ol>
+            <li>Võta üks vars kõrvale. Seda ei kasutata – traditsiooni järgi sümboliseerib see suurt algust (<span lang="zh-Hant">太極</span>). Kasutad 49 vart.</li>
+            <li>Jaga 49 vart ühe liigutusega huupi kaheks hunnikuks, vasakule ja paremale.</li>
+            <li>Võta paremast hunnikust üks vars ja pane see vasaku käe väikese sõrme ja sõrmusesõrme vahele.</li>
+            <li>Loe vasakust hunnikust varsi neljakaupa ära, kuni järele jääb 1, 2, 3 või 4 vart (kui jagub täpselt, jäta järele 4). Pane jääk sõrmusesõrme ja keskmise sõrme vahele.</li>
+            <li>Tee sama parema hunnikuga ja pane jääk keskmise sõrme ja nimetissõrme vahele.</li>
+            <li>Käes on nüüd kokku 5 või 9 vart. Pane need kõrvale – see oli <em>esimene muutus</em>.</li>
+            <li>Korda samme 2–6 ülejäänud 44 või 40 vardaga: nüüd jääb kätte 4 või 8 vart. See on <em>teine muutus</em>. Korda veel kord ülejäänutega – <em>kolmas muutus</em>, jälle 4 või 8 vart.</li>
+            <li>Loe laual järele jäänud vardad neljakaupa: 36 vart annab 9, 32 annab 8, 28 annab 7 ja 24 annab 6. See on alumise joone arv.</li>
+            <li>Pane kõik 49 vart kokku ja korda kõike veel viis korda – iga kord saad ühe joone, alt üles. Kokku teed 18 muutust.</li>
+          </ol>
+          <p>Lihtsam viis joone arvu leidmiseks: loe iga muutuse kohta väike peotäis (5 või 4 vart) kolmeks ja suur peotäis (9 või 8 vart) kaheks. Kolme muutuse summa on joone arv. Näiteks 5, 8 ja 4 vart annavad 3 + 2 + 3 = 8.</p>
+          <p>Iga saadud arvu saad sisestada heitmise vaates nuppudega 6–9. Rakendus ehitab nendest heksagrammi ja näitab seletused.</p>
+          <p><strong>Miks tõenäosused erinevad müntidest?</strong> Esimesel muutusel jääb kätte 5 vart kolm korda sagedamini kui 9, teisel ja kolmandal muutusel on 4 ja 8 võrdselt tõenäolised. Seepärast tuleb katkematuid ja katkendlikke jooni kokku sama palju, kuid muutuvaid jooni erinevalt: muutuvat jangi (9) 3/16 ja muutuvat jini (6) ainult 1/16. Müntidega on mõlemad 1/8. Mõned tõlgendajad näevad selles mõtet: jang on liikuv ja muutub kergemini, jin on püsivam.</p>
         </section>
 
         <section class="gsec">
@@ -974,6 +996,7 @@ function setMethod(m){
   $('#castPanel').classList.toggle('method-meihua', computed(m));
   $('#castPanel').classList.toggle('method-time', m==='time');
   tally.textContent = TALLY[m];
+  $('#manualLabel').textContent = m==='coins' ? 'Viskad päris münte? Kull = 3, kiri = 2. Sisesta kolme mündi summa:' : 'Kasutad päris raudrohuvarsi? Sisesta iga joone arv (6–9), alustades alumisest:';
   renderMeihua(); renderBuilder();
 }
 /* Mündi vise: hoovõtt, lend koos pöörlemisega ümber X-telje, maandumine põrkega ja läige.
@@ -1412,7 +1435,7 @@ $('#impGo').addEventListener('click', ()=>importBackup($('#impText').value));
 
 /* ---------- juhend ---------- */
 function renderGuide(){
-  $('#vtable').innerHTML = [[6,'kolm kirja','muutuv jin','katkendlik joon, mis muutub katkematuks'],[7,'üks kull, kaks kirja','noor jang','katkematu joon'],[8,'kaks kulli, üks kiri','noor jin','katkendlik joon'],[9,'kolm kulli','muutuv jang','katkematu joon, mis muutub katkendlikuks']]
+  $('#vtable').innerHTML = [[6,'müntidega kolm kirja','muutuv jin','katkendlik joon, mis muutub katkematuks'],[7,'müntidega üks kull, kaks kirja','noor jang','katkematu joon'],[8,'müntidega kaks kulli, üks kiri','noor jin','katkendlik joon'],[9,'müntidega kolm kulli','muutuv jang','katkematu joon, mis muutub katkendlikuks']]
     .map(([v,sum,name,desc])=>`${hexLine(v)}<span><b>${v} · ${name}</b> <span class="sum">(${sum})</span><br>${desc}</span>`).join('');
   $('#shichen').innerHTML = SHICHEN.map((c,i)=>{ const a=(23+2*i)%24, e=(a+2)%24; return `<div><span class="c" lang="zh-Hant">${c}</span><b>${i+1} · ${ANIMALS[i]}</b><span>kell ${a}–${e}</span></div>`; }).join('');
   $('#trigList').innerHTML = Object.values(TRI).map(t=>`<div><span class="s" aria-hidden="true">${t.sym}</span><span><b>${t.name}</b><small>${t.attr}</small></span></div>`).join('');

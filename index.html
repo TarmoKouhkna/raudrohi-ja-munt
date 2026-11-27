@@ -243,6 +243,23 @@ details.all-lines summary{cursor:pointer;color:var(--jade);font-weight:500;font-
 .guide strong{font-family:var(--f-display);font-size:19px}
 .guide p{margin:0;max-width:75ch}
 .guide small{color:var(--muted)}
+.slip-box{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:center;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.slip-box h3{font-family:var(--f-display);font-size:19px;font-weight:600;margin:0 0 4px}
+.slip-box p{margin:0 0 6px;max-width:68ch;font-size:14px}
+.slip-box p:last-child{margin-bottom:0}
+.slip-box .hint{color:var(--muted);font-size:12.5px}
+.slip{position:relative;width:44px;padding:24px 0;border-radius:5px;background:linear-gradient(90deg,#BE9B5C 0,#E3CB92 42%,#D4B77A 70%,#B8955A 100%);display:flex;flex-direction:column;align-items:center;box-shadow:inset 0 0 0 1px rgba(80,52,16,.3),0 2px 6px rgba(0,0,0,.14)}
+.slip::before,.slip::after{content:"";position:absolute;left:-5px;right:-5px;height:3px;border-radius:2px;background:#6B4A22;opacity:.75}
+.slip::before{top:10px}
+.slip::after{bottom:10px}
+.slip span{position:relative;font-family:var(--f-han);font-weight:700;font-size:23px;line-height:1.22;color:#2A1D0E}
+.slip span.chg{color:#A8342A}
+.order-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.order-row .lab{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.order-row button{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--muted)}
+.order-row button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.order-note{margin:0;font-size:13.5px;color:var(--muted);max-width:80ch;line-height:1.55}
+.tile .o{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:-4px}
 .changes{display:flex;flex-direction:column;gap:0;border:1px solid var(--rule);border-radius:14px;background:var(--surface);overflow:hidden}
 .changes h3{font-size:20px;padding:16px 20px 6px}
 .chg-row{display:grid;grid-template-columns:90px minmax(0,1fr);gap:16px;padding:14px 20px;border-top:1px solid var(--rule)}
@@ -502,6 +519,8 @@ footer a{color:inherit}
         <input type="search" id="libSearch" placeholder="Otsi nime või numbri järgi" aria-label="Otsi heksagramme">
       </div>
       <div class="tri-filters" id="triFilter"></div>
+      <div class="order-row" role="group" aria-label="Heksagrammide järjekord" id="orderRow"><span class="lab">Järjekord</span><button type="button" data-o="kw">King Wen</button><button type="button" data-o="mwd">Mawangdui</button><button type="button" data-o="fx">Fu Xi (kahendarvud)</button></div>
+      <p class="order-note" id="orderNote"></p>
       <p class="lib-count" id="libCount" aria-live="polite"></p>
       <div class="grid64" id="grid64"></div>
     </section>
@@ -616,10 +635,10 @@ footer a{color:inherit}
           <p>Viimase poolsajandi jooksul on Hiinas leitud mitu iidset käsikirja bambusliistakutel ja siidil. Need näitavad, milline oli „Muutuste raamat“ enne, kui sellest sai tänapäeval tuntud tekst.</p>
           <p><strong>Wangjiatai (1993) – kadunud „Guicang“.</strong> 1993. aasta märtsis leiti Hubei provintsis Jianglingi lähedal Wangjiatai 15. hauast 813 bambusliistakut. Haud on Qini ajast (3. sajand eKr). 394 liistakul on umbes 4000 märgiga ennustustekst, mida uurijad peavad „Guicangiks“ (<span lang="zh-Hant">歸藏</span>, umbes „Tagasipöördumine peidetusse“). Vanad allikad nimetavad kolme muutuste raamatut – „Lianshan“ (<span lang="zh-Hant">連山</span>), „Guicang“ ja „Zhouyi“ (<span lang="zh-Hant">周易</span>) –, kuid tervikuna on säilinud ainult „Zhouyi“, millest I Ching koosnebki. „Guicangi“ hilisemaid tsitaate peeti varem sageli võltsinguks. Leid näitas, et selline tekst oli tõesti olemas.</p>
           <p>Säilinud on 53 heksagrammi joonist ja nime, algselt oli neid arvatavasti 64. Nimed on enamasti samad mis „Zhouyis“. Joonte tekstide asemel on iga heksagrammi juures lugu: „vanasti küsis see ja see ennustust…“ (<span lang="zh-Hant">昔者…</span>). Heksagrammi <span lang="zh-Hant">歸妹</span> juures (selles rakenduses 54. Mehele minev neiu) on katkend loost, kus <span lang="zh-Hant">恒我</span> (Héng'é) varastab surematuse ravimi ja põgeneb Kuule. See on üks varasemaid kirja pandud versioone Kuujumalanna Chang'e (<span lang="zh-Hant">嫦娥</span>) legendist.</p>
-          <p>Joonte asemel on liistakutel arvud: jang-joon on märk <span lang="zh-Hant">一</span>, jin-joon numbrimärk, mida uurijad loevad kas kuueks või kaheksaks. Kuuest numbrist koosnevaid märke (<span lang="zh-Hant">數字卦</span>) leidub juba Shangi ja Zhou aja ennustusluudel ja pronksesemetel. Paljud uurijad arvavad, et ka tänapäeva katkendlik jin-joon on tekkinud sellisest numbrimärgist.</p>
+          <p>Joonte asemel on liistakutel arvud: jang-joon on märk <span lang="zh-Hant">一</span>, jin-joon numbrimärk, mida uurijad loevad kas kuueks või kaheksaks. Kuuest numbrist koosnevaid märke (<span lang="zh-Hant">數字卦</span>) leidub juba Shangi ja Zhou aja ennustusluudel ja pronksesemetel. Paljud uurijad arvavad, et ka tänapäeva katkendlik jin-joon on tekkinud sellisest numbrimärgist. Iga lugemise juures näed, kuidas sinu jooned oleksid kirjas arvudena vanal bambusliistakul.</p>
           <p><strong>Guodian (1993) – „Muutuste raamat“ filosoofiana.</strong> Samal aastal leiti Hubeist Guodiani hauast Chu riigi bambusliistakud umbes aastast 300 eKr. Kõige tuntumad on need Laozi „Daodejingi“ vanima versiooni poolest. I Chingi teksti seal pole, kuid ühes katkendis öeldakse, et Yi „ühendab taeva tee ja inimese tee“ (<span lang="zh-Hant">易，所以會天道人道也</span>). Seega peeti „Muutuste raamatut“ juba siis filosoofiliseks teoseks, mitte ainult ennustusvahendiks.</p>
           <p><strong>Shanghai muuseumi liistakud (1994) – vanim „Zhouyi“.</strong> 1994. aastal ostis Shanghai muuseum Hongkongi antiigiturult Chu riigi bambusliistakud, mis olid ilmselt röövitud mõnest Hubei või Hunani hauast. Nende hulgas on 58 liistakut „Zhouyiga“ – umbes kolmandik tekstist, kirja pandud umbes 300 eKr. See on vanim teadaolev I Chingi käsikiri. Tekst on suures osas sama, mida tõlkis Legge, kuigi paljud märgid on kirjutatud teisiti. Heksagrammi nime järel ja teksti lõpus on punased ja mustad märgid, mille tähendust pole senini kindlalt seletatud.</p>
-          <p>Varasematest leidudest on tuntuim Mawangdui siidkäsikiri (leitud 1973, haud aastast 168 eKr), kus heksagrammid on teises järjekorras ja juures on varem tundmata kommentaarid. Tsinghua ülikooli liistakud (2008) kirjeldavad Sõdivate riikide aja praktilist ennustusmeetodit.</p>
+          <p>Varasematest leidudest on tuntuim Mawangdui siidkäsikiri (leitud 1973, haud aastast 168 eKr), kus heksagrammid on teises järjekorras ja juures on varem tundmata kommentaarid. Selle järjekorra saad valida heksagrammide vaates. Tsinghua ülikooli liistakud (2008) kirjeldavad Sõdivate riikide aja praktilist ennustusmeetodit.</p>
         </section>
 
         <section class="gsec">
@@ -834,6 +853,17 @@ function guidance(lines){
   else { title='Kõik pöördub'; text='Kõik kuus joont muutuvad. Olukord muutub oma vastandiks, seega keskendu seotud heksagrammile.'; }
   return {key, title, text, ch};
 }
+/* Lugemine nii, nagu see oleks kirjas vanal bambusliistakul: iga joone kohta arv (數字卦), loetakse alt üles. */
+const ZHNUM = {6:'六', 7:'七', 8:'八', 9:'九'};
+const ZHNAME = {6:'liù', 7:'qī', 8:'bā', 9:'jiǔ'};
+function slipHTML(lines){
+  const top = lines.slice().reverse();
+  const chg = lines.some(isChg);
+  return `<section class="slip-box"><div class="slip" role="img" aria-label="Bambusliistak arvudega ${lines.join(', ')} alt üles">${top.map(v=>`<span lang="zh-Hant"${isChg(v)?' class="chg"':''}>${ZHNUM[v]}</span>`).join('')}</div>
+    <div><h3>Vanal bambusliistakul</h3>
+    <p>Kõige vanematel ennustusluudel, pronksesemetel ja bambusliistakutel ei joonistatud heksagrammi jooni, vaid kirjutati iga joone kohta arv – täpselt nagu sinu heitmine andis arvud. Sinu lugemine oleks kirjas nii: ${lines.map(v=>`<span lang="zh-Hant">${ZHNUM[v]}</span> (${ZHNAME[v]}, ${v})`).join(' · ')}, alt üles.</p>
+    <p class="hint">Uurijate arvates said paaritutest arvudest hiljem katkematud ja paarisarvudest katkendlikud jooned.${chg ? ' Punasega on siin märgitud muutuvad jooned (6 ja 9) – vanadel liistakutel seda värvi ei olnud.' : ''} Vaata ka juhendi jaotist „Arheoloogilised leiud“.</p></div></section>`;
+}
 function readingHTML(r){
   const p = BYBITS[primaryBits(r.lines)];
   const g = guidance(r.lines);
@@ -848,6 +878,7 @@ function readingHTML(r){
       <div class="meta">${meta}</div></div>`;
   h += `<div class="pair${rel?'':' single'}">${cardHTML(p, 'Põhiheksagramm · praegu', r.lines, {lines:'details', hl:g.ch, openDetails:!g.ch.length})}${rel?`<div class="arrow" aria-hidden="true">→</div>${cardHTML(rel,'Seotud heksagramm · kuhu see viib', bitsToVals(rel.bits))}`:''}</div>`;
   h += `<div class="guide"><strong>${g.title}</strong><p>${g.text}</p><small>Need on levinud lugemisreeglid; traditsioonid erinevad.</small></div>`;
+  h += slipHTML(r.lines);
   if(g.ch.length){
     const L = legge(p.n);
     h += `<section class="changes"><div class="changes-head"><h3>Muutuvad jooned</h3><p>Muutuv joon näitab, mis sinu olukorras praegu liigub ja millele tähelepanu pöörata. Iga joone juures on tänapäevane seletus, selle all klassikaline tekst ja joone koha tähendus.</p></div>${(g.ch.length===6 && p.n<=2) ? `<div class="chg-row key"><div class="lab"><b>Kõik kuus joont</b>${p.n===1?'kõik 9 ○':'kõik 6 ×'}</div><div>${plain(p.n,6)}<span class="src cls-h">Klassikaline tekst · ${srcTag()}</span>${classic(L&&L.l[6])}<p class="pos-note">Kui heksagrammi ${p.n===1?'„Loov jõud“':'„Vastuvõtlikkus“'} kõik jooned muutuvad, on klassikas selle jaoks eraldi tekst.</p></div></div>` : ''}${g.ch.map(i=>{
@@ -1205,6 +1236,23 @@ function showSaved(r){
 
 /* ---------- heksagrammide kogu ---------- */
 let triUp=null, triLo=null;
+/* Heksagrammide järjekorrad. King Wen – traditsiooniline (h.n). Mawangdui siidkäsikiri (168 eKr): rühmad ülemise trigrammi järgi
+   (Taevas, Mägi, Vesi, Äike, Maa, Järv, Tuli, Tuul), igas rühmas esmalt kahekordne trigramm, siis alumised järjekorras
+   Taevas, Maa, Mägi, Järv, Vesi, Tuli, Äike, Tuul. Fu Xi / Leibniz: jin = 0, jang = 1, alumine joon on suurim koht – Maa 0 … Taevas 63. */
+const MWD_UP = ['qian','gen','kan','zhen','kun','dui','li','xun'], MWD_LO = ['qian','kun','gen','dui','kan','li','zhen','xun'];
+const ORDERS = {
+  kw:  {key:h=>h.n, label:h=>'',
+        note:'<b>King Wen</b> – traditsiooniline järjekord, mida kasutavad „Muutuste raamat“ ja Legge tõlge. Heksagrammid on paarides: teine on enamasti esimese pea peale pööratud kuju või, kui see ei muuda midagi, selle vastand.'},
+  mwd: {key:h=>MWD_UP.indexOf(h.upper)*8 + (h.upper===h.lower ? 0 : 1 + MWD_LO.filter(t=>t!==h.upper).indexOf(h.lower)), label:h=>`Mawangdui ${ORDERS.mwd.key(h)+1}.`,
+        note:'<b>Mawangdui</b> – järjekord 1973. aastal leitud siidkäsikirjast (haud aastast 168 eKr). Heksagrammid on rühmitatud ülemise trigrammi järgi: kõigepealt neli jang-trigrammi (Taevas, Mägi, Vesi, Äike – isa ja pojad), siis neli jin-trigrammi (Maa, Järv, Tuli, Tuul – ema ja tütred). Igas rühmas on esimene kahekordne trigramm, seejärel ülejäänud alumised kindlas järjekorras. Erinevalt King Wen\'i järjekorrast on see täiesti süsteemne.'},
+  fx:  {key:h=>parseInt(h.bits,2), label:h=>`${h.bits} = ${parseInt(h.bits,2)}`,
+        note:'<b>Fu Xi</b> – järjekord, mille järgi Shao Yong (11. sajand, sama mõtleja, kellele omistatakse Ploomiõie numeroloogia) heksagrammid ringi ja ruutu paigutas. Kui jin on 0 ja jang 1 ning jooned loetakse alt üles, on see kahendloendus Maast (0) Taevani (63). Gottfried Wilhelm Leibniz sai selle skeemi 1703. aastal Hiinas elanud jesuiidilt Joachim Bouvet\'lt ja märkas, et see vastab tema leiutatud kahendsüsteemile.'}
+};
+let libOrder = (()=>{ try{ const o=localStorage.getItem('yc-order'); return ORDERS[o] ? o : 'kw'; }catch(e){ return 'kw'; } })();
+function renderOrder(){
+  document.querySelectorAll('#orderRow button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.o===libOrder));
+  $('#orderNote').innerHTML = ORDERS[libOrder].note;
+}
 function renderTriFilter(){
   const f=$('#triFilter');
   const row = (pos, label, sel) => `<div class="tri-filter" role="group" aria-label="${label} trigramm"><span class="lab" aria-hidden="true">${pos==='up'?'Üleval':'All'}</span>`
@@ -1222,9 +1270,10 @@ function renderLibrary(){
     if(triQ) return h.upper===triQ || h.lower===triQ;
     return String(h.n)===q || norm(h.en).includes(q) || norm(h.py).includes(q) || h.zh.includes(q) || h.kw.some(k=>norm(k).includes(q)) || norm(TRI[h.upper].name)===q || norm(TRI[h.lower].name)===q;
   });
+  const O = ORDERS[libOrder]; list.sort((a,b)=>O.key(a)-O.key(b));
   $('#grid64').innerHTML = list.length ? list.map(h=>`<button type="button" class="tile" data-n="${h.n}" aria-label="${h.n}. ${h.en}">
       <div class="t1">${hexHTML(bitsToVals(h.bits),'sm')}<span class="n">${String(h.n).padStart(2,'0')}</span></div>
-      <span class="z" lang="zh-Hant">${h.zh}</span><span class="e">${h.en}</span></button>`).join('')
+      <span class="z" lang="zh-Hant">${h.zh}</span><span class="e">${h.en}</span>${O.label(h) ? `<span class="o">${O.label(h)}</span>` : ''}</button>`).join('')
     : '<p class="empty-note">Ükski heksagramm ei vasta otsingule.</p>';
   const parts=[]; if(triUp) parts.push(`üleval <b>${TRI[triUp].sym} ${TRI[triUp].name}</b>`); if(triLo) parts.push(`all <b>${TRI[triLo].sym} ${TRI[triLo].name}</b>`);
   const cnt = list.length===1 ? '1 heksagramm' : `${list.length} heksagrammi`;
@@ -1368,6 +1417,7 @@ $('#mMeihua').addEventListener('click', ()=>{ if(!state.busy) setMethod('meihua'
 $('#mTime').addEventListener('click', ()=>{ if(!state.busy) setMethod('time'); });
 document.querySelectorAll('.manual button').forEach(b=>b.addEventListener('click', ()=>{ if(state.busy) return; startIfComplete(); addLine(+b.dataset.v); renderBuilder(); }));
 $('#libSearch').addEventListener('input', renderLibrary);
+$('#orderRow').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; libOrder=b.dataset.o; try{ localStorage.setItem('yc-order', libOrder); }catch(err){} renderOrder(); renderLibrary(); });
 $('#triFilter').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; const t=b.dataset.t||null; if(b.dataset.pos==='up') triUp=t; else triLo=t; renderTriFilter(); renderLibrary(); const nb=$(`#triFilter button[data-pos="${b.dataset.pos}"][data-t="${b.dataset.t}"]`); if(nb) nb.focus(); });
 $('#grid64').addEventListener('click', e=>{ const t=e.target.closest('.tile'); if(t) openHex(+t.dataset.n); });
 $('#dlg').addEventListener('click', e=>{ const d=$('#dlg'); if(e.target===d || e.target.id==='dlgClose'){ try{ d.close(); }catch(_){ d.removeAttribute('open'); } } });
@@ -1400,7 +1450,7 @@ function afterClassic(){
 }
 
 setMethod('coins');
-buildStalks(); renderBuilder(); renderReadingArea(); renderTriFilter(); renderLibrary(); renderJournal(); renderGuide(); route();
+buildStalks(); renderBuilder(); renderReadingArea(); renderTriFilter(); renderOrder(); renderLibrary(); renderJournal(); renderGuide(); route();
 loadClassic(classicLang);
 if('serviceWorker' in navigator && canCopyUrl && location.protocol!=='file:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 })();

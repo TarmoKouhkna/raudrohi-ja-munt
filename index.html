@@ -156,6 +156,7 @@ textarea::placeholder{color:var(--muted)}
 .btn.primary:hover{opacity:.9}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .manual{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:14px}
+.manual-btns{display:flex;gap:8px;flex:none}
 .manual button{border:1px solid var(--rule);background:transparent;border-radius:8px;padding:4px 10px;font-family:var(--f-mono);font-size:13px}
 .manual button:hover{border-color:var(--bronze);color:var(--bronze)}
 
@@ -494,10 +495,12 @@ footer a{color:inherit}
           </div>
           <div class="manual" role="group" aria-label="Sisesta joon päris vartest või müntidest">
             <span id="manualLabel">Kasutad päris raudrohuvarsi? Sisesta iga joone arv (6–9), alustades alumisest:</span>
-            <button type="button" data-v="6" title="Vana jin, muutuv">6</button>
-            <button type="button" data-v="7" title="Noor jang">7</button>
-            <button type="button" data-v="8" title="Noor jin">8</button>
-            <button type="button" data-v="9" title="Vana jang, muutuv">9</button>
+            <span class="manual-btns">
+              <button type="button" data-v="6" title="Vana jin, muutuv">6</button>
+              <button type="button" data-v="7" title="Noor jang">7</button>
+              <button type="button" data-v="8" title="Noor jin">8</button>
+              <button type="button" data-v="9" title="Vana jang, muutuv">9</button>
+            </span>
           </div>
         </div>
 

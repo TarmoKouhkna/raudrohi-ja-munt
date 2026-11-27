@@ -134,6 +134,12 @@ textarea::placeholder{color:var(--muted)}
 .mh-row .k{color:var(--muted);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding-top:2px}
 .mh-row b{font-weight:600}
 .mh-note{color:var(--muted);font-size:12px}
+.mh-time{display:none;align-items:center;gap:8px 10px;flex-wrap:wrap;justify-content:center;width:100%;max-width:52ch}
+.method-time .mh-time{display:flex}
+.mh-time label{color:var(--muted);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.mh-time input{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink);min-width:0;max-width:100%}
+.mh-time button{border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:500}
+.mh-time button:disabled{opacity:.45;cursor:default}
 @media (max-width: 480px){ .mh-row{grid-template-columns:minmax(0,1fr);gap:0} }
 .nw{white-space:nowrap}
 .stalks{width:220px;height:auto;max-width:100%;overflow:visible}
@@ -452,6 +458,11 @@ footer a{color:inherit}
                   </svg>
                   <span class="m-seal" lang="zh-Hant">梅</span>
                 </div>
+                <div class="mh-time">
+                  <label for="tInput">Aeg</label>
+                  <input type="datetime-local" id="tInput" min="1900-01-31T00:00" max="2100-12-31T23:59" step="60">
+                  <button type="button" id="tNow" title="Arvuta praeguse aja järgi">Praegu</button>
+                </div>
                 <div class="mh-calc" id="mhCalc" aria-live="polite"></div>
               </div>
             </div>
@@ -586,6 +597,7 @@ footer a{color:inherit}
           <p>Näide: 2026 on hobuse aasta (<span lang="zh-Hant">午</span> = 7). Oletame, et on kuukalendri 10. kuu 9. päev ja kell on 10 hommikul (<span lang="zh-Hant">巳</span> = 6). Ülemine: 7 + 10 + 9 = 26 → jääk 2 → ☱ Järv. Alumine: 26 + 6 = 32 → jääk 0 → ☷ Maa. Muutuv joon: 32 : 6 → jääk 2. Tulemus on 45. Kogunemine, mille teine joon muutub.</p>
           <div class="shichen" id="shichen"></div>
           <p>Kuukalendri kuu ja päev ei lange tavakalendriga kokku: kuu algab noorkuuga ja mõnel aastal on 13 kuud. Näiteks 27. november 2026 on kuukalendri 10. kuu 19. päev. Rakenduse heitmisviis <strong>Ajast</strong> arvutab kuukalendri kuupäeva ise sinu seadme kuupäeva järgi (aastad 1900–2100) ja näitab arvutuse lahti. Lisakuu saab sama numbri kui sellele eelnev kuu. Kell 23 algab <span lang="zh-Hant">子</span> aeg ja koos sellega traditsiooni järgi ka järgmine päev. Hiina uusaasta on jaanuari lõpus või veebruaris, nii et aasta alguses on kuukalendris veel eelmine aasta.</p>
+          <p>Ajast arvutatud heksagramm sõltub ainult ajast, mitte küsijast: kõik, kes arvutavad samas ajavööndis sama kahetunnise aja sees, saavad sama tulemuse. Traditsioonis ei arvutatagi seda suvalisel hetkel. Põhimõte on „kui miski ei liigu, ära ennusta“ (<span lang="zh-Hant">不動不占</span>): heksagramm arvutatakse siis, kui juhtub midagi tähelepanuväärset või kui küsimus sinus tõesti tekib. Shao Yong nägi kord kahte varblast ploomioksal tülitsemas ja maha kukkumas ning arvutas heksagrammi just selle hetke järgi. Seepärast saad rakenduses praeguse aja asemel valida ka muu hetke – näiteks aja, mil sündmus juhtus või mil küsimus sul tekkis.</p>
           <p><strong>Küsimusest</strong> – rakenduse viis. Klassikas loetakse küsimuse hiina kirjamärkide kriipse: esimese poole kriipsud annavad ülemise trigrammi, teise poole kriipsud alumise. Eesti keeles on kirjamärgi asemel sõna ja kriipsude asemel tähed: küsimuse sõnad jagatakse kaheks pooleks (paaritu arvu korral saab ülemine pool ühe sõna vähem) ja kummagi poole tähtede arv jagatakse 8-ga. Muutuv joon on kahe poole tähtede arvu ja kahetunnise aja numbri summa jääk 6-ga jagamisel. Tähtede lugemine on selle rakenduse kohandus eesti keelele, mitte klassikaline meetod. Sama küsimus annab samal kahetunnisel ajal sama vastuse.</p>
           <p>Ploomiõie traditsioonis võetakse arve ka sellest, mida parasjagu näed või kuuled – näiteks lindude arv puul või kellalöökide arv.</p>
         </section>
@@ -816,8 +828,9 @@ function readingHTML(r){
   const rel = g.ch.length ? BYBITS[relatingBits(r.lines)] : null;
   const d = new Date(r.date);
   const dstr = isNaN(d) ? '' : fmtDate(d) + ' · ' + fmtTime(d);
+  const atStr = (r, d) => { const a = r.at ? new Date(r.at) : null; return a && !isNaN(a) && !(Math.abs(a-d) < 60000) ? ` (aeg ${fmtDate(a)} kell ${fmtTime(a)})` : ''; };
   const tag = r.example ? '<span class="example-tag">Näidislugemine</span>' : r.shared ? '<span class="example-tag shared-tag">Jagatud lugemine</span>' : '';
-  const meta = r.shared ? `jooned ${r.lines.join(' ')}` : `${dstr} · ${r.method==='yarrow'?'raudrohu tõenäosused':r.method==='meihua'?'küsimusest arvutatud':r.method==='time'?'ajast arvutatud':'kolm münti'} · jooned ${r.lines.join(' ')}`;
+  const meta = r.shared ? `jooned ${r.lines.join(' ')}` : `${dstr} · ${r.method==='yarrow'?'raudrohu tõenäosused':r.method==='meihua'?'küsimusest arvutatud':r.method==='time'?'ajast arvutatud'+atStr(r, d):'kolm münti'} · jooned ${r.lines.join(' ')}`;
   let h = `<div class="reading-head"><div>${tag}
       <h2>${r.q ? '„'+esc(r.q)+'“' : (r.shared ? 'Keegi jagas sinuga lugemist' : 'Avatud küsimus')}</h2></div>
       <div class="meta">${meta}</div></div>`;
@@ -844,7 +857,7 @@ function readingHTML(r){
 }
 
 /* ---------- heitmise olek ---------- */
-const state = { method:'coins', lines:[], busy:false, current:null };
+const state = { method:'coins', lines:[], busy:false, current:null, at:null, castAt:null };
 const coinsEl=$('#coins'), tally=$('#tally'), tossBtn=$('#tossBtn'), allBtn=$('#allBtn'), resetBtn=$('#resetBtn'), qEl=$('#question');
 const coinAngles=[0,0,0];
 const TALLY_COINS = 'Kull (pildiga pool) annab 3, kiri (numbriga pool) 2.';
@@ -892,6 +905,7 @@ function setMethod(m){
   $('#mTime').setAttribute('aria-pressed', m==='time');
   $('#castPanel').classList.toggle('method-yarrow', m==='yarrow');
   $('#castPanel').classList.toggle('method-meihua', computed(m));
+  $('#castPanel').classList.toggle('method-time', m==='time');
   tally.textContent = TALLY[m];
   renderMeihua(); renderBuilder();
 }
@@ -959,7 +973,15 @@ function timeCast(d){
   const up = XIANTIAN[S%8], lo = XIANTIAN[T%8], mv = (T%6) || 6;
   return {L, Y, M, D, H, S, T, up, lo, mv, late, lines:linesFrom(up, lo, mv)};
 }
-function renderTime(el, d){
+const p2 = n => String(n).padStart(2,'0');
+const localInput = d => `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}T${p2(d.getHours())}:${p2(d.getMinutes())}`;
+const moment = () => state.at || new Date();
+function syncTimeInput(){
+  const i=$('#tInput'); if(!i) return;
+  if(document.activeElement!==i) i.value=localInput(state.at || new Date());
+  $('#tNow').disabled = !state.at;
+}
+function renderTime(el, d, chosen){
   const r = timeCast(d);
   if(!r){ el.innerHTML = '<div class="mh-note">See kuupäev jääb väljapoole kuukalendri tabelit (1900–2100).</div>'; return; }
   const rem = (n,m,z) => { const x=n%m; return x===0 ? `jääk 0 (= ${z})` : `jääk ${x}`; };
@@ -973,12 +995,12 @@ function renderTime(el, d){
     + row('Ülemine', `${r.Y} + ${r.M} + ${r.D} = ${r.S} : 8, ${rem(r.S,8,8)} → ${tri(r.up)}`)
     + row('Alumine', `${r.S} + ${r.H} = ${r.T} : 8, ${rem(r.T,8,8)} → ${tri(r.lo)}`)
     + row('Muutuv joon', `${r.T} : 6, ${rem(r.T,6,6)} → <b>joon ${r.mv}</b>`)
-    + `<div class="mh-note">Arvutatud sinu seadme kuupäeva ja kella järgi.${r.late ? ' Kell 23 algab juba järgmine päev, seepärast on võetud homne kuukalendri kuupäev.' : ''} Sama heksagramm püsib kogu kahetunnise aja.</div>`;
+    + `<div class="mh-note">${chosen ? 'Arvutatud valitud aja järgi. „Praegu“ viib tagasi praeguse aja juurde.' : 'Arvutatud sinu seadme kuupäeva ja kella järgi.'}${r.late ? ' Kell 23 algab juba järgmine päev, seepärast on võetud järgmise päeva kuukalendri kuupäev.' : ''}${chosen ? '' : ' Sama heksagramm püsib kogu kahetunnise aja.'}</div>`;
 }
 function renderMeihua(){
   const el=$('#mhCalc'); if(!el) return;
   const d=new Date();
-  if(state.method==='time') return renderTime(el, d);
+  if(state.method==='time'){ syncTimeInput(); return renderTime(el, moment(), !!state.at); }
   const r=meihua(qEl.value, d);
   if(!r){ el.innerHTML='<div class="mh-note">Kirjuta küsimus – arvutus ilmub siia. Vaja on vähemalt kahte tähte.</div>'; return; }
   const tw = n => n===1 ? '1 täht' : `${n} tähte`;
@@ -991,7 +1013,8 @@ function renderMeihua(){
 }
 async function castComputed(){
   if(state.busy) return;
-  const time = state.method==='time', now = new Date();
+  const time = state.method==='time', now = time ? moment() : new Date();
+  state.castAt = now;
   const r = time ? timeCast(now) : meihua(qEl.value, now);
   if(!r){
     if(time) tally.textContent='See kuupäev jääb väljapoole kuukalendri tabelit (1900–2100).';
@@ -1009,6 +1032,8 @@ async function castComputed(){
 }
 qEl.addEventListener('input', ()=>{ if(state.method==='meihua') renderMeihua(); });
 setInterval(()=>{ if(computed(state.method) && !document.hidden) renderMeihua(); }, 30000);
+$('#tInput').addEventListener('change', e=>{ const v=e.target.value, d=v ? new Date(v) : null; state.at = d && !isNaN(d) ? d : null; renderMeihua(); });
+$('#tNow').addEventListener('click', ()=>{ state.at=null; renderMeihua(); });
 
 /* Raudrohuvarred: 49 vart lehvikuna; igal loosimisel jaguneb kimp kaheks hunnikuks ja tuleb kokku tagasi. */
 function buildStalks(){
@@ -1107,7 +1132,7 @@ function reset(){
   renderBuilder(); renderReadingArea();
 }
 function finishReading(){
-  const r={id:String(Date.now()), q:qEl.value.trim(), date:new Date().toISOString(), method:state.method, lines:state.lines.slice()};
+  const r={id:String(Date.now()), q:qEl.value.trim(), date:new Date().toISOString(), method:state.method, lines:state.lines.slice(), ...(state.method==='time'&&state.castAt?{at:state.castAt.toISOString()}:{})};
   const j=store.get(); j.unshift(r); store.set(j.slice(0,500));
   state.current=r;
   renderReadingArea();
@@ -1159,6 +1184,8 @@ function shareReading(){
 }
 function showSaved(r){
   state.current=r; state.lines=r.lines.slice();
+  const a = r.method==='time' && r.at ? new Date(r.at) : null;
+  state.at = a && !isNaN(a) && Math.abs(a-new Date(r.date)) >= 60000 ? a : null;
   qEl.value=r.q||''; setMethod(METHODS.includes(r.method)?r.method:'coins');
   tally.innerHTML = `Salvestatud lugemine · jooned <b>${r.lines.join(' ')}</b>`;
   renderBuilder(); renderReadingArea();
@@ -1269,7 +1296,7 @@ function importBackup(text){
     if(!validReading(r)){ bad++; return; }
     const id = typeof r.id==='string' && r.id ? r.id : String(Date.now()+Math.random());
     if(ids.has(id) || sig.has(r.date+'|'+r.lines.join(''))){ dup++; return; }
-    j.push({id, q:typeof r.q==='string'?r.q:'', date:typeof r.date==='string'?r.date:new Date().toISOString(), method:METHODS.includes(r.method)?r.method:'coins', lines:r.lines.slice(), ...(typeof r.notes==='string'&&r.notes?{notes:r.notes}:{})});
+    j.push({id, q:typeof r.q==='string'?r.q:'', date:typeof r.date==='string'?r.date:new Date().toISOString(), method:METHODS.includes(r.method)?r.method:'coins', lines:r.lines.slice(), ...(typeof r.notes==='string'&&r.notes?{notes:r.notes}:{}), ...(typeof r.at==='string'&&!isNaN(new Date(r.at))?{at:r.at}:{})});
     ids.add(id); added++;
   });
   j.sort((a,b)=>String(b.date).localeCompare(String(a.date)));

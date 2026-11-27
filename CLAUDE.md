@@ -14,9 +14,11 @@ Eestikeelne I Chingi rakendus: üks staatiline leht (`index.html`) ja kolm JSON-
 - `manifest.webmanifest`, `sw.js`, `icons/`, `og.png` – PWA ja jagamise eelvaade. **Ainult GitHubi versioonis**: neid ei avaldata artefakti ja nende päisesildid on ainult repo `index.html` `<head>`-is. `sw.js` kasutab oma failide puhul võrk-enne-vahemälu strateegiat; kui lisad uue andmefaili, lisa see ka `CORE` loendisse ja suurenda `CACHE` versiooni.
 - `tools/check.py` – andmete kontroll (käivitub ka GitHub Actionsis, `.github/workflows/check.yml`). `tools/make_artifact.py` – teeb artefakti versiooni.
 
-Vaated (aadressi `#`): `#cast` (heitmine), `#library`, `#journal`, `#juhend`. `#lugemine-XXXXXX` (6 numbrit 6–9) avab jagatud lugemise; lingis ei ole küsimust ega märkmeid. Päeviku kirje: `{id, q, date, method, lines, notes?}` võtme `yc-journal` all `localStorage`-is. Muud võtmed: `yc-classic` (klassikalise teksti keel), `yc-intro` (esmakülastaja riba suletud), `yc-theme` (`light`/`dark`, päise režiiminupu valik; puudumisel järgitakse süsteemi). Teema rakendatakse `<body>` alguse väikese skriptiga enne lehe joonistamist ja see seab `data-theme` atribuudi, mida CSS juba toetab. Esmakülastaja riba (`#intro`) näidatakse ainult siis, kui päevik on tühi ja riba pole suletud.
+Vaated (aadressi `#`): `#cast` (heitmine), `#library`, `#journal`, `#juhend`. `#lugemine-XXXXXX` (6 numbrit 6–9) avab jagatud lugemise; lingis ei ole küsimust ega märkmeid. Päeviku kirje: `{id, q, date, method, lines, notes?}` (`method`: `coins`, `yarrow` või `meihua`) võtme `yc-journal` all `localStorage`-is. Muud võtmed: `yc-classic` (klassikalise teksti keel), `yc-intro` (esmakülastaja riba suletud), `yc-theme` (`light`/`dark`, päise režiiminupu valik; puudumisel järgitakse süsteemi). Teema rakendatakse `<body>` alguse väikese skriptiga enne lehe joonistamist ja see seab `data-theme` atribuudi, mida CSS juba toetab. Esmakülastaja riba (`#intro`) näidatakse ainult siis, kui päevik on tühi ja riba pole suletud.
 
-CSS-klassid: päise logo on `.seal`, raudrohuvarte pitser `.y-seal` – ära kasuta neid nimesid muuks.
+CSS-klassid: päise logo on `.seal`, raudrohuvarte pitser `.y-seal`, ploomiõie pitser `.m-seal` – ära kasuta neid nimesid muuks.
+
+Heitmisviis „Küsimusest“ (`meihua()`): Ploomiõie numeroloogia kohandus – sõnad jagatakse kaheks pooleks (paaritu arvu korral ülemine pool ühe sõna vähem), kummagi poole tähtede arv `% 8` annab trigrammi varasema taeva järjekorras (`XIANTIAN`, 0 = Maa), muutuv joon = (A + B + Hiina kahetunnine aeg 1–12) `% 6` (0 = 6). Arvutus kuvatakse kasutajale lahti; juhendis on öeldud, et tähtede lugemine on kohandus, mitte klassikaline meetod.
 
 Andmefailid laaditakse `fetch()`-iga, seega testi lehte serveri kaudu, mitte `file://` kaudu.
 

@@ -339,6 +339,7 @@ dialog .card{max-height:85vh;overflow:auto}
 .tree text{fill:var(--ink);font-family:var(--f-body);font-size:19px;text-anchor:middle}
 .tree .zh{font-family:var(--f-han);font-size:20px}
 .tree .val{fill:var(--muted);font-size:17px}
+.tree .season{fill:var(--jade);font-size:17px;font-style:italic;letter-spacing:.02em}
 .tree .num{fill:var(--bronze);font-family:var(--f-mono);font-size:18px;font-weight:600}
 .tree .tj-bg{fill:var(--surface);stroke:var(--ink);stroke-width:1.6}
 .tree .tj-d{fill:var(--ink)}
@@ -726,7 +727,7 @@ footer a{color:inherit}
           <div class="trig" id="trigList"></div>
           <p><strong>Kuidas trigrammid tekivad.</strong> „Muutuste raamatu“ kommentaar „Xici“ ütleb: „Muutustes on suur algus (<span lang="zh-Hant">太極</span>). See sünnitab kaks vormi (<span lang="zh-Hant">兩儀</span>), kaks vormi sünnitavad neli kujutist (<span lang="zh-Hant">四象</span>) ja neli kujutist kaheksa trigrammi (<span lang="zh-Hant">八卦</span>).“ Joonis näitab seda samm-sammult: igal astmel lisandub üles üks joon – kas jang (katkematu) või jin (katkendlik).</p>
           <figure class="tree"><div id="trigTree"></div><figcaption>Suurest algusest kaheksa trigrammini – joonis Shao Yongi ja Zhu Xi skeemi järgi</figcaption></figure>
-          <p>Neli kujutist kannavad samu nimesid nagu joonte väärtused: vana jang (9), noor jin (8), noor jang (7) ja vana jin (6). Alumises reas on trigrammid nn varasema taeva järjekorras – sellest tulevad Ploomiõie numeroloogia trigrammide numbrid 1–8. Sama põhimõte (jin 0, jang 1) on heksagrammide vaate Fu Xi järjekorra aluseks. Sellise joonise tegi tuntuks Songi aja filosoof Shao Yong ja hiljem Zhu Xi.</p>
+          <p>Neli kujutist kannavad samu nimesid nagu joonte väärtused: vana jang (9), noor jin (8), noor jang (7) ja vana jin (6). Neile vastavad ka aastaajad – nii, nagu trigrammid paiknevad varasema taeva ringis: Taevas on lõunas (suvi), Tuli idas (kevad), Vesi läänes (sügis) ja Maa põhjas (talv). Mõnes allikas on kevad ja sügis vahetuses, sest noore jangi nimi (<span lang="zh-Hant">少陽</span>) seostub kevadega. Alumises reas on trigrammid nn varasema taeva järjekorras – sellest tulevad Ploomiõie numeroloogia trigrammide numbrid 1–8. Sama põhimõte (jin 0, jang 1) on heksagrammide vaate Fu Xi järjekorra aluseks. Sellise joonise tegi tuntuks Songi aja filosoof Shao Yong ja hiljem Zhu Xi.</p>
         </section>
 
         <section class="gsec">
@@ -1533,11 +1534,11 @@ function trigTreeSVG(){
     + `<text class="zh" x="${cx+r+34}" y="${cy+7}" lang="zh-Hant">太極</text>`;
   const L1=[['1','陽','jang'],['0','陰','jin']];
   L1.forEach(([b,z,n],i)=>{ const x=x2(i); h+=ln(cx+(i?14:-14),cy+r+4,x,110)+`<text x="${x}" y="128">${n}</text>`+bar(x,140,60,b==='1'); });
-  const L2=[['11','vana jang','9'],['10','noor jin','8'],['01','noor jang','7'],['00','vana jin','6']];
-  L2.forEach(([b,n,v],i)=>{ const x=x4(i); h+=ln(x2(i>>1),155,x,190)+`<text x="${x}" y="208">${n} <tspan class="val">· ${v}</tspan></text>`+stack(x,234,50,b); });
+  const L2=[['11','vana jang','9','suvi'],['10','noor jin','8','kevad'],['01','noor jang','7','sügis'],['00','vana jin','6','talv']];
+  L2.forEach(([b,n,v,season],i)=>{ const x=x4(i); h+=ln(x2(i>>1),154,x,170)+`<text class="season" x="${x}" y="187">${season}</text><text x="${x}" y="210">${n} <tspan class="val">· ${v}</tspan></text>`+stack(x,236,50,b); });
   ['qian','dui','li','zhen','xun','kan','gen','kun'].forEach((k,i)=>{ const x=x8(i), t=TRI[k];
     h+=ln(x4(i>>1),249,x,286)+`<text x="${x}" y="304">${t.name}</text>`+stack(x,340,42,t.bits)+`<text class="num" x="${x}" y="372">${i+1}</text>`; });
-  return `<svg viewBox="0 0 ${W} 380" role="img" aria-label="Suur algus jaguneb jangiks ja jiniks, need neljaks kujutiseks (vana jang, noor jin, noor jang, vana jin) ja need kaheksaks trigrammiks: 1 Taevas, 2 Järv, 3 Tuli, 4 Äike, 5 Tuul, 6 Vesi, 7 Mägi, 8 Maa.">${h}</svg>`;
+  return `<svg viewBox="0 0 ${W} 380" role="img" aria-label="Suur algus jaguneb jangiks ja jiniks, need neljaks kujutiseks (vana jang – suvi, noor jin – kevad, noor jang – sügis, vana jin – talv) ja need kaheksaks trigrammiks: 1 Taevas, 2 Järv, 3 Tuli, 4 Äike, 5 Tuul, 6 Vesi, 7 Mägi, 8 Maa.">${h}</svg>`;
 }
 function renderGuide(){
   $('#vtable').innerHTML = [[6,'müntidega kolm kirja','muutuv jin','katkendlik joon, mis muutub katkematuks'],[7,'müntidega üks kull, kaks kirja','noor jang','katkematu joon'],[8,'müntidega kaks kulli, üks kiri','noor jin','katkendlik joon'],[9,'müntidega kolm kulli','muutuv jang','katkematu joon, mis muutub katkendlikuks']]

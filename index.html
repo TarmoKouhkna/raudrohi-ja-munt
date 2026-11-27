@@ -436,7 +436,7 @@ footer a{color:inherit}
           <p class="lead">I Ching ehk Muutuste raamat on umbes 3000 aastat vana Hiina tarkuseraamat. Siin saad sellele küsimuse esitada ja lugeda vastust tänapäeva keeles koos klassikalise tekstiga.</p>
           <ol class="steps">
             <li><b>Esita küsimus</b><span>Mõtle välja üks selge küsimus oma elu kohta.</span></li>
-            <li><b>Heida mündid</b><span>Kuus viset annavad kuuest joonest koosneva heksagrammi.</span></li>
+            <li><b>Heida heksagramm</b><span>Raudrohuvarred või mündid annavad kuus joont, millest saab heksagramm.</span></li>
             <li><b>Loe vastust</b><span>Saad selgituse, nõuanded ja klassikalise teksti.</span></li>
           </ol>
           <div class="intro-actions"><button class="btn primary" type="button" id="introStart">Alusta</button><a class="btn" href="#juhend">Loe juhendit</a></div>
@@ -445,15 +445,15 @@ footer a{color:inherit}
         <button class="intro-close" type="button" id="introClose" aria-label="Sulge tutvustus">×</button>
       </section>
       <div class="desk">
-        <div class="panel" id="castPanel">
+        <div class="panel method-yarrow" id="castPanel">
           <label class="q" for="question">
             <span class="q-title">Sinu küsimus</span>
             <textarea id="question" rows="2" placeholder="Üks selge küsimus, nt „Kuidas alustada uuel töökohal?“"></textarea>
           </label>
           <p class="guide-link">Esimest korda? <a href="#juhend">Loe, kuidas küsimust esitada ja vastust lugeda</a>.</p>
           <div class="seg" role="group" aria-label="Heitmise viis">
-            <button type="button" id="mYarrow" aria-pressed="false">Raudrohuvarred</button>
-            <button type="button" id="mCoins" aria-pressed="true">Kolm münti</button>
+            <button type="button" id="mYarrow" aria-pressed="true">Raudrohuvarred</button>
+            <button type="button" id="mCoins" aria-pressed="false">Kolm münti</button>
             <button type="button" id="mMeihua" aria-pressed="false">Küsimusest</button>
             <button type="button" id="mTime" aria-pressed="false">Ajast</button>
           </div>
@@ -485,7 +485,7 @@ footer a{color:inherit}
                 <div class="mh-calc" id="mhCalc" aria-live="polite"></div>
               </div>
             </div>
-            <div class="tally" id="tally">Kull (pildiga pool) annab 3, kiri (numbriga pool) 2.</div>
+            <div class="tally" id="tally">Iga joon loositakse raudrohumeetodi tõenäosustega.</div>
           </div>
           <div class="actions">
             <button class="btn primary" type="button" id="tossBtn">Heida joon 1 (kuuest)</button>
@@ -924,7 +924,7 @@ function readingHTML(r){
 }
 
 /* ---------- heitmise olek ---------- */
-const state = { method:'coins', lines:[], busy:false, current:null, at:null, castAt:null };
+const state = { method:'yarrow', lines:[], busy:false, current:null, at:null, castAt:null };
 const coinsEl=$('#coins'), tally=$('#tally'), tossBtn=$('#tossBtn'), allBtn=$('#allBtn'), resetBtn=$('#resetBtn'), qEl=$('#question');
 const coinAngles=[0,0,0];
 const TALLY_COINS = 'Kull (pildiga pool) annab 3, kiri (numbriga pool) 2.';
@@ -1472,7 +1472,7 @@ function afterClassic(){
   if(dlgHex && dlgIsOpen()) renderHexDialog();
 }
 
-setMethod('coins');
+setMethod('yarrow');
 buildStalks(); renderBuilder(); renderReadingArea(); renderTriFilter(); renderOrder(); renderLibrary(); renderJournal(); renderGuide(); route();
 loadClassic(classicLang);
 if('serviceWorker' in navigator && canCopyUrl && location.protocol!=='file:'){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }

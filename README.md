@@ -6,7 +6,7 @@ Eestikeelne I Chingi (Muutuste raamatu) rakendus brauseris. Heida heksagramm, lo
 
 ## Võimalused
 
-- **Heitmine:** kolm virtuaalset münti (kull ehk pildiga pool 3, kiri ehk numbriga pool 2) või raudrohuvarte meetodi tõenäosused. Kui heidad päris münte, saad joone summa (6, 7, 8, 9) ka ise sisestada. Kolmas viis, **Küsimusest**, arvutab heksagrammi küsimuse sõnadest ja kellaajast – see on Hiina Ploomiõie numeroloogia (梅花易數) kohandus eesti keelele: hiina märgi kriipsude asemel loetakse sõnade tähti.
+- **Heitmine:** kolm virtuaalset münti (kull ehk pildiga pool 3, kiri ehk numbriga pool 2) või raudrohuvarte meetodi tõenäosused. Kui heidad päris münte, saad joone summa (6, 7, 8, 9) ka ise sisestada. Kolmas viis, **Küsimusest**, arvutab heksagrammi küsimuse sõnadest ja kellaajast – see on Hiina Ploomiõie numeroloogia (梅花易數) kohandus eesti keelele: hiina märgi kriipsude asemel loetakse sõnade tähti. Neljas viis, **Ajast**, on Ploomiõie numeroloogia klassikaline põhivariant: heksagramm arvutatakse Hiina kuukalendri aastast, kuust, päevast ja kahetunnisest ajast. Kuukalendri kuupäeva arvutab rakendus ise (aastad 1900–2100).
 - **Lugemine:** põhiheksagramm (praegune olukord) ja muutuvate joonte korral seotud heksagramm (kuhu olukord liigub). Lisaks juhis, millele lugemisel kõige rohkem kaalu anda.
 - **Selgitused:** igal heksagrammil on tänapäevane selgitus koos osadega „Mida teha“ ja „Millest hoiduda“. Igal joonel on lühike seletus argikeeles.
 - **Klassikaline tekst:** iga heksagrammi otsus ja iga joone tekst James Legge tõlke järgi, eestindatuna. Nupuga saab vaadata ka Legge ingliskeelset originaali.

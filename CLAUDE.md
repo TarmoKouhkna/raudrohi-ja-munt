@@ -8,7 +8,7 @@ Eestikeelne I Chingi rakendus: üks staatiline leht (`index.html`) ja kolm JSON-
   - `TRI` – 8 trigrammi (nimi, sümbol, kirjeldus `attr`).
   - `RAW` – 64 heksagrammi King Wen'i järjekorras: `[hanzi, pinyin, eestikeelne nimi, ülemine trigramm, alumine trigramm, 'märksõna · märksõna · märksõna', mida see tähendab, mida teha, millest hoiduda]`.
   - `POS` – kuue joone koha tähendused, `VNAME` – joone väärtuste (6/7/8/9) nimed, `guidance()` – lugemisreeglid muutuvate joonte arvu järgi.
-- `legge-et.json` – klassikaline tekst eesti keeles: 64 × `{ "j": otsus, "l": [joon1…joon6, (kõik muutuvad)] }`. 7. element on ainult heksagrammidel 1 ja 2.
+- `legge-et.json` – klassikaline tekst eesti keeles: 64 × `{ "j": otsus, "l": [joon1…joon6, (kõik muutuvad)], "x": pilt }`. 7. element on ainult heksagrammidel 1 ja 2. Pilt (大象) on Legge lisast II („Treatise on the Symbolism of the Hexagrams“), võetud kahe skaneeringu võrdlusel.
 - `legge.json` – sama struktuur, James Legge ingliskeelne originaal (1882, avalik omand).
 - `jooned.json` – joonte tänapäevased seletused: 64 × `[joon1…joon6, (kõik muutuvad)]`.
 - `manifest.webmanifest`, `sw.js`, `icons/`, `og.png` – PWA ja jagamise eelvaade. **Ainult GitHubi versioonis**: neid ei avaldata artefakti ja nende päisesildid on ainult repo `index.html` `<head>`-is. `sw.js` kasutab oma failide puhul võrk-enne-vahemälu strateegiat; kui lisad uue andmefaili, lisa see ka `CORE` loendisse ja suurenda `CACHE` versiooni.

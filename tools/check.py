@@ -73,6 +73,8 @@ for fn, yang_word, ord_check in (('legge-et.json', 'katkematu', True), ('legge.j
     for n, e in enumerate(data, 1):
         if not e.get('j'):
             err(f'{fn} #{n}: otsus puudub.')
+        if not e.get('x'):
+            err(f'{fn} #{n}: pilt (x) puudub.')
         lines = e.get('l', [])
         if len(lines) != expected_count(n):
             err(f'{fn} #{n}: jooni {len(lines)}, oodatud {expected_count(n)}.')

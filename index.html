@@ -259,6 +259,8 @@ details.all-lines summary{cursor:pointer;color:var(--jade);font-weight:500;font-
 .order-row button{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--muted)}
 .order-row button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .order-note{margin:0;font-size:13.5px;color:var(--muted);max-width:80ch;line-height:1.55}
+.old-name{margin:0;font-size:13px;color:var(--muted)}
+.old-name .h{font-family:var(--f-han);font-size:16px;color:var(--ink)}
 .tile .o{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:-4px}
 .changes{display:flex;flex-direction:column;gap:0;border:1px solid var(--rule);border-radius:14px;background:var(--surface);overflow:hidden}
 .changes h3{font-size:20px;padding:16px 20px 6px}
@@ -638,7 +640,7 @@ footer a{color:inherit}
           <p>Joonte asemel on liistakutel arvud: jang-joon on märk <span lang="zh-Hant">一</span>, jin-joon numbrimärk, mida uurijad loevad kas kuueks või kaheksaks. Kuuest numbrist koosnevaid märke (<span lang="zh-Hant">數字卦</span>) leidub juba Shangi ja Zhou aja ennustusluudel ja pronksesemetel. Paljud uurijad arvavad, et ka tänapäeva katkendlik jin-joon on tekkinud sellisest numbrimärgist. Iga lugemise juures näed, kuidas sinu jooned oleksid kirjas arvudena vanal bambusliistakul.</p>
           <p><strong>Guodian (1993) – „Muutuste raamat“ filosoofiana.</strong> Samal aastal leiti Hubeist Guodiani hauast Chu riigi bambusliistakud umbes aastast 300 eKr. Kõige tuntumad on need Laozi „Daodejingi“ vanima versiooni poolest. I Chingi teksti seal pole, kuid ühes katkendis öeldakse, et Yi „ühendab taeva tee ja inimese tee“ (<span lang="zh-Hant">易，所以會天道人道也</span>). Seega peeti „Muutuste raamatut“ juba siis filosoofiliseks teoseks, mitte ainult ennustusvahendiks.</p>
           <p><strong>Shanghai muuseumi liistakud (1994) – vanim „Zhouyi“.</strong> 1994. aastal ostis Shanghai muuseum Hongkongi antiigiturult Chu riigi bambusliistakud, mis olid ilmselt röövitud mõnest Hubei või Hunani hauast. Nende hulgas on 58 liistakut „Zhouyiga“ – umbes kolmandik tekstist, kirja pandud umbes 300 eKr. See on vanim teadaolev I Chingi käsikiri. Tekst on suures osas sama, mida tõlkis Legge, kuigi paljud märgid on kirjutatud teisiti. Heksagrammi nime järel ja teksti lõpus on punased ja mustad märgid, mille tähendust pole senini kindlalt seletatud.</p>
-          <p>Varasematest leidudest on tuntuim Mawangdui siidkäsikiri (leitud 1973, haud aastast 168 eKr), kus heksagrammid on teises järjekorras ja juures on varem tundmata kommentaarid. Selle järjekorra saad valida heksagrammide vaates. Tsinghua ülikooli liistakud (2008) kirjeldavad Sõdivate riikide aja praktilist ennustusmeetodit.</p>
+          <p>Varasematest leidudest on tuntuim Mawangdui siidkäsikiri (leitud 1973, haud aastast 168 eKr), kus heksagrammid on teises järjekorras ja juures on varem tundmata kommentaarid. Selle järjekorra saad valida heksagrammide vaates. Ka nimed on seal sageli teised: 32 heksagrammi nimi on kirjutatud teise, enamasti sarnase hääldusega märgiga, näiteks <span lang="zh-Hant">乾</span> (Taevas) asemel <span lang="zh-Hant">鍵</span> (riiv, võti) ja <span lang="zh-Hant">坤</span> (Maa) asemel <span lang="zh-Hant">川</span> (jõgi). Iga heksagrammi kaardil on näha tema nimi ja koht Mawangdui käsikirjas. Tsinghua ülikooli liistakud (2008) kirjeldavad Sõdivate riikide aja praktilist ennustusmeetodit.</p>
         </section>
 
         <section class="gsec">
@@ -823,6 +825,16 @@ function linesListHTML(n, hl){
   if(n<=2) items += `<li class="extra"><span class="k">Kõik kuus</span><div>${plain(n,6)}${classic(L&&L.l[6])}</div></li>`;
   return `<p class="ll-note">Iga joone juures on esmalt tänapäevane seletus, selle all kursiivis klassikaline tekst (${srcTag()}). Joon 1 on all, joon 6 üleval.</p><ol class="ll">${items}</ol>`;
 }
+/* Heksagrammide nimed Mawangdui siidkäsikirjas (haud 168 eKr), kui need erinevad tänapäevasest tekstist.
+   Allikas: Edward L. Shaughnessy tõlge „I Ching: The Classic of Changes“ (hermetica.info võrdlustabeli kaudu);
+   Mawangdui järjekord on kontrollitud S. J. Marshalli tabeliga „Received to Mawangdui hexagram numbers“. */
+const MWD_NAME = {1:'鍵', 2:'川', 5:'襦', 9:'少菽', 10:'禮', 12:'婦', 15:'嗛', 16:'余', 18:'箇', 19:'林', 22:'繁', 25:'无孟', 26:'泰畜', 28:'泰過', 29:'贛', 30:'羅', 31:'欽', 33:'掾', 34:'泰壯', 35:'溍', 38:'乖', 43:'訣', 44:'狗', 45:'卒', 46:'登', 49:'勒', 51:'辰', 52:'根', 57:'筭', 58:'奪', 61:'中復', 62:'少過'};
+const MWD_UP = ['qian','gen','kan','zhen','kun','dui','li','xun'], MWD_LO = ['qian','kun','gen','dui','kan','li','zhen','xun'];
+function mwdPos(h){ return MWD_UP.indexOf(h.upper)*8 + (h.upper===h.lower ? 0 : 1 + MWD_LO.filter(t=>t!==h.upper).indexOf(h.lower)) + 1; }
+function oldNameHTML(h){
+  const n = MWD_NAME[h.n];
+  return `<p class="old-name">Mawangdui siidkäsikirjas (168 eKr): ${n ? `<span class="h" lang="zh-Hant">${n}</span>` : 'sama nimi'}, järjekorras ${mwdPos(h)}.</p>`;
+}
 function cardHTML(h, role, vals, opts){
   opts = opts || {};
   const up=TRI[h.upper], lo=TRI[h.lower], L=legge(h.n);
@@ -838,6 +850,7 @@ function cardHTML(h, role, vals, opts){
     <p class="mean">${h.meaning}</p>
     <div class="advice"><div class="do"><span class="adv-h">Mida teha</span><p>${h.todo}</p></div><div class="avoid"><span class="adv-h">Millest hoiduda</span><p>${h.avoid}</p></div></div>
     <div class="legge"><div class="src-row"><span class="src">Otsus · ${srcTag()}</span>${toggleBtn()}</div>${classic(L&&L.j)}</div>
+    ${oldNameHTML(h)}
     ${lines}
   </article>`;
 }
@@ -1239,12 +1252,11 @@ let triUp=null, triLo=null;
 /* Heksagrammide järjekorrad. King Wen – traditsiooniline (h.n). Mawangdui siidkäsikiri (168 eKr): rühmad ülemise trigrammi järgi
    (Taevas, Mägi, Vesi, Äike, Maa, Järv, Tuli, Tuul), igas rühmas esmalt kahekordne trigramm, siis alumised järjekorras
    Taevas, Maa, Mägi, Järv, Vesi, Tuli, Äike, Tuul. Fu Xi / Leibniz: jin = 0, jang = 1, alumine joon on suurim koht – Maa 0 … Taevas 63. */
-const MWD_UP = ['qian','gen','kan','zhen','kun','dui','li','xun'], MWD_LO = ['qian','kun','gen','dui','kan','li','zhen','xun'];
 const ORDERS = {
   kw:  {key:h=>h.n, label:h=>'',
         note:'<b>King Wen</b> – traditsiooniline järjekord, mida kasutavad „Muutuste raamat“ ja Legge tõlge. Heksagrammid on paarides: teine on enamasti esimese pea peale pööratud kuju või, kui see ei muuda midagi, selle vastand.'},
-  mwd: {key:h=>MWD_UP.indexOf(h.upper)*8 + (h.upper===h.lower ? 0 : 1 + MWD_LO.filter(t=>t!==h.upper).indexOf(h.lower)), label:h=>`Mawangdui ${ORDERS.mwd.key(h)+1}.`,
-        note:'<b>Mawangdui</b> – järjekord 1973. aastal leitud siidkäsikirjast (haud aastast 168 eKr). Heksagrammid on rühmitatud ülemise trigrammi järgi: kõigepealt neli jang-trigrammi (Taevas, Mägi, Vesi, Äike – isa ja pojad), siis neli jin-trigrammi (Maa, Järv, Tuli, Tuul – ema ja tütred). Igas rühmas on esimene kahekordne trigramm, seejärel ülejäänud alumised kindlas järjekorras. Erinevalt King Wen\'i järjekorrast on see täiesti süsteemne.'},
+  mwd: {key:h=>mwdPos(h), label:h=>`Mawangdui ${mwdPos(h)}.${MWD_NAME[h.n] ? ' '+MWD_NAME[h.n] : ''}`,
+        note:'<b>Mawangdui</b> – järjekord 1973. aastal leitud siidkäsikirjast (haud aastast 168 eKr). Heksagrammid on rühmitatud ülemise trigrammi järgi: kõigepealt neli jang-trigrammi (Taevas, Mägi, Vesi, Äike – isa ja pojad), siis neli jin-trigrammi (Maa, Järv, Tuli, Tuul – ema ja tütred). Igas rühmas on esimene kahekordne trigramm, seejärel ülejäänud alumised kindlas järjekorras. Erinevalt King Wen\'i järjekorrast on see täiesti süsteemne. 32 heksagrammi nimi on käsikirjas kirjutatud teise märgiga, enamasti sarnase hääldusega (nt <span lang="zh-Hant">乾</span> asemel <span lang="zh-Hant">鍵</span>) – need on kaardil näha. Nimed on Edward Shaughnessy tõlke järgi.'},
   fx:  {key:h=>parseInt(h.bits,2), label:h=>`${h.bits} = ${parseInt(h.bits,2)}`,
         note:'<b>Fu Xi</b> – järjekord, mille järgi Shao Yong (11. sajand, sama mõtleja, kellele omistatakse Ploomiõie numeroloogia) heksagrammid ringi ja ruutu paigutas. Kui jin on 0 ja jang 1 ning jooned loetakse alt üles, on see kahendloendus Maast (0) Taevani (63). Gottfried Wilhelm Leibniz sai selle skeemi 1703. aastal Hiinas elanud jesuiidilt Joachim Bouvet\'lt ja märkas, et see vastab tema leiutatud kahendsüsteemile.'}
 };
@@ -1268,7 +1280,7 @@ function renderLibrary(){
     if(triLo && h.lower!==triLo) return false;
     if(!q) return true;
     if(triQ) return h.upper===triQ || h.lower===triQ;
-    return String(h.n)===q || norm(h.en).includes(q) || norm(h.py).includes(q) || h.zh.includes(q) || h.kw.some(k=>norm(k).includes(q)) || norm(TRI[h.upper].name)===q || norm(TRI[h.lower].name)===q;
+    return String(h.n)===q || norm(h.en).includes(q) || norm(h.py).includes(q) || h.zh.includes(q) || (MWD_NAME[h.n]||'').includes(q) || h.kw.some(k=>norm(k).includes(q)) || norm(TRI[h.upper].name)===q || norm(TRI[h.lower].name)===q;
   });
   const O = ORDERS[libOrder]; list.sort((a,b)=>O.key(a)-O.key(b));
   $('#grid64').innerHTML = list.length ? list.map(h=>`<button type="button" class="tile" data-n="${h.n}" aria-label="${h.n}. ${h.en}">
